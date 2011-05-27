@@ -48,8 +48,10 @@ static void overrideViewDidInstall(id self, SEL _cmd)
     
     if ([[self valueForKey: @"supportsReplace"] boolValue])
     {
+    
         [self setValue: [NSNumber numberWithUnsignedLongLong: 1] forKey: @"finderMode"];
         [self setValue: [NSNumber numberWithDouble: 45.0] forKey: @"preferredViewHeight"];
+    
     }
     
     ((void (*)(id, SEL))gOriginalViewDidInstall)(self, _cmd);
