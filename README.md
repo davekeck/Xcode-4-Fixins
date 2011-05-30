@@ -8,6 +8,6 @@ __XCFixin_DisableAnimations__: This plugin disable's Xcode's various NSAnimation
 
 __XCFixin_FindFix__: By default, when Xcode's inline find bar opens, it doesn't display any options to customize searching. This plugin makes Xcode show all find options (such as "Ignore Case") in the find bar when it opens. This plugin also makes text-replacement the default mode in the inline find bar, giving immediate access to the "Replace" and "Replace All" buttons.
 
-__XCFixin_HideDistractions__: This plugin adds a new "Hide Distractions" menu item to the View menu, which groups the following operations into a single menu item: Hide Toolbar, Hide Debug Area, and Hide Navigator. Additionally, the "Hide Distractions" menu item maximizes the active window to fill the available screen area. This plugin works best when the XCFixin_DisableAnimations plugin is also installed.
+__XCFixin_HideDistractions__: This plugin adds a new "Hide Distractions" menu item to the View menu, which groups the following operations into a single menu item: Hide Toolbar, Hide Debug Area, and Hide Navigator. Additionally, this menu item maximizes the active window to fill the available screen area. This plugin works best when the XCFixin_DisableAnimations plugin is also installed.
 
 __XCFixin_InhibitTabNextPlaceholder__: This plugin disables using the Tab key to select between argument placeholders of a synthesized (by Xcode's code completion) method call. This plugin does not affect the "Jump to Next Placeholder" key binding in the Xcode preferences.
