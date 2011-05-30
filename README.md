@@ -1,4 +1,4 @@
-To install either plugin, open the respective Xcode project and build it. The plugin will be installed automatically as a part of the build process. Xcode must be relaunched for the plugin to take effect.
+To install one of these plugins, open the respective Xcode project and build it. The plugin will be installed automatically as a part of the build process. Xcode must be relaunched for the plugin to take effect.
 
 Plugins are installed into ~/Library/Application Support/Developer/Shared/Xcode/Plug-ins/.
 
