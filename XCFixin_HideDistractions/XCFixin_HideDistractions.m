@@ -87,22 +87,38 @@ static NSString *const kDisableAnimationsClassName = @"XCFixin_DisableAnimations
 
 }
 
++ (void)clickMenuItem: (NSMenuItem *)menuItem
+{
+
+    if (menuItem && [menuItem isEnabled])
+        [NSApp sendAction: [menuItem action] to: [menuItem target] from: menuItem];
+
+}
+
 + (void)hideDistractions: (id)sender
 {
 
     NSMenu *mainMenu = nil,
            *viewMenu = nil,
-           *navigatorsMenu = nil;
+           *navigatorsMenu = nil,
+           *utilitiesMenu = nil,
+           *editorMenu = nil;
     NSMenuItem *viewMenuItem = nil,
                *navigatorsMenuItem = nil,
+               *utilitiesMenuItem = nil,
+               *editorMenuItem = nil,
                *hideToolbarMenuItem = nil,
                *hideDebugAreaMenuItem = nil,
-               *hideNavigatorMenuItem = nil;
+               *hideNavigatorMenuItem = nil,
+               *hideUtilitiesMenuItem = nil,
+               *standardEditorLayoutMenuItem = nil;
     NSWindow *activeWindow = nil;
     
     mainMenu = [NSApp mainMenu];
     
         HDAssertOrPerform(mainMenu, return);
+    
+    /* Get View menu */
     
     viewMenuItem = [mainMenu itemWithTitle: @"View"];
     
@@ -114,6 +130,8 @@ static NSString *const kDisableAnimationsClassName = @"XCFixin_DisableAnimations
     
     [viewMenu update];
     
+    /* Get View > Navigators menu */
+    
     navigatorsMenuItem = [viewMenu itemWithTitle: @"Navigators"];
     
         HDAssertOrPerform(navigatorsMenuItem, return);
@@ -124,6 +142,32 @@ static NSString *const kDisableAnimationsClassName = @"XCFixin_DisableAnimations
     
     [navigatorsMenu update];
     
+    /* Get View > Utilities menu */
+    
+    utilitiesMenuItem = [viewMenu itemWithTitle: @"Utilities"];
+    
+        HDAssertOrPerform(utilitiesMenuItem, return);
+    
+    utilitiesMenu = [utilitiesMenuItem submenu];
+    
+        HDAssertOrPerform(utilitiesMenu, return);
+    
+    [utilitiesMenu update];
+    
+    /* Get View > Editor menu */
+    
+    editorMenuItem = [viewMenu itemWithTitle: @"Editor"];
+    
+        HDAssertOrPerform(editorMenuItem, return);
+    
+    editorMenu = [editorMenuItem submenu];
+    
+        HDAssertOrPerform(editorMenu, return);
+    
+    [editorMenu update];
+    
+    /* Get the front window */
+    
     activeWindow = [NSApp keyWindow];
     
         HDConfirmOrPerform(activeWindow, return);
@@ -133,27 +177,32 @@ static NSString *const kDisableAnimationsClassName = @"XCFixin_DisableAnimations
     hideToolbarMenuItem = [viewMenu itemWithTitle: @"Hide Toolbar"];
     hideDebugAreaMenuItem = [viewMenu itemWithTitle: @"Hide Debug Area"];
     hideNavigatorMenuItem = [navigatorsMenu itemWithTitle: @"Hide Navigator"];
+    hideUtilitiesMenuItem = [utilitiesMenu itemWithTitle: @"Hide Utilities"];
+    standardEditorLayoutMenuItem = [editorMenu itemWithTitle: @"Standard"];
     
     if (NSClassFromString(kDisableAnimationsClassName))
         [activeWindow disableFlushWindow];
     
-    if (hideToolbarMenuItem && [hideToolbarMenuItem isEnabled])
-        [NSApp sendAction: [hideToolbarMenuItem action] to: [hideToolbarMenuItem target] from: hideToolbarMenuItem];
+    /* First we need to hide our active window's toolbar */
+    
+    [self clickMenuItem: hideToolbarMenuItem];
     
     /* Zoom our window after hiding the toolbar. */
     
     if (!NSEqualRects([activeWindow frame], [[activeWindow screen] visibleFrame]))
         [activeWindow setFrame: [[activeWindow screen] visibleFrame] display: YES];
     
-    if (hideDebugAreaMenuItem && [hideDebugAreaMenuItem isEnabled])
-        [NSApp sendAction: [hideDebugAreaMenuItem action] to: [hideDebugAreaMenuItem target] from: hideDebugAreaMenuItem];
+    /* Perform the rest of our menu items now that the toolbar's taken care of. */
     
-    if (hideNavigatorMenuItem && [hideNavigatorMenuItem isEnabled])
-        [NSApp sendAction: [hideNavigatorMenuItem action] to: [hideNavigatorMenuItem target] from: hideNavigatorMenuItem];
+    [self clickMenuItem: hideDebugAreaMenuItem];
+    [self clickMenuItem: hideNavigatorMenuItem];
+    [self clickMenuItem: hideUtilitiesMenuItem];
+    [self clickMenuItem: standardEditorLayoutMenuItem];
     
     if (NSClassFromString(kDisableAnimationsClassName))
         [activeWindow enableFlushWindow];
 
 }
+
 
 @end
