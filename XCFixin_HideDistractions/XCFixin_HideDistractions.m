@@ -20,6 +20,8 @@
                                                                                                                                                                           \
 })
 
+#define HDAssertOrRaise(condition) HDAssertOrPerform((condition), [NSException raise: NSGenericException format: @"A XCFixin_HideDistractions exception occurred"])
+
 #define HDConfirmOrPerform(condition, action)         \
 ({                                                    \
                                                       \
@@ -95,76 +97,63 @@ static NSString *const kDisableAnimationsClassName = @"XCFixin_DisableAnimations
 
 }
 
++ (NSMenuItem *)menuItemWithPath: (NSString *)menuItemPath
+{
+
+    NSArray *pathComponents = nil;
+    NSString *currentPathComponent = nil;
+    NSMenu *currentMenu = nil;
+    NSMenuItem *currentMenuItem = nil;
+    
+        NSParameterAssert(menuItemPath);
+        NSParameterAssert([menuItemPath length]);
+    
+    currentMenu = [NSApp mainMenu];
+    
+        HDAssertOrPerform(currentMenu, return nil);
+    
+    pathComponents = [menuItemPath componentsSeparatedByString: @" > "];
+    
+    for (currentPathComponent in pathComponents)
+    {
+    
+            HDAssertOrRaise(currentPathComponent);
+            HDAssertOrRaise([currentPathComponent length]);
+        
+        [currentMenu update];
+        currentMenuItem = [currentMenu itemWithTitle: currentPathComponent];
+        
+            HDAssertOrPerform(currentMenuItem && [currentMenuItem isEnabled], return nil);
+        
+        if ([currentMenuItem hasSubmenu])
+            currentMenu = [currentMenuItem submenu];
+        
+        else
+            currentMenu = nil;
+    
+    }
+    
+    return currentMenuItem;
+
+}
+
 + (void)hideDistractions: (id)sender
 {
 
-    NSMenu *mainMenu = nil,
-           *viewMenu = nil,
-           *navigatorsMenu = nil,
-           *utilitiesMenu = nil,
-           *editorMenu = nil;
-    NSMenuItem *viewMenuItem = nil,
-               *navigatorsMenuItem = nil,
-               *utilitiesMenuItem = nil,
-               *editorMenuItem = nil,
-               *hideToolbarMenuItem = nil,
+    NSMenuItem *hideToolbarMenuItem = nil,
                *hideDebugAreaMenuItem = nil,
                *hideNavigatorMenuItem = nil,
                *hideUtilitiesMenuItem = nil,
-               *standardEditorLayoutMenuItem = nil;
+               *standardEditorLayoutMenuItem = nil,
+               *hideFindBarMenuItem = nil;
     NSWindow *activeWindow = nil;
     
-    mainMenu = [NSApp mainMenu];
-    
-        HDAssertOrPerform(mainMenu, return);
-    
-    /* Get View menu */
-    
-    viewMenuItem = [mainMenu itemWithTitle: @"View"];
-    
-        HDAssertOrPerform(viewMenuItem, return);
-    
-    viewMenu = [viewMenuItem submenu];
-    
-        HDAssertOrPerform(viewMenu, return);
-    
-    [viewMenu update];
-    
-    /* Get View > Navigators menu */
-    
-    navigatorsMenuItem = [viewMenu itemWithTitle: @"Navigators"];
-    
-        HDAssertOrPerform(navigatorsMenuItem, return);
-    
-    navigatorsMenu = [navigatorsMenuItem submenu];
-    
-        HDAssertOrPerform(navigatorsMenu, return);
-    
-    [navigatorsMenu update];
-    
-    /* Get View > Utilities menu */
-    
-    utilitiesMenuItem = [viewMenu itemWithTitle: @"Utilities"];
-    
-        HDAssertOrPerform(utilitiesMenuItem, return);
-    
-    utilitiesMenu = [utilitiesMenuItem submenu];
-    
-        HDAssertOrPerform(utilitiesMenu, return);
-    
-    [utilitiesMenu update];
-    
-    /* Get View > Editor menu */
-    
-    editorMenuItem = [viewMenu itemWithTitle: @"Editor"];
-    
-        HDAssertOrPerform(editorMenuItem, return);
-    
-    editorMenu = [editorMenuItem submenu];
-    
-        HDAssertOrPerform(editorMenu, return);
-    
-    [editorMenu update];
+    hideToolbarMenuItem = [self menuItemWithPath: @"View > Hide Toolbar"];
+    hideDebugAreaMenuItem = [self menuItemWithPath: @"View > Hide Debug Area"];
+    hideNavigatorMenuItem = [self menuItemWithPath: @"View > Navigators > Hide Navigator"];
+    hideUtilitiesMenuItem = [self menuItemWithPath: @"View > Utilities > Hide Utilities"];
+    standardEditorLayoutMenuItem = [self menuItemWithPath: @"View > Editor > Standard"];
+    hideFindBarMenuItem = [self menuItemWithPath: @"Edit > Find > Hide Find Bar"];
     
     /* Get the front window */
     
@@ -172,13 +161,8 @@ static NSString *const kDisableAnimationsClassName = @"XCFixin_DisableAnimations
     
         HDConfirmOrPerform(activeWindow, return);
     
-    /* If we get here, everything checks out; that is, we have an active window and we have references to the required menus. */
-    
-    hideToolbarMenuItem = [viewMenu itemWithTitle: @"Hide Toolbar"];
-    hideDebugAreaMenuItem = [viewMenu itemWithTitle: @"Hide Debug Area"];
-    hideNavigatorMenuItem = [navigatorsMenu itemWithTitle: @"Hide Navigator"];
-    hideUtilitiesMenuItem = [utilitiesMenu itemWithTitle: @"Hide Utilities"];
-    standardEditorLayoutMenuItem = [editorMenu itemWithTitle: @"Standard"];
+    /* If we get here, everything checks out; that is, we have an active window and we have
+       references to the required menus items. */
     
     if (NSClassFromString(kDisableAnimationsClassName))
         [activeWindow disableFlushWindow];
@@ -198,6 +182,7 @@ static NSString *const kDisableAnimationsClassName = @"XCFixin_DisableAnimations
     [self clickMenuItem: hideNavigatorMenuItem];
     [self clickMenuItem: hideUtilitiesMenuItem];
     [self clickMenuItem: standardEditorLayoutMenuItem];
+    [self clickMenuItem: hideFindBarMenuItem];
     
     if (NSClassFromString(kDisableAnimationsClassName))
         [activeWindow enableFlushWindow];
