@@ -123,7 +123,7 @@ static NSString *const kDisableAnimationsClassName = @"XCFixin_DisableAnimations
         [currentMenu update];
         currentMenuItem = [currentMenu itemWithTitle: currentPathComponent];
         
-            HDAssertOrPerform(currentMenuItem && [currentMenuItem isEnabled], return nil);
+            HDConfirmOrPerform(currentMenuItem && [currentMenuItem isEnabled], return nil);
         
         if ([currentMenuItem hasSubmenu])
             currentMenu = [currentMenuItem submenu];
