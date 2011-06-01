@@ -145,7 +145,8 @@ static NSString *const kDisableAnimationsClassName = @"XCFixin_DisableAnimations
                *hideNavigatorMenuItem = nil,
                *hideUtilitiesMenuItem = nil,
                *standardEditorLayoutMenuItem = nil,
-               *hideFindBarMenuItem = nil;
+               *hideFindBarMenuItem = nil,
+               *hideAllIssuesMenuItem = nil;
     NSWindow *activeWindow = nil;
     
     hideToolbarMenuItem = [self menuItemWithPath: @"View > Hide Toolbar"];
@@ -154,6 +155,7 @@ static NSString *const kDisableAnimationsClassName = @"XCFixin_DisableAnimations
     hideUtilitiesMenuItem = [self menuItemWithPath: @"View > Utilities > Hide Utilities"];
     standardEditorLayoutMenuItem = [self menuItemWithPath: @"View > Editor > Standard"];
     hideFindBarMenuItem = [self menuItemWithPath: @"Edit > Find > Hide Find Bar"];
+    hideAllIssuesMenuItem = [self menuItemWithPath: @"Editor > Issues > Hide All Issues"];
     
     /* Get the front window */
     
@@ -183,6 +185,7 @@ static NSString *const kDisableAnimationsClassName = @"XCFixin_DisableAnimations
     [self clickMenuItem: hideUtilitiesMenuItem];
     [self clickMenuItem: standardEditorLayoutMenuItem];
     [self clickMenuItem: hideFindBarMenuItem];
+    [self clickMenuItem: hideAllIssuesMenuItem];
     
     if (NSClassFromString(kDisableAnimationsClassName))
         [activeWindow enableFlushWindow];
