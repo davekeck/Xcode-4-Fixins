@@ -10,4 +10,6 @@ __XCFixin_FindFix__: By default, when Xcode's inline find bar opens, it doesn't 
 
 __XCFixin_HideDistractions__: This plugin adds a new "Hide Distractions" menu item to the View menu, which hides auxiliary views in the active source-editing window. This plugin groups various operations into a single menu item, including: View > Hide Toolbar, View > Hide Debug Area, View > Navigators > Hide Navigator, View > Utilities > Hide Utilities, and View > Editor > Standard. Additionally, this menu item maximizes the active window to fill the available screen area. This plugin works best when the XCFixin_DisableAnimations plugin is also installed.
 
+__XCFixin_InhibitBezelAlertInteraction__: This plugin makes the "Build Succeeded" and "Build Failed" status overlays invisible to mouse clicks.
+
 __XCFixin_InhibitTabNextPlaceholder__: This plugin disables using the Tab key to select between argument placeholders of a synthesized (by Xcode's code completion) method call. Xcode's default tab functionality can be annoying if you've synthesized a method invocation, and attempt to indent something nearby before filling-in the argument placeholders. This plugin does not affect the "Jump to Next Placeholder" key binding in the Xcode preferences.
