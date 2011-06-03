@@ -1,8 +1,8 @@
-To install one of these plugins, open the respective Xcode project and build it. The plugin will be installed automatically as a part of the build process. Xcode must be relaunched for the plugin to take effect.
+To install all of the plugins, open XCFixins.xcworkspace and build it. To install a plugin individually, open its respective project and build it. In both cases, the plugins will be installed automatically as a part of the build process. Xcode must be relaunched for the plugins to take effect.
 
 Plugins are installed into ~/Library/Application Support/Developer/Shared/Xcode/Plug-ins/.
 
-__Note:__ If you installed a previous version of any of these plugins (before the XCFixin_ prefix was added to each project and product name) you should delete the old versions manually from ~/Library/Application Support/Developer/Shared/Xcode/Plug-ins/.
+__Note:__ If you installed a previous version of any of these plugins (before the XCFixin_ prefix was introduced) you should delete the old versions manually from ~/Library/Application Support/Developer/Shared/Xcode/Plug-ins/.
 
 __XCFixin_DisableAnimations__: This plugin disable's Xcode's various NSAnimation-based animations. For example, the Show/Hide Debug Area, Show/Hide Navigator, and Show/Hide Utilities animations are disabled with this plugin.
 
@@ -12,4 +12,4 @@ __XCFixin_HideDistractions__: This plugin adds a new "Hide Distractions" menu it
 
 __XCFixin_InhibitBezelAlertInteraction__: This plugin makes the "Build Succeeded" and "Build Failed" status overlays invisible to mouse clicks.
 
-__XCFixin_InhibitTabNextPlaceholder__: This plugin disables using the Tab key to select between argument placeholders of a synthesized (by Xcode's code completion) method call. Xcode's default tab functionality can be annoying if you've synthesized a method invocation, and attempt to indent something nearby before filling-in the argument placeholders. This plugin does not affect the "Jump to Next Placeholder" key binding in the Xcode preferences.
+__XCFixin_InhibitTabNextPlaceholder__: This plugin disables using the tab key to select between argument placeholders of a synthesized (by Xcode's code completion) method call. Xcode's default tab functionality can be annoying if you've synthesized a method invocation and attempt to indent something nearby before filling-in the argument placeholders; in such a case, Xcode jumps to the nearest argument placeholder instead of indenting. This plugin does not affect the "Jump to Next Placeholder" key binding in the Xcode preferences.
