@@ -28,7 +28,7 @@ static BOOL overrideMoveToNextPlaceholderFromCharacterIndex(id self, SEL _cmd, u
     
     NSLog(@"%@ initializing...", NSStringFromClass([self class]));
     
-    /* Override -(BOOL)[DVTCompletingTextView _moveToNextPlaceholderFromCharacterIndex:(unsigned long long)arg1 forward:(BOOL)arg2 onlyIfNearby:(BOOL)arg3; */
+    /* Override -(BOOL)[DVTCompletingTextView _moveToNextPlaceholderFromCharacterIndex:(unsigned long long)arg1 forward:(BOOL)arg2 onlyIfNearby:(BOOL)arg3] */
     
     if (!(class = NSClassFromString(@"DVTCompletingTextView")))
         goto failed;
