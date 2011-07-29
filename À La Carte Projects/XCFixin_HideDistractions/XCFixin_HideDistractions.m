@@ -1,7 +1,8 @@
 #import <Cocoa/Cocoa.h>
 #import <objc/runtime.h>
 
-#define HDAssertMessageFormat @"Nailtail assertion failed (file: %s, function: %s, line: %u): %s\n"
+#define HDAssertMessageFormat @"Assertion failed (file: %s, function: %s, line: %u): %s\n"
+#define HDNoOp (void)0
 
 #define HDAssertOrPerform(condition, action)                                                                                                                              \
 ({                                                                                                                                                                        \
@@ -140,22 +141,7 @@ static NSString *const kDisableAnimationsClassName = @"XCFixin_DisableAnimations
 + (void)hideDistractions: (id)sender
 {
 
-    NSMenuItem *hideToolbarMenuItem = nil,
-               *hideDebugAreaMenuItem = nil,
-               *hideNavigatorMenuItem = nil,
-               *hideUtilitiesMenuItem = nil,
-               *standardEditorLayoutMenuItem = nil,
-               *hideFindBarMenuItem = nil,
-               *hideAllIssuesMenuItem = nil;
     NSWindow *activeWindow = nil;
-    
-    hideToolbarMenuItem = [self menuItemWithPath: @"View > Hide Toolbar"];
-    hideDebugAreaMenuItem = [self menuItemWithPath: @"View > Hide Debug Area"];
-    hideNavigatorMenuItem = [self menuItemWithPath: @"View > Navigators > Hide Navigator"];
-    hideUtilitiesMenuItem = [self menuItemWithPath: @"View > Utilities > Hide Utilities"];
-    standardEditorLayoutMenuItem = [self menuItemWithPath: @"View > Editor > Standard"];
-    hideFindBarMenuItem = [self menuItemWithPath: @"Edit > Find > Hide Find Bar"];
-    hideAllIssuesMenuItem = [self menuItemWithPath: @"Editor > Issues > Hide All Issues"];
     
     /* Get the front window */
     
@@ -169,9 +155,8 @@ static NSString *const kDisableAnimationsClassName = @"XCFixin_DisableAnimations
     if (NSClassFromString(kDisableAnimationsClassName))
         [activeWindow disableFlushWindow];
     
-    /* First we need to hide our active window's toolbar */
-    
-    [self clickMenuItem: hideToolbarMenuItem];
+    [self clickMenuItem: [self menuItemWithPath: @"View > Hide Toolbar"]];
+    [self clickMenuItem: [self menuItemWithPath: @"View > Hide Tab Bar"]];
     
     /* Zoom our window after hiding the toolbar. */
     
@@ -180,17 +165,16 @@ static NSString *const kDisableAnimationsClassName = @"XCFixin_DisableAnimations
     
     /* Perform the rest of our menu items now that the toolbar's taken care of. */
     
-    [self clickMenuItem: hideDebugAreaMenuItem];
-    [self clickMenuItem: hideNavigatorMenuItem];
-    [self clickMenuItem: hideUtilitiesMenuItem];
-    [self clickMenuItem: standardEditorLayoutMenuItem];
-    [self clickMenuItem: hideFindBarMenuItem];
-    [self clickMenuItem: hideAllIssuesMenuItem];
+    [self clickMenuItem: [self menuItemWithPath: @"View > Debug Area > Hide Debug Area"]];
+    [self clickMenuItem: [self menuItemWithPath: @"View > Navigators > Hide Navigator"]];
+    [self clickMenuItem: [self menuItemWithPath: @"View > Utilities > Hide Utilities"]];
+    [self clickMenuItem: [self menuItemWithPath: @"View > Standard Editor > Show Standard Editor"]];
+    [self clickMenuItem: [self menuItemWithPath: @"Edit > Find > Hide Find Bar"]];
+    [self clickMenuItem: [self menuItemWithPath: @"Editor > Issues > Hide All Issues"]];
     
     if (NSClassFromString(kDisableAnimationsClassName))
         [activeWindow enableFlushWindow];
 
 }
-
 
 @end
