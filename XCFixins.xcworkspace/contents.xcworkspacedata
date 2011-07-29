@@ -14,9 +14,6 @@
       location = "group:A&#768; La Carte Projects/XCFixin_HideDistractions/XCFixin_HideDistractions.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:A&#768; La Carte Projects/XCFixin_InhibitBezelAlertInteraction/XCFixin_InhibitBezelAlertInteraction.xcodeproj">
-   </FileRef>
-   <FileRef
       location = "group:A&#768; La Carte Projects/XCFixin_InhibitTabNextPlaceholder/XCFixin_InhibitTabNextPlaceholder.xcodeproj">
    </FileRef>
 </Workspace>
