@@ -1,4 +1,4 @@
-__This branch is known to be compatible with Xcode 4.1. For Xcode 4.0.2 support, see the xcode_402 branch.__
+__This branch is known to be compatible with Xcode 4.0.2. For support for newer versions, see the xcode_402 branch.__
 
 To install all of the plugins, open XCFixins.xcworkspace and build it. To install a plugin individually, open its respective project and build it. In both cases, the plugins will be installed automatically as a part of the build process. Xcode must be relaunched for the plugins to take effect.
 
