@@ -1,10 +1,10 @@
-__This branch is known to be compatible with Xcode 4.1. For Xcode 4.0.2 support, see the xcode_402 branch.__
+__This branch is known to be compatible with Xcode 4.2.1. For Xcode 4.0.2 support, see the xcode_402 branch.__
 
 To install all of the plugins, open XCFixins.xcworkspace and build it. To install a plugin individually, open its respective project and build it. In both cases, the plugins will be installed automatically as a part of the build process. Xcode must be relaunched for the plugins to take effect.
 
 Plugins are installed into ~/Library/Application Support/Developer/Shared/Xcode/Plug-ins/.
 
-__XCFixin_DisableAnimations__: This plugin disable's Xcode's various NSAnimation-based animations. For example, the Show/Hide Debug Area, Show/Hide Navigator, and Show/Hide Utilities animations are disabled with this plugin.
+__XCFixin_DisableAnimations__: This plugin disables Xcode's various NSAnimation-based animations. For example, the Show/Hide Debug Area, Show/Hide Navigator, and Show/Hide Utilities animations are disabled with this plugin.
 
 __XCFixin_DisableWriteStateData__: This plugin greatly improves Xcode's responsiveness by disabling the -[IDEWorkspaceDocument writeStateData] method. This method is of course undocumented and I'm unsure what data it typically writes. In my testing, I've noticed this plugin prevents the active source file from being remembered across Xcode launches, and it's very likely that it prevents other data from being written as well. I consider this plugin experimental and as such it is not installed automatically when building the XCFixins workspace; you must build this plugin individually to install it. With that said, on my machine this plugin *really* improves Xcode's responsiveness!
 
