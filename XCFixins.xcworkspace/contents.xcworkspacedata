@@ -16,4 +16,7 @@
    <FileRef
       location = "group:A&#768; La Carte Projects/XCFixin_InhibitTabNextPlaceholder/XCFixin_InhibitTabNextPlaceholder.xcodeproj">
    </FileRef>
+   <FileRef
+      location = "group:A&#768; La Carte Projects/XCFixin_CurrentLineHighlighter/XCFixin_CurrentLineHighlighter.xcodeproj">
+   </FileRef>
 </Workspace>
