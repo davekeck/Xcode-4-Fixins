@@ -26,11 +26,12 @@ static NSString *const kDisableAnimationsClassName = @"XCFixin_DisableAnimations
     viewMenu = [viewMenuItem submenu];
         XCFixinAssertOrPerform(viewMenuItem, return);
     
-    hideDistractionsMenuItem = [viewMenu addItemWithTitle: @"Hide Distractions" action: @selector(hideDistractions:) keyEquivalent: @"d"];
+    /* The 'Hide Distractions' menu item key combination can be set below. */
+    hideDistractionsMenuItem = [[[NSMenuItem alloc] initWithTitle: @"Hide Distractions" action: @selector(hideDistractions:) keyEquivalent: @"D"] autorelease];
         XCFixinAssertOrPerform(hideDistractionsMenuItem, return);
-    
     [hideDistractionsMenuItem setKeyEquivalentModifierMask: (NSCommandKeyMask | NSShiftKeyMask)];
     [hideDistractionsMenuItem setTarget: self];
+    [viewMenu addItem: hideDistractionsMenuItem];
 }
 
 + (void)clickMenuItem: (NSMenuItem *)menuItem

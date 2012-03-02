@@ -3,7 +3,7 @@
 #define XCFixinPreflight()                                                                                                     \
     static NSUInteger loadAttempt = 0;                                                                                         \
     loadAttempt++;                                                                                                             \
-    NSLog(@"%@ initialization attempt %ju/%ju...", NSStringFromClass([self class]), loadAttempt, XCFixinMaxLoadAttempts);
+    NSLog(@"%@ initialization attempt %ju/%ju...", NSStringFromClass([self class]), (uintmax_t)loadAttempt, (uintmax_t)XCFixinMaxLoadAttempts);
 
 #define XCFixinPostflight()                                                                                      \
     NSLog(@"%@ initialization successful!", NSStringFromClass([self class]));                                    \
