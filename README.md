@@ -6,7 +6,7 @@ This project includes plugins that extend Xcode and fix some of its annoying beh
 
 __INSTALLATION__
 
-To install all of the plugins, open XCFixins.xcworkspace and build it, which will automatically installs the plugins as a part of the build process. To install a plugin individually, open its respective project and build it.
+To install all of the plugins, open XCFixins.xcworkspace and build it, which will automatically install the plugins as a part of the build process. To install a plugin individually, open its respective project and build it.
 
 Xcode must be relaunched for the plugins to take effect.
 
