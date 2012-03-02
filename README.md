@@ -1,4 +1,4 @@
-__This branch is known to be compatible with Xcode 4.3. For Xcode 4.0.2 support, see the xcode_402 branch.__
+__This branch is known to be compatible with Xcode 4.2.1 and 4.3. For Xcode 4.0.2 support, see the xcode_402 branch.__
 
 __PROJECT DESCRIPTION__
 
