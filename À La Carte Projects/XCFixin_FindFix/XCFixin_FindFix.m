@@ -57,28 +57,21 @@ static void overrideViewDidInstall(id self, SEL _cmd)
 {
     XCFixinPreflight();
     
-    Class class = nil;
-    Method originalMethod = nil;
-    
     /* Override -(void)[DVTScopeBarsManager insertScopeBar:(id)arg1 atIndex:(unsigned long long)arg2 animate:(BOOL)arg3] */
-    XCFixinAssertOrPerform(class = NSClassFromString(@"DVTScopeBarsManager"), goto failed);
-    XCFixinAssertOrPerform(originalMethod = class_getInstanceMethod(class, @selector(insertScopeBar: atIndex: animate:)), goto failed);
-    XCFixinAssertOrPerform(gOriginalInsertScopeBar = method_setImplementation(originalMethod, (IMP)&overrideInsertScopeBar), goto failed);
+    gOriginalInsertScopeBar = XCFixinOverrideMethodString(@"DVTScopeBarsManager", @selector(insertScopeBar: atIndex: animate:), (IMP)&overrideInsertScopeBar);
+        XCFixinAssertOrPerform(gOriginalInsertScopeBar, goto failed);
     
     /* Override -(void)[DVTScopeBarsManager _adjustViewsForHeightOffset:(double)arg1 animate:(BOOL)arg2 extraAnimations:(id)arg3] */
-    XCFixinAssertOrPerform(class = NSClassFromString(@"DVTScopeBarsManager"), goto failed);
-    XCFixinAssertOrPerform(originalMethod = class_getInstanceMethod(class, @selector(_adjustViewsForHeightOffset: animate: extraAnimations:)), goto failed);
-    XCFixinAssertOrPerform(gOriginalAdjustViewsForHeightOffset = method_setImplementation(originalMethod, (IMP)&overrideAdjustViewsForHeightOffset), goto failed);
+    gOriginalAdjustViewsForHeightOffset = XCFixinOverrideMethodString(@"DVTScopeBarsManager", @selector(_adjustViewsForHeightOffset: animate: extraAnimations:), (IMP)&overrideAdjustViewsForHeightOffset);
+        XCFixinAssertOrPerform(gOriginalAdjustViewsForHeightOffset, goto failed);
     
     /* Override -(void)[DVTFindBar setFinderMode:(unsigned long long)arg1] */
-    XCFixinAssertOrPerform(class = NSClassFromString(@"DVTFindBar"), goto failed);
-    XCFixinAssertOrPerform(originalMethod = class_getInstanceMethod(class, @selector(setFinderMode:)), goto failed);
-    XCFixinAssertOrPerform(gOriginalSetFinderMode = method_setImplementation(originalMethod, (IMP)&overrideSetFinderMode), goto failed);
+    gOriginalSetFinderMode = XCFixinOverrideMethodString(@"DVTFindBar", @selector(setFinderMode:), (IMP)&overrideSetFinderMode);
+        XCFixinAssertOrPerform(gOriginalSetFinderMode, goto failed);
     
     /* Override -(void)[DVTFindBar viewDidInstall] */
-    XCFixinAssertOrPerform(class = NSClassFromString(@"DVTFindBar"), goto failed);
-    XCFixinAssertOrPerform(originalMethod = class_getInstanceMethod(class, @selector(viewDidInstall)), goto failed);
-    XCFixinAssertOrPerform(gOriginalViewDidInstall = method_setImplementation(originalMethod, (IMP)&overrideViewDidInstall), goto failed);
+    gOriginalViewDidInstall = XCFixinOverrideMethodString(@"DVTFindBar", @selector(viewDidInstall), (IMP)&overrideViewDidInstall);
+        XCFixinAssertOrPerform(gOriginalViewDidInstall, goto failed);
     
     XCFixinPostflight();
 }

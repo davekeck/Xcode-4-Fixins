@@ -1,4 +1,4 @@
-#define XCFixinMaxLoadAttempts 3
+#import <Foundation/Foundation.h>
 
 #define XCFixinPreflight()                                                                                                     \
     static NSUInteger loadAttempt = 0;                                                                                         \
@@ -49,3 +49,13 @@
         action;                                         \
     }                                                   \
 })
+
+extern const NSUInteger XCFixinMaxLoadAttempts;
+
+/* This function overrides a method at the given class level, and returns the old implementation. If no method existed at
+   the given class' level, a new method is created at that level, and the superclass' (or super-superclass', and so on)
+   implementation is returned.
+   
+   This function returns nil on failure. */
+IMP XCFixinOverrideMethod(Class class, SEL selector, IMP newImplementation);
+#define XCFixinOverrideMethodString(className, selector, newImplementation) XCFixinOverrideMethod(NSClassFromString(className), selector, newImplementation)

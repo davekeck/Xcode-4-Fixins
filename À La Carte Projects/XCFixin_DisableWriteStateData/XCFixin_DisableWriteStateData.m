@@ -20,13 +20,9 @@ static BOOL overrideWriteStateData(id self, SEL _cmd)
 {
     XCFixinPreflight();
     
-    Class class = nil;
-    Method originalMethod = nil;
-    
     /* Override -(BOOL)[IDEWorkspaceDocument writeStateData] */
-    XCFixinAssertOrPerform(class = NSClassFromString(@"IDEWorkspaceDocument"), goto failed);
-    XCFixinAssertOrPerform(originalMethod = class_getInstanceMethod(class, @selector(writeStateData)), goto failed);
-    XCFixinAssertOrPerform(gOriginalWriteStateData = method_setImplementation(originalMethod, (IMP)&overrideWriteStateData), goto failed);
+    gOriginalWriteStateData = XCFixinOverrideMethodString(@"IDEWorkspaceDocument", @selector(writeStateData), (IMP)&overrideWriteStateData);
+        XCFixinAssertOrPerform(gOriginalWriteStateData, goto failed);
     
     XCFixinPostflight();
 }

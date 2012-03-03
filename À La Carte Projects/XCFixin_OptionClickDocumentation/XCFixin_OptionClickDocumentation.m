@@ -24,30 +24,15 @@ static void overrideLoadWindow(id self, SEL _cmd)
 
 + (void)pluginDidLoad: (NSBundle *)plugin
 {
-    XCFixinPreflight()
-    
-    Class class = nil;
-    Method originalMethod = nil;
+    XCFixinPreflight();
     
     /* Override -(void)[IDEQuickHelpOneShotController showPanel] */
-    if (!(class = NSClassFromString(@"IDEQuickHelpOneShotController")))
-        goto failed;
-    
-    if (!(originalMethod = class_getInstanceMethod(class, @selector(showPanel))))
-        goto failed;
-    
-    if (!(gOriginalShowPanel = method_setImplementation(originalMethod, (IMP)&overrideShowPanel)))
-        goto failed;
+    gOriginalShowPanel = XCFixinOverrideMethodString(@"IDEQuickHelpOneShotController", @selector(showPanel), (IMP)&overrideShowPanel);
+        XCFixinAssertOrPerform(gOriginalShowPanel, goto failed);
     
     /* Override -(void)[IDEQuickHelpOneShotWindowController loadWindow] */
-    if (!(class = NSClassFromString(@"IDEQuickHelpOneShotWindowController")))
-        goto failed;
-    
-    if (!(originalMethod = class_getInstanceMethod(class, @selector(loadWindow))))
-        goto failed;
-    
-    if (!(gOriginalLoadWindow = method_setImplementation(originalMethod, (IMP)&overrideLoadWindow)))
-        goto failed;
+    gOriginalLoadWindow = XCFixinOverrideMethodString(@"IDEQuickHelpOneShotWindowController", @selector(loadWindow), (IMP)&overrideLoadWindow);
+        XCFixinAssertOrPerform(gOriginalLoadWindow, goto failed);
     
     XCFixinPostflight();
 }

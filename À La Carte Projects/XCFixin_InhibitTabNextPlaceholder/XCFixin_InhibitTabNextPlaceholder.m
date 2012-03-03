@@ -21,13 +21,10 @@ static BOOL overrideMoveToNextPlaceholderFromCharacterIndex(id self, SEL _cmd, u
 {
     XCFixinPreflight();
     
-    Class class = nil;
-    Method originalMethod = nil;
-    
     /* Override -(BOOL)[DVTCompletingTextView _moveToNextPlaceholderFromCharacterIndex:(unsigned long long)arg1 forward:(BOOL)arg2 onlyIfNearby:(BOOL)arg3] */
-    XCFixinAssertOrPerform(class = NSClassFromString(@"DVTCompletingTextView"), goto failed);
-    XCFixinAssertOrPerform(originalMethod = class_getInstanceMethod(class, @selector(_moveToNextPlaceholderFromCharacterIndex: forward: onlyIfNearby:)), goto failed);
-    XCFixinAssertOrPerform(gOriginalMoveToNextPlaceholderFromCharacterIndex = method_setImplementation(originalMethod, (IMP)&overrideMoveToNextPlaceholderFromCharacterIndex), goto failed);
+    gOriginalMoveToNextPlaceholderFromCharacterIndex = XCFixinOverrideMethodString(@"DVTCompletingTextView",
+        @selector(_moveToNextPlaceholderFromCharacterIndex: forward: onlyIfNearby:), (IMP)&overrideMoveToNextPlaceholderFromCharacterIndex);
+        XCFixinAssertOrPerform(gOriginalMoveToNextPlaceholderFromCharacterIndex, goto failed);
     
     XCFixinPostflight();
 }

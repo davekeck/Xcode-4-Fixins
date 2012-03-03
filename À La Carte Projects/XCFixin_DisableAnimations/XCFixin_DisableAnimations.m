@@ -27,18 +27,13 @@ static void overrideSetDuration(id self, SEL _cmd, NSTimeInterval arg1)
 {
     XCFixinPreflight();
     
-    Class class = nil;
-    Method originalMethod = nil;
-    
     /* Override -[NSAnimation initWithDuration:(NSTimeInterval)duration animationCurve:(NSAnimationCurve)animationCurve] */
-    XCFixinAssertOrPerform(class = NSClassFromString(@"NSAnimation"), goto failed);
-    XCFixinAssertOrPerform(originalMethod = class_getInstanceMethod(class, @selector(initWithDuration: animationCurve:)), goto failed);
-    XCFixinAssertOrPerform(gOriginalInitWithDuration = method_setImplementation(originalMethod, (IMP)&overrideInitWithDuration), goto failed);
+    gOriginalInitWithDuration = XCFixinOverrideMethodString(@"NSAnimation", @selector(initWithDuration: animationCurve:), (IMP)&overrideInitWithDuration);
+        XCFixinAssertOrPerform(gOriginalInitWithDuration, goto failed);
     
     /* Override -[NSAnimation setDuration:(NSTimeInterval)duration] */
-    XCFixinAssertOrPerform(class = NSClassFromString(@"NSAnimation"), goto failed);
-    XCFixinAssertOrPerform(originalMethod = class_getInstanceMethod(class, @selector(setDuration:)), goto failed);
-    XCFixinAssertOrPerform(gOriginalSetDuration = method_setImplementation(originalMethod, (IMP)&overrideSetDuration), goto failed);
+    gOriginalSetDuration = XCFixinOverrideMethodString(@"NSAnimation", @selector(setDuration:), (IMP)&overrideSetDuration);
+        XCFixinAssertOrPerform(gOriginalSetDuration, goto failed);
     
     XCFixinPostflight();
 }
