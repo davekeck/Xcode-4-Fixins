@@ -1,14 +1,12 @@
-* BEFORE YOU BEGIN
+* NO WARRANTY
 
 Do I have to spell it out? Surely we're all programmers here!
 Nevertheless - no warranty, it has bugs, it will probably blow up in
 your face, add you might lose data when it does.
 
-Also, uninstall it and try again before sending Apple bug reports
-about something you encounter. Isn't it obvious from the state of
-Xcode 4.x that they already have plenty on their plate already? Please
-don't make things worse for them by wasting their time with my bugs as
-well.
+Also, don't forget to uninstall it and try again, before sending Apple
+bug reports about the problems you're having with Xcode 4.x - I'm sure
+they have better things to do than waste their time with my bugs.
 
 * User Scripts Fixin
 
@@ -64,17 +62,22 @@ XML-style properly list, and it goes a bit like this:
 
 The key for the top-level dict is the name of the script (as shown on
 the menu), and each value is another dict holding script-specific
-options.
+options. Each script-specific option has a string key, the option
+name, and a
 
 The current option names are:
 
-- =keyEquivalent= :: specify key equivalent. Use emacs notation:
+- =keyEquivalent= :: value is the key equivalent in emacs notation:
      modifier keys first (=C= for Control, =M= for Option, =s= for
-     Command, =S= for Shift), separated by =-=, then the key.
+     Command, =S= for Shift), separated by =-=, then the key name.
 
      (For example, =C-M-5= is Ctrl-Option-5. =s-C= is Command-C. etc.)
 
-And... erm... that's it. Well, so far.
+     (The key name is passed verbatim to =-[NSMenuItem
+     setKeyEquivalent]=; I don't know what the full set of valid keys
+     might be.)
+
+And... erm... that's it. Well, so far...
 
 * Misfeatures
 
@@ -84,3 +87,11 @@ And... erm... that's it. Well, so far.
 - If you have two windows showing the same file, the user scripts
   might not work, as the fixin can't figure out which text view is the
   one you're interacting with.
+
+- If you work in a language that uses non-Latin letters, you might not
+  have to look very far to find key equivalents that the fixin won't
+  accept.
+
+- The key equivalent emacs notation 'thing' is lame and I need to find
+  some better way of doing it.
+
