@@ -41,22 +41,6 @@ static BOOL IsRightClass(id obj,const char *what,const char *wantedClassName)
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-//static NSMenuItem *TestAdd(NSMenu *menu,NSString *title,id target,SEL sel)
-//{
-//	NSMenuItem *item=[menu addItemWithTitle:title action:NULL keyEquivalent:@""];
-//	
-//	[item setTarget:target];
-//	[item setAction:sel];
-//	[item setEnabled:YES];
-//	
-//	NSLog(@"%s: added %@ to menu %@.\n",__FUNCTION__,[item title],[menu title]);
-//	
-//	return item;
-//}
-
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-
 static NSTextView *FindIDETextView(void)
 {
 	NSWindow *mainWindow=[[NSApplication sharedApplication] mainWindow];
@@ -551,62 +535,6 @@ static BOOL GetClasses(const char *name0,...)
 	return YES;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-
-static void DumpClassHierarchy(Class subclass)
-{
-	int depth=0;
-	
-	for(Class c=subclass;c;c=class_getSuperclass(c),++depth)
-		NSLog(@"%d: %s\n",depth,class_getName(c));
-}
-
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-
-static void DumpMethodList(Class c)
-{
-	NSAutoreleasePool *pool=[[NSAutoreleasePool alloc] init];
-	
-	unsigned num_ms;
-	Method *ms=class_copyMethodList(c,&num_ms);
-	NSLog(@"%s: %u methods:\n",class_getName(c),num_ms);
-	for(unsigned i=0;i<num_ms;++i)
-	{
-		Method *m=&ms[i];
-		
-		const char *name=sel_getName(method_getName(*m));
-		NSLog(@"    %u. %s\n",i,name);
-		
-		//		for(unsigned j=0;j<method_getNumberOfArguments(*m);++j)
-		//		{
-		//			char tmp[1000];
-		//			method_getArgumentType(*m,j,tmp,sizeof tmp);
-		//			NSLog(@"        %u. %s\n",j,tmp);
-		//		}
-	}
-	
-	[pool drain];
-	pool=nil;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-
-//-(IBAction)test1:(id)arg
-//{
-//	NSLog(@"%s\n",__FUNCTION__);
-//}
-
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-
-//-(IBAction)test2:(id)arg
-//{
-//	NSLog(@"%s\n",__FUNCTION__);
-//}
-
 @end
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -635,16 +563,6 @@ static void DumpMethodList(Class c)
 		BOOL goodInstall=[handler install];
 		NSLog(@"%s: handler installed: %s\n",__FUNCTION__,goodInstall?"YES":"NO");
 	}
-	
-	NSMutableDictionary *a=[NSMutableDictionary dictionaryWithCapacity:0];
-	[a setObject:@"Test Value" forKey:@"Test Key"];
-	[a setObject:@"Test Value 2" forKey:@"Test Key 2"];
-	
-	NSMutableDictionary *b=[NSMutableDictionary dictionaryWithCapacity:0];
-	[b setObject:a forKey:@"Key1"];
-	[b setObject:a forKey:@"Key2"];
-	
-	[b writeToFile:@"/tmp/test.txt" atomically:NO];
     
     XCFixinPostflight();
 }
