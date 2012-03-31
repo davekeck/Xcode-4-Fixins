@@ -1,12 +1,22 @@
-* Things to test
+* TODO Multiple tabs viewing same doc
 
-- Multiple tabs viewing same doc
+* TODO Multiple windows viewing same doc
 
-- Multiple windows viewing same doc
+* TODO plist with key alternatives, etc.
 
-- 
+* TODO PBXFilePath
 
-* text file editor hierarchy
+* TODO PBXSelection
+
+* TODO inject junk into env?
+
+* links
+
+[[http://www.culater.net/wiki/moin.cgi/CocoaReverseEngineering]]
+
+* class-dump notes
+
+** text file editor hierarchy
 
 @interface PBXSourceFileEditor : PBXTextFileEditor
 
@@ -18,12 +28,11 @@
 
 PBXFileNavigator - FBXFileEditor *_fileEditor
 
-* -(NSTextView *)[PBXTextFileEditor textView]
+** -(NSTextView *)[PBXTextFileEditor textView]
 
 NSTextView<XCTextViewAdditions> *_textView;
 
-
-* stuff
+** stuff
 
 ~/Library/Application\ Support/Developer/Shared/Xcode/Plug-ins/
 
