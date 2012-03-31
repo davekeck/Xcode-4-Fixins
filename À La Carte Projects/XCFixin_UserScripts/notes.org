@@ -6,7 +6,8 @@ Need to figure out which documentEditor has the focus...
 
 Is this any different from the tabs case?
 
-* TODO plist with key alternatives, etc.
+* DONE plist with key equivalents, etc.
+  CLOSED: [2012-03-31 Sat 18:25]
 
 * TODO PBXFilePath
 
@@ -14,7 +15,8 @@ Is this any different from the tabs case?
 
 * TODO inject junk into env?
 
-* TODO check script symlinks work
+* DONE check script symlinks work
+  CLOSED: [2012-03-31 Sat 18:22]
 
 * links
 
