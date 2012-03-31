@@ -258,6 +258,7 @@ static NSTextView *FindIDETextView(void)
 	if(outputData)
 	{
 		NSString *outputStr=[[[NSString alloc] initWithData:outputData encoding:NSUTF8StringEncoding] autorelease];
+		[textView breakUndoCoalescing];
 		[textView insertText:outputStr replacementRange:selectionRange];
 	}
 	
@@ -396,7 +397,7 @@ static void SetKeyEquivalentFromString(NSMenuItem *item,NSString *str)
 		NSLog(@"%s: No scripts plist loaded.\n",__FUNCTION__);
 	else
 		NSLog(@"%s: Scripts plist: %@\n",__FUNCTION__,scriptsProperties);
-	
+
 	NSArray *scriptsFolderContents=[[NSFileManager defaultManager] contentsOfDirectoryAtPath:scriptsFolderName
 																					   error:nil];
 	if([scriptsFolderContents count]>0)
