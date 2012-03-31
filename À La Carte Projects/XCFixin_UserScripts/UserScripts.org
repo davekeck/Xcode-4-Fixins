@@ -32,8 +32,9 @@ standard error output is ignored.
 
 At the bottom of the Scripts menu, there's an option =Refresh=. This
 re-reads the contents of the scripts directory, re-reads the script
-options (see below), and rebuilds the menu. So if you change anything,
-or add or remove scripts, no need to restart, just select that option.
+options (see below), and rebuilds the menu. So if you change the
+script options, or add or remove scripts, just select the =Refresh=
+option.
 
 * Script options
 
@@ -62,8 +63,8 @@ XML-style properly list, and it goes a bit like this:
 
 The key for the top-level dict is the name of the script (as shown on
 the menu), and each value is another dict holding script-specific
-options. Each script-specific option has a string key, the option
-name, and a
+options. Each script-specific option has a key, the option name, and a
+string value.
 
 The current option names are:
 
