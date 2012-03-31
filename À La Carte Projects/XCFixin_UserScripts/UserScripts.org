@@ -96,3 +96,5 @@ And... erm... that's it. Well, so far...
 - The key equivalent emacs notation 'thing' is lame and I need to find
   some better way of doing it.
 
+- Error reporting is not great. If you run Console.app, you might find
+  that the fixin has printed something useful there.
