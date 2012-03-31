@@ -1,0 +1,29 @@
+* Things to test
+
+- Multiple tabs viewing same doc
+
+- Multiple windows viewing same doc
+
+- 
+
+* text file editor hierarchy
+
+@interface PBXSourceFileEditor : PBXTextFileEditor
+
+@interface PBXTextFileEditor : PBXFileEditor <NSTextViewDelegate, PBXIncrementalFindable, PBXEditorSelectedSymbol, PBXTrackableTaskObserver>
+
+@interface PBXFileEditor : PBXModule <NSTextViewDelegate>
+
+@interface PBXModule : NSWindowController <NSWindowDelegate, NSToolbarDelegate>
+
+PBXFileNavigator - FBXFileEditor *_fileEditor
+
+* -(NSTextView *)[PBXTextFileEditor textView]
+
+NSTextView<XCTextViewAdditions> *_textView;
+
+
+* stuff
+
+~/Library/Application\ Support/Developer/Shared/Xcode/Plug-ins/
+

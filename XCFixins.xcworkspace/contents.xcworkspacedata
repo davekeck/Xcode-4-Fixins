@@ -19,4 +19,7 @@
    <FileRef
       location = "group:A&#768; La Carte Projects/XCFixin_OptionClickDocumentation/XCFixin_OptionClickDocumentation.xcodeproj">
    </FileRef>
+   <FileRef
+      location = "group:A&#768; La Carte Projects/XCFixin_UserScripts/XCFixin_UserScripts.xcodeproj">
+   </FileRef>
 </Workspace>
