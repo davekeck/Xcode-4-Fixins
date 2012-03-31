@@ -22,7 +22,7 @@ static void overrideInsertScopeBar(id self, SEL _cmd, id arg1, unsigned long lon
 static void overrideAdjustViewsForHeightOffset(id self, SEL _cmd, double arg1, BOOL arg2, id arg3)
 {
     /* -(void)[DVTScopeBarsManager _adjustViewsForHeightOffset:(double)arg1 animate:(BOOL)arg2 extraAnimations:(id)arg3] */
-    ((void (*)(id, SEL, double, BOOL, id))gOriginalAdjustViewsForHeightOffset)(self, _cmd, arg1, NO, nil);
+    ((void (*)(id, SEL, double, BOOL, id))gOriginalAdjustViewsForHeightOffset)(self, _cmd, arg1, arg2, arg3);
 }
 
 static void overrideSetFinderMode(id self, SEL _cmd, unsigned long long arg1)
