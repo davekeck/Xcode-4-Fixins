@@ -41,18 +41,18 @@ static BOOL IsRightClass(id obj,const char *what,const char *wantedClassName)
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-static NSMenuItem *TestAdd(NSMenu *menu,NSString *title,id target,SEL sel)
-{
-	NSMenuItem *item=[menu addItemWithTitle:title action:NULL keyEquivalent:@""];
-	
-	[item setTarget:target];
-	[item setAction:sel];
-	[item setEnabled:YES];
-	
-	NSLog(@"%s: added %@ to menu %@.\n",__FUNCTION__,[item title],[menu title]);
-	
-	return item;
-}
+//static NSMenuItem *TestAdd(NSMenu *menu,NSString *title,id target,SEL sel)
+//{
+//	NSMenuItem *item=[menu addItemWithTitle:title action:NULL keyEquivalent:@""];
+//	
+//	[item setTarget:target];
+//	[item setAction:sel];
+//	[item setEnabled:YES];
+//	
+//	NSLog(@"%s: added %@ to menu %@.\n",__FUNCTION__,[item title],[menu title]);
+//	
+//	return item;
+//}
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -140,6 +140,151 @@ static NSTextView *FindIDETextView(void)
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
+@interface XCFixin_Script:NSObject
+{
+	NSString *fileName_;
+}
+@end
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+@implementation XCFixin_Script
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+-(id)initWithFileName:(NSString *)fileName
+{
+	if((self=[super init]))
+	{
+		fileName_=[fileName retain];
+	}
+	
+	return self;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+-(NSString *)fileName
+{
+	return fileName_;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+-(void)run
+{
+	NSLog(@"%s: path=%@\n",__FUNCTION__,fileName_);
+	
+	NSTextView *textView=FindIDETextView();
+	if(!textView)
+	{
+		NSLog(@"Not running scripts - can't find IDE text view.\n");
+		return;
+	}
+	
+	NSTextStorage *textStorage=[textView textStorage];
+	if(!textStorage)
+	{
+		NSLog(@"Not running scripts - IDE text view has no text storage.\n");
+		return;
+	}
+	
+	NSRange selectionRange=[textView selectedRange];
+	NSString *selectionStr=[[textStorage string] substringWithRange:selectionRange];
+	NSData *selectionData=[selectionStr dataUsingEncoding:NSUTF8StringEncoding];
+	
+	NSData *outputData=nil;
+	
+	NSTask *task=[[[NSTask alloc] init] autorelease];
+	
+	[task setLaunchPath:fileName_];
+	NSLog(@"%s: [task launchPath] = %@\n",__FUNCTION__,[task launchPath]);
+	
+	NSPipe *stdinPipe=[NSPipe pipe];
+	NSPipe *stdoutPipe=[NSPipe pipe];
+	NSPipe *stderrPipe=[NSPipe pipe];
+	
+	[task setStandardOutput:stdoutPipe];
+	[task setStandardInput:stdinPipe];
+	[task setStandardError:stderrPipe];
+	
+	int exitCode=0;
+	
+	@try
+	{
+		NSLog(@"%s: launching task...\n",__FUNCTION__);
+		[task launch];
+		NSLog(@"%s: task launched.\n",__FUNCTION__);
+		
+		NSLog(@"%s: writing %u bytes to task's stdin...\n",__FUNCTION__,[selectionData length]);
+		[[stdinPipe fileHandleForWriting] writeData:selectionData];
+		[[stdinPipe fileHandleForWriting] closeFile];
+		NSLog(@"%s: wrote to task's stdin.\n",__FUNCTION__);
+		
+		NSLog(@"%s: reading from task's stdout...\n",__FUNCTION__);
+		outputData=[[stdoutPipe fileHandleForReading] readDataToEndOfFile];
+		NSLog(@"%s: read %u bytes from task's stdout.\n",__FUNCTION__,[outputData length]);
+		
+		NSLog(@"%s: waiting for task exit...\n",__FUNCTION__);
+		[task waitUntilExit];
+		NSLog(@"%s: task exit.\n",__FUNCTION__);
+		
+		exitCode=[task terminationStatus];
+		if(exitCode!=0)
+			NSLog(@"Script failed - exit code %d.\n",exitCode);
+	}
+	@catch(NSException *e)
+	{
+		if([[e name] isEqualToString:@"NSInvalidArgumentException"])
+		{
+			exitCode=-1;
+		
+			NSLog(@"Script launch failed.\n");
+		}
+		else
+			@throw e;
+	}
+	@finally
+	{
+	}
+	
+	if(exitCode!=0)
+		outputData=nil;
+	
+	if(outputData)
+	{
+		NSString *outputStr=[[[NSString alloc] initWithData:outputData encoding:NSUTF8StringEncoding] autorelease];
+		[textView insertText:outputStr replacementRange:selectionRange];
+	}
+	
+//	NSLog(@"%s: script run, all done.\n",__FUNCTION__);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+-(void)dealloc
+{
+	NSLog(@"%s: (%s *)%p: %@\n",__FUNCTION__,class_getName([self class]),self,fileName_);
+	
+	[fileName_ release];
+	fileName_=nil;
+	
+	[super dealloc];
+}
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+@end
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
 @interface XCFixin_ScriptsHandler:NSObject
 
 @end
@@ -151,20 +296,6 @@ static NSTextView *FindIDETextView(void)
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-
-static BOOL FindNextSeparator(NSMenu *menu,NSUInteger startIndex,NSUInteger *separatorIndex)
-{
-	for(NSUInteger i=startIndex;i<[menu numberOfItems];++i)
-	{
-		if([[menu itemAtIndex:i] isSeparatorItem])
-		{
-			*separatorIndex=i;
-			return YES;
-		}
-	}
-	
-	return NO;
-}
 
 static NSString *SystemFolderName(int folderType,int domain)
 {
@@ -180,6 +311,55 @@ static NSString *SystemFolderName(int folderType,int domain)
 	CFRelease(url);
 	
 	return result;
+}
+
+// Yeah, OK, so I just completely could NOT work out how you're supposed to
+// do this officially. So you have to use emacs notation.
+//
+// C- = control
+// M- = Alt/Option ("Meta")
+// S- = Shift
+// s- = Command ("super")
+//
+static void SetKeyEquivalentFromString(NSMenuItem *item,NSString *str)
+{
+	if(!str||[str length]==0)
+		return;
+	
+	unsigned modifiers=0;
+	
+	for(NSUInteger i=0;i+1<[str length];i+=2)
+	{
+		char c=[str characterAtIndex:i];
+		
+		switch(c)
+		{
+			case 'C':
+				modifiers|=NSControlKeyMask;
+				break;
+				
+			case 'M':
+				modifiers|=NSAlternateKeyMask;
+				break;
+				
+			case 'S':
+				modifiers|=NSShiftKeyMask;
+				break;
+				
+			case 's':
+				modifiers|=NSCommandKeyMask;
+				break;
+				
+			default:
+				// some kind of error here, or something??
+				//
+				// not like it's hard to spot or complicated to fix...
+				break;
+		}
+	}
+	
+	[item setKeyEquivalent:[str substringFromIndex:[str length]-1]];
+	[item setKeyEquivalentModifierMask:modifiers];
 }
 
 -(void)refreshScriptsMenu
@@ -200,25 +380,22 @@ static NSString *SystemFolderName(int folderType,int domain)
 	
 	NSMenu *scriptsMenu=[[mainMenu itemAtIndex:scriptsMenuIndex] submenu];
 	
-	NSUInteger firstSep;
-	if(!FindNextSeparator(scriptsMenu,0,&firstSep))
-	{
-		NSLog(@"%s: Scripts menu separator not found.\n",__FUNCTION__);
-		return;
-	}
-	
-	NSUInteger secondSep;
-	if(FindNextSeparator(scriptsMenu,firstSep+1,&secondSep))
-	{
-		while(secondSep!=firstSep)
-			[scriptsMenu removeItemAtIndex:secondSep--];
-	}
+	//
+	[scriptsMenu removeAllItems];
 	
 	NSString *appSupportFolderName=SystemFolderName(kApplicationSupportFolderType,kUserDomain);
 	NSLog(@"appSupportFolderName=%@\n",appSupportFolderName);
 	
-	NSString *scriptsFolderName=[NSString pathWithComponents:[NSArray arrayWithObjects:appSupportFolderName,@"Developer",@"Shared",@"Xcode",@"Scripts",nil]];
+	NSString *scriptsFolderName=[NSString pathWithComponents:[NSArray arrayWithObjects:appSupportFolderName,@"Developer/Shared/Xcode/Scripts",nil]];
 	NSLog(@"scriptsFolderName=%@\n",scriptsFolderName);
+	
+	NSString *scriptsPListName=[NSString pathWithComponents:[NSArray arrayWithObjects:scriptsFolderName,@"Scripts.xml",nil]];
+	NSLog(@"scriptsPListName=%@\n",scriptsPListName);
+	NSDictionary *scriptsProperties=[NSDictionary dictionaryWithContentsOfFile:scriptsPListName];
+	if(!scriptsProperties)
+		NSLog(@"%s: No scripts plist loaded.\n",__FUNCTION__);
+	else
+		NSLog(@"%s: Scripts plist: %@\n",__FUNCTION__,scriptsProperties);
 	
 	NSArray *scriptsFolderContents=[[NSFileManager defaultManager] contentsOfDirectoryAtPath:scriptsFolderName
 																					   error:nil];
@@ -257,93 +434,40 @@ static NSString *SystemFolderName(int folderType,int domain)
 		
 		if([scripts count]>0)
 		{
-			[scriptsMenu insertItem:[NSMenuItem separatorItem]
-							atIndex:firstSep+1];
-			
 			for(NSUInteger i=0;i<[scripts count];++i)
 			{
 				NSString *name=[scripts objectAtIndex:i];
 				NSString *path=[NSString pathWithComponents:[NSArray arrayWithObjects:scriptsFolderName,name,nil]];
+				
+				NSLog(@"Creating XCFixin_Script for %@.\n",path);
+				XCFixin_Script *script=[[[XCFixin_Script alloc] initWithFileName:path] autorelease];
 				
 				NSMenuItem *scriptMenuItem=[[[NSMenuItem alloc] initWithTitle:name
 																	   action:nil
 																keyEquivalent:@""] autorelease];
 				[scriptMenuItem setTarget:self];
 				[scriptMenuItem setAction:@selector(runScriptAction:)];
-				[scriptMenuItem setRepresentedObject:path];
+				[scriptMenuItem setRepresentedObject:script];
 				
-				[scriptsMenu insertItem:scriptMenuItem
-								atIndex:firstSep+1+i];
+				NSDictionary *scriptProperties=[scriptsProperties objectForKey:name];
+				if(![scriptProperties isKindOfClass:[NSDictionary class]])
+					scriptProperties=nil;
+				
+				NSLog(@"    Script properties: %@\n",scriptProperties);
+				
+				SetKeyEquivalentFromString(scriptMenuItem,[scriptProperties objectForKey:@"keyEquivalent"]);
+				
+				[scriptsMenu addItem:scriptMenuItem];
 			}
 		}
+		
+		if([scriptsMenu numberOfItems]>0)
+			[scriptsMenu addItem:[NSMenuItem separatorItem]];
+		
+		[[scriptsMenu addItemWithTitle:@"Refresh"
+								action:@selector(refreshScriptsMenuAction:)
+						 keyEquivalent:@""] setTarget:self];
 	}
-}
-
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-
--(void)runScript:(NSString *)path
-{
-	NSLog(@"%s: path=%@\n",__FUNCTION__,path);
-	
-	NSTextView *textView=FindIDETextView();
-	if(!textView)
-	{
-		NSLog(@"Not running scripts - can't find IDE text view.\n");
-		return;
-	}
-	
-	NSTextStorage *textStorage=[textView textStorage];
-	if(!textStorage)
-	{
-		NSLog(@"Not running scripts - IDE text view has no text storage.\n");
-		return;
-	}
-	
-	NSRange selectionRange=[textView selectedRange];
-	NSString *selectionStr=[[textStorage string] substringWithRange:selectionRange];
-	NSData *selectionData=[selectionStr dataUsingEncoding:NSUTF8StringEncoding];
-	
-	NSTask *task=[[[NSTask alloc] init] autorelease];
-	
-	[task setLaunchPath:path];
-	NSLog(@"%s: [task launchPath] = %@\n",__FUNCTION__,[task launchPath]);
-	
-	NSPipe *stdinPipe=[NSPipe pipe];
-	NSPipe *stdoutPipe=[NSPipe pipe];
-	NSPipe *stderrPipe=[NSPipe pipe];
-	
-	[task setStandardOutput:stdoutPipe];
-	[task setStandardInput:stdinPipe];
-	[task setStandardError:stderrPipe];
-	
-	NSLog(@"%s: launching task...\n",__FUNCTION__);
-	[task launch];
-	NSLog(@"%s: task launched.\n",__FUNCTION__);
-	
-	NSLog(@"%s: writing %u bytes to task's stdin...\n",__FUNCTION__,[selectionData length]);
-	[[stdinPipe fileHandleForWriting] writeData:selectionData];
-	[[stdinPipe fileHandleForWriting] closeFile];
-	NSLog(@"%s: wrote to task's stdin.\n",__FUNCTION__);
-
-	NSLog(@"%s: reading from task's stdout...\n",__FUNCTION__);
-	NSData *outputData=[[stdoutPipe fileHandleForReading] readDataToEndOfFile];
-	NSLog(@"%s: read %u bytes from task's stdout.\n",__FUNCTION__,[outputData length]);
-	
-	NSLog(@"%s: waiting for task exit...\n",__FUNCTION__);
-	[task waitUntilExit];
-	NSLog(@"%s: task exit.\n",__FUNCTION__);
-	
-	if([task terminationStatus]!=0)
-	{
-		NSLog(@"Script failed - exit code %d.\n",[task terminationStatus]);
-		return;
-	}
-	
-	NSString *outputStr=[[[NSString alloc] initWithData:outputData encoding:NSUTF8StringEncoding] autorelease];
-	[textView insertText:outputStr replacementRange:selectionRange];
-
-	NSLog(@"%s: script run, all done.\n",__FUNCTION__);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -351,7 +475,7 @@ static NSString *SystemFolderName(int folderType,int domain)
 
 -(IBAction)runScriptAction:(id)arg
 {
-	[self runScript:[arg representedObject]];
+	[[arg representedObject] run];
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -388,16 +512,6 @@ static NSString *SystemFolderName(int folderType,int domain)
 	[scriptsMenu setAutoenablesItems:YES];
 	
 	[scriptsMenuItem setSubmenu:scriptsMenu];
-	
-	NSMenuItem *test1Item=TestAdd(scriptsMenu,@"Test1",self,@selector(test1:));
-	[test1Item setKeyEquivalent:@"6"];
-	[test1Item setKeyEquivalentModifierMask:NSShiftKeyMask|NSAlternateKeyMask];
-	
-	TestAdd(scriptsMenu,@"Test2",self,@selector(test2:));
-	
-	[scriptsMenu addItem:[NSMenuItem separatorItem]];
-	
-	TestAdd(scriptsMenu,@"Refresh",self,@selector(refreshScriptsMenuAction:));
 	
 	[self refreshScriptsMenu];
 	
@@ -479,92 +593,18 @@ static void DumpMethodList(Class c)
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
--(IBAction)test1:(id)arg
-{
-	NSLog(@"%s\n",__FUNCTION__);
-	
-	return;
-	
-	NSApplication *app=[NSApplication sharedApplication];
-	NSWindow *window=[app mainWindow];
-	NSLog(@"%s: window=%p\n",__FUNCTION__,window);
-	if(!window)
-		return;
-	
-	Class IDEWorkspaceWindow,IDEWorkspaceWindowController;
-	if(!GetClasses("IDEWorkspaceWindow",&IDEWorkspaceWindow,
-				   "IDEWorkspaceWindowController",&IDEWorkspaceWindowController,
-				   NULL))
-	{
-		return;
-	}
-	
-	//	DumpClassHierarchy([ped class]);
-	//	DumpMethodList([ped class]);
-	
-//	NSLog(@"Document Editors:\n");
-//	NSMutableSet *documentEditors=(NSMutableSet *)objc_msgSend(ped,@selector(_documentEditors));
-//	for(id documentEditor in documentEditors)
-//	{
-//		NSLog(@"    documentEditor: %@\n",GetObjectDescription(documentEditor));
-//		DumpClassHierarchy([documentEditor class]);
-//		
-//		if(IsRightClass(documentEditor,NULL,"IDEViewController"))
-//		{
-//			//			id contextMenuSelection=CIM(documentEditor,contextMenuSelection,);
-//			//			NSLog(@"    contextMenuSelection: %@\n",GetObjectDescription(contextMenuSelection));
-//			//			
-//			//			id outputSelection=CIM(documentEditor,outputSelection,);
-//			//			NSLog(@"    outputSelection: %@\n",GetObjectDescription(outputSelection));
-//			//			
-//			//			id currentSelectedItems=CIM(documentEditor,currentSelectedItems,);
-//			//			NSLog(@"    currentSelectedItems %@\n",GetObjectDescription(currentSelectedItems));
-//			
-//			id textView=objc_msgSend(documentEditor,@selector(textView));
-//			NSLog(@"    textView %@\n",GetObjectDescription(textView));
-//			
-//			NSArray *textViewSelectedRanges=objc_msgSend(textView,@selector(selectedRanges));
-//			if([textViewSelectedRanges count]>0)
-//			{
-//				NSValue *first=[textViewSelectedRanges objectAtIndex:0];
-//				if(strcmp([first objCType],@encode(NSRange))==0)
-//				{
-//					NSRange range;
-//					[first getValue:&range];
-//					
-//					//					objc_msgSend(textView,@selector(breakUndoCoalescing));
-//					//					objc_msgSend(textView,@selector(insertText:replacementRange:),(id)@"FRED1234DERF",range);
-//					
-//					NSTextStorage *textViewTextStorage=objc_msgSend(textView,@selector(textStorage));
-//					NSString *textViewString=[textViewTextStorage string];
-//					if(textViewString)
-//					{
-//						NSString *region=[textViewString substringWithRange:range];
-//						NSLog(@"%s: region=%@\n",__FUNCTION__,region);
-//					}
-//				}
-//			}
-//		}
-//	}
-	
-	
-	//	SEL workspaceWindowControllerForWindowSEL=@selector(workspaceWindowControllerForWindow:);
-	//	{
-	//		Method m=class_getClassMethod(IDEWorkspaceWindowController,workspaceWindowControllerForWindowSEL);
-	//		IMP i=method_getImplementation(m);
-	//		id wc=(*i)(IDEWorkspaceWindowController,workspaceWindowControllerForWindowSEL,(id)window);
-	//	}
-	
-	// - (id)performSelector:(SEL)aSelector withObject:(id)anObject withObject:(id)anotherObject
-}
+//-(IBAction)test1:(id)arg
+//{
+//	NSLog(@"%s\n",__FUNCTION__);
+//}
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
--(IBAction)test2:(id)arg
-{
-	NSLog(@"%s\n",__FUNCTION__);
-}
+//-(IBAction)test2:(id)arg
+//{
+//	NSLog(@"%s\n",__FUNCTION__);
+//}
 
 @end
 
@@ -594,6 +634,16 @@ static void DumpMethodList(Class c)
 		BOOL goodInstall=[handler install];
 		NSLog(@"%s: handler installed: %s\n",__FUNCTION__,goodInstall?"YES":"NO");
 	}
+	
+	NSMutableDictionary *a=[NSMutableDictionary dictionaryWithCapacity:0];
+	[a setObject:@"Test Value" forKey:@"Test Key"];
+	[a setObject:@"Test Value 2" forKey:@"Test Key 2"];
+	
+	NSMutableDictionary *b=[NSMutableDictionary dictionaryWithCapacity:0];
+	[b setObject:a forKey:@"Key1"];
+	[b setObject:a forKey:@"Key2"];
+	
+	[b writeToFile:@"/tmp/test.txt" atomically:NO];
     
     XCFixinPostflight();
 }

@@ -1,6 +1,10 @@
-* TODO Multiple tabs viewing same doc
+* TODO multiple tabs viewing same doc
 
-* TODO Multiple windows viewing same doc
+Need to figure out which documentEditor has the focus...
+
+* TODO multiple windows viewing same doc
+
+Is this any different from the tabs case?
 
 * TODO plist with key alternatives, etc.
 
@@ -9,6 +13,8 @@
 * TODO PBXSelection
 
 * TODO inject junk into env?
+
+* TODO check script symlinks work
 
 * links
 
