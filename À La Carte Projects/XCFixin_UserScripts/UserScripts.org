@@ -82,9 +82,12 @@ The current option names are:
                  stdin, with valid options being:
 		 - =none= :: no data sent
 		 - =selection= :: selection is used; no data sent if no selection
-		 - =lineOrSelection= :: selection is used; current
-                      line (excluding line ending chars) sent if no
-                      selection
+		 - =linetextOrSelection= :: selection is used, if any;
+                      current line (excluding line ending chars) sent
+                      if no selection
+                 - =lineOrSelection= :: selection is used, if any;
+                      current line (including line ending chars) sent
+                      if no selection
 
 * Misfeatures
 

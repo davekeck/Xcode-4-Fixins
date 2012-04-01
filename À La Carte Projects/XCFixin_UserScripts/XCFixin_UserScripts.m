@@ -1,8 +1,8 @@
 #import <Cocoa/Cocoa.h>
-#import <Foundation/Foundation.h>
 #import <CoreFoundation/CoreFoundation.h>
-#import <objc/runtime.h>
+#import <Foundation/Foundation.h>
 #import <objc/objc-runtime.h>
+#import <objc/runtime.h>
 
 #include <sys/stat.h>
 
@@ -133,6 +133,7 @@ enum ScriptStdinMode
 {
 	SSM_NONE,
 	SSM_SELECTION,
+	SSM_LINETEXT_OR_SELECTION,
 	SSM_LINE_OR_SELECTION,
 };
 typedef enum ScriptStdinMode ScriptStdinMode;
@@ -202,17 +203,22 @@ typedef enum ScriptStdinMode ScriptStdinMode;
 		
 		switch(stdinMode_)
 		{
+			case SSM_LINETEXT_OR_SELECTION:
 			case SSM_LINE_OR_SELECTION:
 				if(inputRange.length==0)
 				{
-					NSUInteger startIndex,contentsEndIndex;
+					NSUInteger startIndex,contentsEndIndex,endIndex;
 					[textStorageString getLineStart:&startIndex
-												end:NULL
+												end:&endIndex
 										contentsEnd:&contentsEndIndex
 										   forRange:inputRange];
 					
 					inputRange.location=startIndex;
-					inputRange.length=contentsEndIndex-startIndex;
+					
+					if(stdinMode_==SSM_LINE_OR_SELECTION)
+						inputRange.length=endIndex-startIndex;
+					else
+						inputRange.length=contentsEndIndex-startIndex;
 				}
 				
 				// fall through
@@ -494,6 +500,8 @@ static NSString *SystemFolderName(int folderType,int domain)
 						[script setStdinMode:SSM_SELECTION];
 					else if([stdinMode caseInsensitiveCompare:@"lineorselection"]==NSOrderedSame)
 						[script setStdinMode:SSM_LINE_OR_SELECTION];
+					else if([stdinMode caseInsensitiveCompare:@"linetextorselection"]==NSOrderedSame)
+						[script setStdinMode:SSM_LINETEXT_OR_SELECTION];
 				}
 				
 				[scriptsMenu addItem:scriptMenuItem];
