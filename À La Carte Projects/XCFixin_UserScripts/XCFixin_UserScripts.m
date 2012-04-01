@@ -129,9 +129,21 @@ static NSTextView *FindIDETextView(void)
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
+enum ScriptStdinMode
+{
+	SSM_NONE,
+	SSM_SELECTION,
+	SSM_LINE_OR_SELECTION,
+};
+typedef enum ScriptStdinMode ScriptStdinMode;
+
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+
 @interface XCFixin_Script:NSObject
 {
 	NSString *fileName_;
+	ScriptStdinMode stdinMode_;
 }
 @end
 
@@ -148,17 +160,18 @@ static NSTextView *FindIDETextView(void)
 	if((self=[super init]))
 	{
 		fileName_=[fileName retain];
+		stdinMode_=SSM_SELECTION;
 	}
 	
 	return self;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 
--(NSString *)fileName
+-(void)setStdinMode:(ScriptStdinMode)stdinMode
 {
-	return fileName_;
+	stdinMode_=stdinMode;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -182,11 +195,35 @@ static NSTextView *FindIDETextView(void)
 		return;
 	}
 	
-	NSRange selectionRange=[textView selectedRange];
-	NSString *selectionStr=[[textStorage string] substringWithRange:selectionRange];
-	NSData *selectionData=[selectionStr dataUsingEncoding:NSUTF8StringEncoding];
-	
-	NSData *outputData=nil;
+	NSData *inputData=nil;
+	NSRange inputRange=[textView selectedRange];
+	{
+		NSString *textStorageString=[textStorage string];
+		
+		switch(stdinMode_)
+		{
+			case SSM_LINE_OR_SELECTION:
+				if(inputRange.length==0)
+				{
+					NSUInteger startIndex,contentsEndIndex;
+					[textStorageString getLineStart:&startIndex
+												end:NULL
+										contentsEnd:&contentsEndIndex
+										   forRange:inputRange];
+					
+					inputRange.location=startIndex;
+					inputRange.length=contentsEndIndex-startIndex;
+				}
+				
+				// fall through
+			case SSM_SELECTION:
+				inputData=[[textStorageString substringWithRange:inputRange] dataUsingEncoding:NSUTF8StringEncoding];
+				
+				// fall through
+			default:
+				break;
+		}
+	}
 	
 	NSTask *task=[[[NSTask alloc] init] autorelease];
 	
@@ -202,6 +239,7 @@ static NSTextView *FindIDETextView(void)
 	[task setStandardError:stderrPipe];
 	
 	int exitCode=0;
+	NSData *outputData=nil;
 	
 	@try
 	{
@@ -209,10 +247,14 @@ static NSTextView *FindIDETextView(void)
 		[task launch];
 		NSLog(@"%s: task launched.\n",__FUNCTION__);
 		
-		NSLog(@"%s: writing %u bytes to task's stdin...\n",__FUNCTION__,[selectionData length]);
-		[[stdinPipe fileHandleForWriting] writeData:selectionData];
+		if(inputData)
+		{
+			NSLog(@"%s: writing %u bytes to task's stdin...\n",__FUNCTION__,[inputData length]);
+			[[stdinPipe fileHandleForWriting] writeData:inputData];
+			NSLog(@"%s: wrote to task's stdin.\n",__FUNCTION__);
+		}
+		
 		[[stdinPipe fileHandleForWriting] closeFile];
-		NSLog(@"%s: wrote to task's stdin.\n",__FUNCTION__);
 		
 		NSLog(@"%s: reading from task's stdout...\n",__FUNCTION__);
 		outputData=[[stdoutPipe fileHandleForReading] readDataToEndOfFile];
@@ -248,7 +290,7 @@ static NSTextView *FindIDETextView(void)
 	{
 		NSString *outputStr=[[[NSString alloc] initWithData:outputData encoding:NSUTF8StringEncoding] autorelease];
 		[textView breakUndoCoalescing];
-		[textView insertText:outputStr replacementRange:selectionRange];
+		[textView insertText:outputStr replacementRange:inputRange];
 	}
 	
 //	NSLog(@"%s: script run, all done.\n",__FUNCTION__);
@@ -301,55 +343,6 @@ static NSString *SystemFolderName(int folderType,int domain)
 	CFRelease(url);
 	
 	return result;
-}
-
-// Yeah, OK, so I just completely could NOT work out how you're supposed to
-// do this officially. So you have to use emacs notation.
-//
-// C- = control
-// M- = Alt/Option ("Meta")
-// S- = Shift
-// s- = Command ("super")
-//
-static void SetKeyEquivalentFromString(NSMenuItem *item,NSString *str)
-{
-	if(!str||[str length]==0)
-		return;
-	
-	unsigned modifiers=0;
-	
-	for(NSUInteger i=0;i+1<[str length];i+=2)
-	{
-		char c=[str characterAtIndex:i];
-		
-		switch(c)
-		{
-			case 'C':
-				modifiers|=NSControlKeyMask;
-				break;
-				
-			case 'M':
-				modifiers|=NSAlternateKeyMask;
-				break;
-				
-			case 'S':
-				modifiers|=NSShiftKeyMask;
-				break;
-				
-			case 's':
-				modifiers|=NSCommandKeyMask;
-				break;
-				
-			default:
-				// some kind of error here, or something??
-				//
-				// not like it's hard to spot or complicated to fix...
-				break;
-		}
-	}
-	
-	[item setKeyEquivalent:[str substringFromIndex:[str length]-1]];
-	[item setKeyEquivalentModifierMask:modifiers];
 }
 
 -(void)refreshScriptsMenu
@@ -424,9 +417,9 @@ static void SetKeyEquivalentFromString(NSMenuItem *item,NSString *str)
 		
 		if([scripts count]>0)
 		{
-			for(NSUInteger i=0;i<[scripts count];++i)
+			for(NSUInteger scriptIdx=0;scriptIdx<[scripts count];++scriptIdx)
 			{
-				NSString *name=[scripts objectAtIndex:i];
+				NSString *name=[scripts objectAtIndex:scriptIdx];
 				NSString *path=[NSString pathWithComponents:[NSArray arrayWithObjects:scriptsFolderName,name,nil]];
 				
 				NSLog(@"Creating XCFixin_Script for %@.\n",path);
@@ -444,8 +437,64 @@ static void SetKeyEquivalentFromString(NSMenuItem *item,NSString *str)
 					scriptProperties=nil;
 				
 				NSLog(@"    Script properties: %@\n",scriptProperties);
+
+				NSString *keyEquivalent=[scriptProperties objectForKey:@"keyEquivalent"];
+				if(keyEquivalent&&[keyEquivalent length]>0)
+				{
+					// Yeah, OK, so I just completely could NOT work out how you're supposed to
+					// do this officially. So you have to use emacs notation.
+					//
+					// C- = control
+					// M- = Alt/Option ("Meta")
+					// S- = Shift
+					// s- = Command ("super")
+					
+					unsigned modifiers=0;
+					
+					for(NSUInteger i=0;i+1<[keyEquivalent length];i+=2)
+					{
+						char c=[keyEquivalent characterAtIndex:i];
+						
+						switch(c)
+						{
+							case 'C':
+								modifiers|=NSControlKeyMask;
+								break;
+								
+							case 'M':
+								modifiers|=NSAlternateKeyMask;
+								break;
+								
+							case 'S':
+								modifiers|=NSShiftKeyMask;
+								break;
+								
+							case 's':
+								modifiers|=NSCommandKeyMask;
+								break;
+								
+							default:
+								// some kind of error here, or something??
+								//
+								// not like it's hard to spot or complicated to fix...
+								break;
+						}
+					}
+					
+					[scriptMenuItem setKeyEquivalent:[keyEquivalent substringFromIndex:[keyEquivalent length]-1]];
+					[scriptMenuItem setKeyEquivalentModifierMask:modifiers];
+				}
 				
-				SetKeyEquivalentFromString(scriptMenuItem,[scriptProperties objectForKey:@"keyEquivalent"]);
+				NSString *stdinMode=[scriptProperties objectForKey:@"stdinMode"];
+				if(stdinMode)
+				{
+					if([stdinMode caseInsensitiveCompare:@"none"]==NSOrderedSame)
+						[script setStdinMode:SSM_NONE];
+					else if([stdinMode caseInsensitiveCompare:@"selection"]==NSOrderedSame)
+						[script setStdinMode:SSM_SELECTION];
+					else if([stdinMode caseInsensitiveCompare:@"lineorselection"]==NSOrderedSame)
+						[script setStdinMode:SSM_LINE_OR_SELECTION];
+				}
 				
 				[scriptsMenu addItem:scriptMenuItem];
 			}

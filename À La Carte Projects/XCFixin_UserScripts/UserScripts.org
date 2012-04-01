@@ -68,7 +68,7 @@ string value.
 
 The current option names are:
 
-- =keyEquivalent= :: value is the key equivalent in emacs notation:
+- =keyEquivalent= :: value is the key equivalent in emacs notation,
      modifier keys first (=C= for Control, =M= for Option, =s= for
      Command, =S= for Shift), separated by =-=, then the key name.
 
@@ -78,7 +78,13 @@ The current option names are:
      setKeyEquivalent]=; I don't know what the full set of valid keys
      might be.)
 
-And... erm... that's it. Well, so far...
+- =stdinMode= :: value is string dictating what is used as script's
+                 stdin, with valid options being:
+		 - =none= :: no data sent
+		 - =selection= :: selection is used; no data sent if no selection
+		 - =lineOrSelection= :: selection is used; current
+                      line (excluding line ending chars) sent if no
+                      selection
 
 * Misfeatures
 
