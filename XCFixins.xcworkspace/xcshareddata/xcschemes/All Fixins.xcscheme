@@ -75,20 +75,6 @@
                ReferencedContainer = "container:A&#768; La Carte Projects/XCFixin_OptionClickDocumentation/XCFixin_OptionClickDocumentation.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "8D5B49AC048680CD000E48DA"
-               BuildableName = "XCFixin_UserScripts.xcplugin"
-               BlueprintName = "XCFixin_UserScripts"
-               ReferencedContainer = "container:A&#768; La Carte Projects/XCFixin_UserScripts/XCFixin_UserScripts.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
