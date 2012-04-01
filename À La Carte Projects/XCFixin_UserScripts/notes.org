@@ -1,0 +1,46 @@
+* TODO multiple tabs viewing same doc
+
+Need to figure out which documentEditor has the focus...
+
+* TODO multiple windows viewing same doc
+
+Is this any different from the tabs case?
+
+* DONE plist with key equivalents, etc.
+  CLOSED: [2012-03-31 Sat 18:25]
+
+* TODO PBXFilePath
+
+* TODO PBXSelection
+
+* TODO inject junk into env?
+
+* DONE check script symlinks work
+  CLOSED: [2012-03-31 Sat 18:22]
+
+* links
+
+[[http://www.culater.net/wiki/moin.cgi/CocoaReverseEngineering]]
+
+* class-dump notes
+
+** text file editor hierarchy
+
+@interface PBXSourceFileEditor : PBXTextFileEditor
+
+@interface PBXTextFileEditor : PBXFileEditor <NSTextViewDelegate, PBXIncrementalFindable, PBXEditorSelectedSymbol, PBXTrackableTaskObserver>
+
+@interface PBXFileEditor : PBXModule <NSTextViewDelegate>
+
+@interface PBXModule : NSWindowController <NSWindowDelegate, NSToolbarDelegate>
+
+PBXFileNavigator - FBXFileEditor *_fileEditor
+
+** -(NSTextView *)[PBXTextFileEditor textView]
+
+NSTextView<XCTextViewAdditions> *_textView;
+
+** stuff
+
+~/Library/Application\ Support/Developer/Shared/Xcode/Plug-ins/
+
