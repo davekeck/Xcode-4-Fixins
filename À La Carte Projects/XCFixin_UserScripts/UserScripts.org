@@ -85,10 +85,6 @@ And... erm... that's it. Well, so far...
 - If your focus is on something other than the text editor, the output
   goes to the text editor anyway.
 
-- If you have two windows showing the same file, the user scripts
-  might not work, as the fixin can't figure out which text view is the
-  one you're interacting with.
-
 - If you work in a language that uses non-Latin letters, you might not
   have to look very far to find key equivalents that the fixin won't
   accept.

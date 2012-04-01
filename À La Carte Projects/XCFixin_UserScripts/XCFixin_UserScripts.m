@@ -22,25 +22,6 @@ static NSString *GetObjectDescription(id obj)
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-static BOOL IsRightClass(id obj,const char *what,const char *wantedClassName)
-{
-	Class wantedClass=objc_getClass(wantedClassName);
-	
-	for(Class c=[obj class];c;c=class_getSuperclass(c))
-	{
-		if(c==wantedClass)
-			return YES;
-	}
-	
-	if(what)
-		NSLog(@"FATAL: %s is %s; must be %s.\n",what,class_getName([obj class]),class_getName(wantedClass));
-	
-	return NO;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-
 static NSTextView *FindIDETextView(void)
 {
 	NSWindow *mainWindow=[[NSApplication sharedApplication] mainWindow];
@@ -50,8 +31,11 @@ static NSTextView *FindIDETextView(void)
 		return nil;
 	}
 	
-	if(!IsRightClass(mainWindow,"main window","IDEWorkspaceWindow"))
+	if(![mainWindow isKindOfClass:objc_getClass("IDEWorkspaceWindow")])
+	{
+		NSLog(@"Can't find IDE text view - main window is class %@.\n",[mainWindow class]);
 		return nil;
+	}
 	
 	id windowController=objc_msgSend(objc_getClass("IDEWorkspaceWindowController"),
 									 @selector(workspaceWindowControllerForWindow:),
@@ -86,8 +70,11 @@ static NSTextView *FindIDETextView(void)
 		return nil;
 	}
 	
-	if(!IsRightClass(primaryEditorContext,"primary editor context","IDEEditorContext"))
+	if(![primaryEditorContext isKindOfClass:objc_getClass("IDEEditorContext")])
+	{
+		NSLog(@"Can't find IDE text view - primary editor context is class %@.\n",[mainWindow class]);
 		return nil;
+	}
 	
 	id editor=objc_msgSend(primaryEditorContext,@selector(editor));
 	if(!editor)
@@ -96,20 +83,47 @@ static NSTextView *FindIDETextView(void)
 		return nil;
 	}
 	
-	if(![editor isKindOfClass:objc_getClass("IDESourceCodeEditor")])
+	if([editor isKindOfClass:objc_getClass("IDESourceCodeEditor")])
 	{
-		NSLog(@"Can't find IDE text view - primary editor context's editor isn't IDESourceCodeEditor.\n");
+		id textView=objc_msgSend(editor,@selector(textView));
+		if(!textView)
+		{
+			NSLog(@"Can't find IDE text view - primary editor context's IDESourceCodeEditor editor has nil text view.\n");
+			return nil;
+		}
+		
+		return textView;
+	}
+	else if([editor isKindOfClass:objc_getClass("IDEComparisonEditor")])
+	{
+		id keyEditor=objc_msgSend(editor,@selector(keyEditor));
+		if(!keyEditor)
+		{
+			NSLog(@"Can't find IDE text view - primary editor context's IDEComparisonEditor has nil keyEditor.\n");
+			return nil;
+		}
+
+		if(![keyEditor isKindOfClass:objc_getClass("IDESourceCodeEditor")])
+		{
+			NSLog(@"Can't find IDE text view - primary editor context's IDEComparisonEditor keyEditor is class %@.\n",[keyEditor class]);
+			return nil;
+		}
+		
+		id textView=objc_msgSend(keyEditor,@selector(textView));
+		if(!textView)
+		{
+			NSLog(@"Can't find IDE text view - primary editor context's IDEComparisonEditor IDESourceCodeEditor keyEditor has nil text view.\n");
+			return nil;
+		}
+
+		return textView;
+	}
+	else
+	{
+		NSLog(@"Can't find IDE text view - primary editor context's editor is unsupported class %@.\n",[editor class]);
 		return nil;
 	}
 	
-	id editorTextView=objc_msgSend(editor,@selector(textView));
-	if(!editorTextView)
-	{
-		NSLog(@"Can't find IDE text view - primary editor context's editor has nil text view.\n");
-		return nil;
-	}
-	
-	return editorTextView;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
