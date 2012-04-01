@@ -32,4 +32,4 @@ These fixins must be built individually to be installed; see their individual pr
 
 __DisableWriteStateData__: This fixin improves Xcode's responsiveness by disabling the -[IDEWorkspaceDocument writeStateData] method. This method is of course undocumented and I'm unsure what data it typically writes. In my testing, I've noticed this fixin prevents the active source file from being remembered across Xcode launches, and it's very likely that it prevents other data from being written as well. With that said, on my machine this fixin really improves Xcode's responsiveness.
 
-__UserScripts__: Reinstates some semblance of the Xcode 3.x User Scripts menu. See documentation in the XCFixin_UserScripts directory. __You must build this fixin individually to install it.__
+__UserScripts__: Reinstates some semblance of the Xcode 3.x User Scripts menu. See documentation in the XCFixin_UserScripts directory.
