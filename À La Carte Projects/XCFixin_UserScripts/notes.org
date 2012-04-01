@@ -1,8 +1,10 @@
-* TODO multiple tabs viewing same doc
+* DONE multiple tabs viewing same doc
+  CLOSED: [2012-04-01 Sun 01:01]
 
 Need to figure out which documentEditor has the focus...
 
-* TODO multiple windows viewing same doc
+* DONE multiple windows viewing same doc
+  CLOSED: [2012-04-01 Sun 01:01]
 
 Is this any different from the tabs case?
 

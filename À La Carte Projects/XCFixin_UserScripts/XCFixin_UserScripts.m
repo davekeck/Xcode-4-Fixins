@@ -79,46 +79,37 @@ static NSTextView *FindIDETextView(void)
 		return nil;
 	}
 	
-	id primaryEditorDocument=objc_msgSend(editorArea,@selector(primaryEditorDocument));
-	//NSLog(@"%s: ped=%p (%s)\n",__FUNCTION__,ped,class_getName([ped class]));
-	if(!primaryEditorDocument)
+	id primaryEditorContext=objc_msgSend(editorArea,@selector(primaryEditorContext));
+	if(!primaryEditorContext)
 	{
-		NSLog(@"Can't find IDE text view - no primary editor document.\n");
+		NSLog(@"Can't find IDE text view - no primary editor context.\n");
 		return nil;
 	}
 	
-	if(!IsRightClass(primaryEditorDocument,"primary editor document","IDESourceCodeDocument"))
+	if(!IsRightClass(primaryEditorContext,"primary editor context","IDEEditorContext"))
 		return nil;
 	
-	NSMutableSet *documentEditors=(NSMutableSet *)objc_msgSend(primaryEditorDocument,@selector(_documentEditors));
-	if(!documentEditors)
+	id editor=objc_msgSend(primaryEditorContext,@selector(editor));
+	if(!editor)
 	{
-		NSLog(@"Can't find IDE text view - no documentEditors.\n");
-		return nil;
-	}
-	
-	id textView=nil;
-	for(id documentEditor in documentEditors)
-	{
-		if(IsRightClass(documentEditor,NULL,"IDEViewController"))
-		{
-			if(!textView)
-				textView=objc_msgSend(documentEditor,@selector(textView));
-			else
-			{
-				NSLog(@"Can't find IDE text view - multiple IDEViewControllers for the document.\n");
-				return nil;
-			}
-		}
-	}
-	
-	if(!textView)
-	{
-		NSLog(@"Can't find IDE text view - no IDEViewController for the document.\n");
+		NSLog(@"Can't find IDE text view - no primary editor context editor.\n");
 		return nil;
 	}
 	
-	return textView;
+	if(![editor isKindOfClass:objc_getClass("IDESourceCodeEditor")])
+	{
+		NSLog(@"Can't find IDE text view - primary editor context's editor isn't IDESourceCodeEditor.\n");
+		return nil;
+	}
+	
+	id editorTextView=objc_msgSend(editor,@selector(textView));
+	if(!editorTextView)
+	{
+		NSLog(@"Can't find IDE text view - primary editor context's editor has nil text view.\n");
+		return nil;
+	}
+	
+	return editorTextView;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
