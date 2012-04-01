@@ -40,7 +40,7 @@
     }                                                                                                  \
 })
 
-#define XCFixinAssertOrRaise(condition) XCFixinAssertOrPerform((condition), [NSException raise: NSGenericException format: @"A XCFixin_HideDistractions exception occurred"])
+#define XCFixinAssertOrRaise(condition) XCFixinAssertOrPerform((condition), [NSException raise: NSGenericException format: @"An XCFixin exception occurred"])
 
 #define XCFixinConfirmOrPerform(condition, action)      \
 ({                                                      \
