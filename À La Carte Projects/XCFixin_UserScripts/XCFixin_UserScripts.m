@@ -178,6 +178,16 @@ typedef enum ScriptStdinMode ScriptStdinMode;
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
+static NSRange NSMakeRangeFromStartAndEnd(NSUInteger start,NSUInteger end)
+{
+	NSRange r;
+	
+	r.location=start;
+	r.length=end-start;
+	
+	return r;
+}
+
 -(void)run
 {
 	NSLog(@"%s: path=%@\n",__FUNCTION__,fileName_);
@@ -195,7 +205,8 @@ typedef enum ScriptStdinMode ScriptStdinMode;
 		NSLog(@"Not running scripts - IDE text view has no text storage.\n");
 		return;
 	}
-	
+
+	NSString *inputStr=nil;
 	NSData *inputData=nil;
 	NSRange inputRange=[textView selectedRange];
 	{
@@ -223,7 +234,8 @@ typedef enum ScriptStdinMode ScriptStdinMode;
 				
 				// fall through
 			case SSM_SELECTION:
-				inputData=[[textStorageString substringWithRange:inputRange] dataUsingEncoding:NSUTF8StringEncoding];
+				inputStr=[textStorageString substringWithRange:inputRange];
+				inputData=[inputStr dataUsingEncoding:NSUTF8StringEncoding];
 				
 				// fall through
 			default:
@@ -294,12 +306,70 @@ typedef enum ScriptStdinMode ScriptStdinMode;
 	
 	if(outputData)
 	{
+		NSString *selectionMarker=@"%%%{PBXSelection}%%%";
+		
 		NSString *outputStr=[[[NSString alloc] initWithData:outputData encoding:NSUTF8StringEncoding] autorelease];
+		
+		NSRange a;//before 1st marker
+		NSRange b;//between 1st marker and 2nd marker (selection goes here)
+		NSRange c;//after 2nd marker
+		
+		NSRange r1=[outputStr rangeOfString:selectionMarker
+									options:NSLiteralSearch
+									  range:NSMakeRangeFromStartAndEnd(0,
+																	   [outputStr length])];
+		
+		if(r1.location==NSNotFound)
+		{
+			// no selection anywhere
+			a=NSMakeRangeFromStartAndEnd(0,
+										 [outputStr length]);
+			c=b=NSMakeRange([outputStr length],
+							0);
+		}
+		else
+		{
+			a=NSMakeRangeFromStartAndEnd(0,
+										 r1.location);
+			
+			NSRange r2=[outputStr rangeOfString:selectionMarker
+										options:NSLiteralSearch
+										  range:NSMakeRangeFromStartAndEnd(r1.location+[selectionMarker length],
+																		   [outputStr length])];
+			
+			if(r2.location==NSNotFound)
+			{
+				b=NSMakeRange(r1.location+[selectionMarker length],
+							  0);
+				c=NSMakeRangeFromStartAndEnd(r1.location+[selectionMarker length],
+											 [outputStr length]);
+			}
+			else
+			{
+				b=NSMakeRangeFromStartAndEnd(r1.location+[selectionMarker length],
+											 r2.location);
+				c=NSMakeRangeFromStartAndEnd(r2.location+[selectionMarker length],
+											 [outputStr length]);
+			}
+		}
+		
+		outputStr=[[[outputStr substringWithRange:a] stringByAppendingString:[outputStr substringWithRange:b]] stringByAppendingString:[outputStr substringWithRange:c]];
+		
 		[textView breakUndoCoalescing];
-		[textView insertText:outputStr replacementRange:inputRange];
+		
+		// don't insert text if the two strings are actually the same.
+		//
+		// this is a fix for scripts that just pop a %%%{PBXSeleciton}%%%
+		// into their input to put the cursor somewhere.
+		if(![outputStr isEqualToString:inputStr])
+		{
+			[textView insertText:outputStr
+				replacementRange:inputRange];
+		}
+		
+		[textView setSelectedRange:NSMakeRange(inputRange.location+a.length,
+											   b.length)];
 	}
-	
-//	NSLog(@"%s: script run, all done.\n",__FUNCTION__);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

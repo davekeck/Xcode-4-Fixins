@@ -28,6 +28,15 @@ selection is passed to the script as its standard input.
 The script's standard output replaces the current selection. Any
 standard error output is ignored.
 
+* Setting selection from a script
+
+Print the string =%%%{PBXSelection}%%%= to set the selection point.
+
+If this string appears once, the cursor is positioned at that point.
+
+If the string appears more than once, the text between the first two
+occurrences is selected.
+
 * Refreshing scripts
 
 At the bottom of the Scripts menu, there's an option =Refresh=. This
@@ -103,3 +112,7 @@ The current option names are:
 
 - Error reporting is not great. If you run Console.app, you might find
   that the fixin has printed something useful there.
+
+- If you run a script on text that includes the string
+  "%%%{PBXSelection}%%%", that string will disappear. (Presumably this
+  happened in Xcode3 too?)
