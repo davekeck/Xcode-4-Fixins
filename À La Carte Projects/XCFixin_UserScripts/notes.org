@@ -11,14 +11,39 @@ Is this any different from the tabs case?
 * DONE plist with key equivalents, etc.
   CLOSED: [2012-03-31 Sat 18:25]
 
-* TODO PBXFilePath
+* TODO Xcode3-style PBXFilePath (etc.)
 
-* TODO PBXSelection
+Seems like a very flaky approach. Would need to create copy of script
+with expansions in it. Would prevent use of binaries. Environment
+variables would be much safer and hardly less easy to use...
+
+* DONE Xcode3-style PBXSelection
+  CLOSED: [2012-04-02 Mon 01:37]
 
 * TODO inject junk into env?
 
 * DONE check script symlinks work
   CLOSED: [2012-03-31 Sat 18:22]
+
+* TODO replace -[NSTextView insertText:replacementRange:] with some NSTextStorage thingy or other
+
+-[NSTextView insertText:replacementRange:] docs:
+
+"This method is the entry point for inserting text typed by the user
+and is generally not suitable for other purposes. Programmatic
+modification of the text is best done by operating on the text storage
+directly. Because this method pertains to the actions of the user, the
+text view must be editable for the insertion to work."
+
+* TODO scripts.xml name matching should be case-insensitive
+
+...to match the filing system behaviour.
+
+* TODO what if you have %%%{PBXSelection}%%% in the text?
+
+well, currently it disappears if you run a macro on it...
+
+What did Xcode3 do?
 
 * links
 
