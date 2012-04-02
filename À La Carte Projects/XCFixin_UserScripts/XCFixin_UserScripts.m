@@ -306,7 +306,7 @@ static NSRange NSMakeRangeFromStartAndEnd(NSUInteger start,NSUInteger end)
 	
 	if(outputData)
 	{
-		NSString *selectionMarker=@"%%%{PBXSelection}%%%";
+		NSString *selectionMarker=@"%%\x25{PBXSelection}%%%";
 		
 		NSString *outputStr=[[[NSString alloc] initWithData:outputData encoding:NSUTF8StringEncoding] autorelease];
 		
