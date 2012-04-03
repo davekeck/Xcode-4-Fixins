@@ -267,16 +267,31 @@ static NSRange NSMakeRangeFromStartAndEnd(NSUInteger start,NSUInteger end)
 		
 		if(inputData)
 		{
-			NSLog(@"%s: writing %u bytes to task's stdin...\n",__FUNCTION__,[inputData length]);
-			[[stdinPipe fileHandleForWriting] writeData:inputData];
-			NSLog(@"%s: wrote to task's stdin.\n",__FUNCTION__);
+			@try
+			{
+				NSLog(@"%s: writing %u bytes to task's stdin...\n",__FUNCTION__,[inputData length]);
+				[[stdinPipe fileHandleForWriting] writeData:inputData];
+				NSLog(@"%s: wrote to task's stdin.\n",__FUNCTION__);
+			}
+			@catch(NSException *e)
+			{
+				// Maybe the task finished really quickly and it doesn't care what's in its stdin.
+				NSLog(@"%s: ignoring error (%@) writing to task's stdin.\n",__FUNCTION__,e);
+			}
 		}
 		
 		[[stdinPipe fileHandleForWriting] closeFile];
 		
-		NSLog(@"%s: reading from task's stdout...\n",__FUNCTION__);
-		outputData=[[stdoutPipe fileHandleForReading] readDataToEndOfFile];
-		NSLog(@"%s: read %u bytes from task's stdout.\n",__FUNCTION__,[outputData length]);
+		@try
+		{
+			NSLog(@"%s: reading from task's stdout...\n",__FUNCTION__);
+			outputData=[[stdoutPipe fileHandleForReading] readDataToEndOfFile];
+			NSLog(@"%s: read %u bytes from task's stdout.\n",__FUNCTION__,[outputData length]);
+		}
+		@catch(NSException *e)
+		{
+			NSLog(@"%s: error (%@) reading from task's stdout.\n",__FUNCTION__,e);
+		}
 		
 		NSLog(@"%s: waiting for task exit...\n",__FUNCTION__);
 		[task waitUntilExit];
