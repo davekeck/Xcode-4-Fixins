@@ -652,11 +652,11 @@ static NSString *SystemFolderName(int folderType,int domain)
 		
 		if([scriptsMenu numberOfItems]>0)
 			[scriptsMenu addItem:[NSMenuItem separatorItem]];
-		
-		[[scriptsMenu addItemWithTitle:@"Refresh"
-								action:@selector(refreshScriptsMenuAction:)
-						 keyEquivalent:@""] setTarget:self];
 	}
+
+	[[scriptsMenu addItemWithTitle:@"Refresh"
+							action:@selector(refreshScriptsMenuAction:)
+					 keyEquivalent:@""] setTarget:self];
 }
 
 ////////////////////////////////////////////////////////////////////////////////
