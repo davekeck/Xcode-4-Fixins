@@ -125,3 +125,5 @@ The current option names are:
 - If you run a script on text that includes the string
   "%%%{PBXSelection}%%%", that string will disappear. (Presumably this
   happened in Xcode3 too?)
+
+- No support for column select.

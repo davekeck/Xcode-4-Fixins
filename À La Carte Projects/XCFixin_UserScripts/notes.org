@@ -1,3 +1,8 @@
+* TODO column selection support
+
+Should be possible to figure out something reasonable if number of
+output lines exceeds number of input lines...
+
 * DONE reinstate selection
   CLOSED: [2012-04-08 Sun 01:26]
 
