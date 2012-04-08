@@ -1,3 +1,11 @@
+* DONE reinstate selection
+  CLOSED: [2012-04-08 Sun 01:26]
+
+(Optionally) reselect entire script output. Sensible defaults might
+save on PBXSelection junk.
+
+e.g., for my toupper script...
+
 * DONE multiple tabs viewing same doc
   CLOSED: [2012-04-01 Sun 01:01]
 
@@ -26,6 +34,11 @@ variables would be much safer and hardly less easy to use...
   CLOSED: [2012-03-31 Sat 18:22]
 
 * TODO replace -[NSTextView insertText:replacementRange:] with some NSTextStorage thingy or other
+
+Will this still work with the autocomplete stuff?
+
+Perhaps make it optional (some macros might still want to prompt an
+autocomplete popup).
 
 -[NSTextView insertText:replacementRange:] docs:
 
@@ -71,3 +84,4 @@ NSTextView<XCTextViewAdditions> *_textView;
 
 ~/Library/Application\ Support/Developer/Shared/Xcode/Plug-ins/
 
+IDEDefaultDebugArea

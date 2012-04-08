@@ -126,6 +126,17 @@ static NSTextView *FindIDETextView(void)
 	
 }
 
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+
+enum ScriptReselectMode
+{
+	SRM_NONE,
+	SRM_MARKER,
+	SRM_ALL,
+};
+typedef enum ScriptReselectMode ScriptReselectMode;
+
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -145,6 +156,7 @@ typedef enum ScriptStdinMode ScriptStdinMode;
 {
 	NSString *fileName_;
 	ScriptStdinMode stdinMode_;
+	ScriptReselectMode reselectMode_;
 }
 @end
 
@@ -162,9 +174,18 @@ typedef enum ScriptStdinMode ScriptStdinMode;
 	{
 		fileName_=[fileName retain];
 		stdinMode_=SSM_SELECTION;
+		reselectMode_=SRM_MARKER;
 	}
 	
 	return self;
+}
+
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+
+-(void)setReselectMode:(ScriptReselectMode)reselectMode
+{
+	reselectMode_=reselectMode;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -329,44 +350,69 @@ static NSRange NSMakeRangeFromStartAndEnd(NSUInteger start,NSUInteger end)
 		NSRange b;//between 1st marker and 2nd marker (selection goes here)
 		NSRange c;//after 2nd marker
 		
-		NSRange r1=[outputStr rangeOfString:selectionMarker
-									options:NSLiteralSearch
-									  range:NSMakeRangeFromStartAndEnd(0,
-																	   [outputStr length])];
+		switch(reselectMode_)
+		{
+			case SRM_ALL:
+			{
+				a=NSMakeRange(0,0);
+				b=NSMakeRange(0,[outputStr length]);
+				c=NSMakeRange([outputStr length],0);
+			}
+				break;
+				
+			case SRM_MARKER:
+			{
+				NSRange r1=[outputStr rangeOfString:selectionMarker
+											options:NSLiteralSearch
+											  range:NSMakeRangeFromStartAndEnd(0,
+																			   [outputStr length])];
+				
+				if(r1.location==NSNotFound)
+				{
+					// no selection anywhere
+					a=NSMakeRangeFromStartAndEnd(0,
+												 [outputStr length]);
+					c=b=NSMakeRange([outputStr length],
+									0);
+				}
+				else
+				{
+					a=NSMakeRangeFromStartAndEnd(0,
+												 r1.location);
+					
+					NSRange r2=[outputStr rangeOfString:selectionMarker
+												options:NSLiteralSearch
+												  range:NSMakeRangeFromStartAndEnd(r1.location+[selectionMarker length],
+																				   [outputStr length])];
+					
+					if(r2.location==NSNotFound)
+					{
+						b=NSMakeRange(r1.location+[selectionMarker length],
+									  0);
+						c=NSMakeRangeFromStartAndEnd(r1.location+[selectionMarker length],
+													 [outputStr length]);
+					}
+					else
+					{
+						b=NSMakeRangeFromStartAndEnd(r1.location+[selectionMarker length],
+													 r2.location);
+						c=NSMakeRangeFromStartAndEnd(r2.location+[selectionMarker length],
+													 [outputStr length]);
+					}
+				}
+			}
+				break;
+				
+			default:
+			case SRM_NONE:
+			{
+				a=NSMakeRange(0,[outputStr length]);
+				b=NSMakeRange([outputStr length],0);
+				c=NSMakeRange([outputStr length],0);
+			}
+				break;
+		}
 		
-		if(r1.location==NSNotFound)
-		{
-			// no selection anywhere
-			a=NSMakeRangeFromStartAndEnd(0,
-										 [outputStr length]);
-			c=b=NSMakeRange([outputStr length],
-							0);
-		}
-		else
-		{
-			a=NSMakeRangeFromStartAndEnd(0,
-										 r1.location);
-			
-			NSRange r2=[outputStr rangeOfString:selectionMarker
-										options:NSLiteralSearch
-										  range:NSMakeRangeFromStartAndEnd(r1.location+[selectionMarker length],
-																		   [outputStr length])];
-			
-			if(r2.location==NSNotFound)
-			{
-				b=NSMakeRange(r1.location+[selectionMarker length],
-							  0);
-				c=NSMakeRangeFromStartAndEnd(r1.location+[selectionMarker length],
-											 [outputStr length]);
-			}
-			else
-			{
-				b=NSMakeRangeFromStartAndEnd(r1.location+[selectionMarker length],
-											 r2.location);
-				c=NSMakeRangeFromStartAndEnd(r2.location+[selectionMarker length],
-											 [outputStr length]);
-			}
-		}
 		
 		outputStr=[[[outputStr substringWithRange:a] stringByAppendingString:[outputStr substringWithRange:b]] stringByAppendingString:[outputStr substringWithRange:c]];
 		
@@ -587,6 +633,17 @@ static NSString *SystemFolderName(int folderType,int domain)
 						[script setStdinMode:SSM_LINE_OR_SELECTION];
 					else if([stdinMode caseInsensitiveCompare:@"linetextorselection"]==NSOrderedSame)
 						[script setStdinMode:SSM_LINETEXT_OR_SELECTION];
+				}
+				
+				NSString *reselectMode=[scriptProperties objectForKey:@"reselectMode"];
+				if(reselectMode)
+				{
+					if([reselectMode caseInsensitiveCompare:@"none"]==NSOrderedSame)
+						[script setReselectMode:SRM_NONE];
+					else if([reselectMode caseInsensitiveCompare:@"marker"]==NSOrderedSame)
+						[script setReselectMode:SRM_MARKER];
+					else if([reselectMode caseInsensitiveCompare:@"all"]==NSOrderedSame)
+						[script setReselectMode:SRM_ALL];
 				}
 				
 				[scriptsMenu addItem:scriptMenuItem];

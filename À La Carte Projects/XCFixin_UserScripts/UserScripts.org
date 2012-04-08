@@ -90,13 +90,22 @@ The current option names are:
 - =stdinMode= :: value is string dictating what is used as script's
                  stdin, with valid options being:
 		 - =none= :: no data sent
-		 - =selection= :: selection is used; no data sent if no selection
+		 - =selection= (default) :: selection is used; no data
+                      sent if no selection
 		 - =linetextOrSelection= :: selection is used, if any;
                       current line (excluding line ending chars) sent
                       if no selection
                  - =lineOrSelection= :: selection is used, if any;
                       current line (including line ending chars) sent
                       if no selection
+
+- =reselectMode= :: value is string indicating how the selection
+                    should be reinstated after the script has run,
+                    with valid options being:
+		    - =none= :: nothing is selected.
+		    - =all= :: all script output is selected.
+		    - =marker= (default) :: selection is set according
+                         to =%%%{PBXSelection}%%%= markers in output.
 
 * Misfeatures
 
