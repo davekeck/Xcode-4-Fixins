@@ -1,3 +1,5 @@
+#+SEQ_TODO:TODO | DONE NOTDOING
+
 * TODO column selection support
 
 Should be possible to figure out something reasonable if number of
@@ -38,7 +40,11 @@ variables would be much safer and hardly less easy to use...
 * DONE check script symlinks work
   CLOSED: [2012-03-31 Sat 18:22]
 
-* TODO replace -[NSTextView insertText:replacementRange:] with some NSTextStorage thingy or other
+* NOTDOING replace -[NSTextView insertText:replacementRange:] with some NSTextStorage thingy or other
+  CLOSED: [2012-04-08 Sun 01:47]
+
+[resolved: looks like a bad idea, as the NSTextStorage methods don't
+seem to affect the undo queue!]
 
 Will this still work with the autocomplete stuff?
 
@@ -57,7 +63,10 @@ text view must be editable for the insertion to work."
 
 ...to match the filing system behaviour.
 
-* TODO what if you have %%%{PBXSelection}%%% in the text?
+* DONE what if you have %%%{PBXSelection}%%% in the text?
+  CLOSED: [2012-04-08 Sun 01:47]
+
+[resolved: you live with it, or change the reselect mode]
 
 well, currently it disappears if you run a macro on it...
 
