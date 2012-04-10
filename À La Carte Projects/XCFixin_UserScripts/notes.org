@@ -1,5 +1,11 @@
 #+SEQ_TODO:TODO | DONE NOTDOING
 
+* TODO stdin mode `charOrSelection'
+
+Next character, or selection...
+
+(Useful for toupper and tolower macros, say.)
+
 * TODO column selection support
 
 Should be possible to figure out something reasonable if number of
