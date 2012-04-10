@@ -109,9 +109,6 @@ The current option names are:
 
 * Misfeatures
 
-- If your focus is on something other than the text editor, the output
-  goes to the text editor anyway.
-
 - If you work in a language that uses non-Latin letters, you might not
   have to look very far to find key equivalents that the fixin won't
   accept.

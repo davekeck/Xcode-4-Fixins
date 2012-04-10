@@ -31,99 +31,31 @@ static NSTextView *FindIDETextView(void)
 		return nil;
 	}
 	
-	if(![mainWindow isKindOfClass:objc_getClass("IDEWorkspaceWindow")])
+	Class DVTCompletingTextView=objc_getClass("DVTCompletingTextView");
+	if(!DVTCompletingTextView)
 	{
-		NSLog(@"Can't find IDE text view - main window is class %@.\n",[mainWindow class]);
+		NSLog(@"Can't find IDE text view - DVTCompletingTextView class unavailable.\n");
 		return nil;
 	}
 	
-	id windowController=objc_msgSend(objc_getClass("IDEWorkspaceWindowController"),
-									 @selector(workspaceWindowControllerForWindow:),
-									 (id)mainWindow);
-	//NSLog(@"%s: wc=%p (%s)\n",__FUNCTION__,wc,class_getName([wc class]));
-	if(!windowController)
-	{
-		NSLog(@"Can't find IDE text view - no window controller.\n");
-		return nil;
-	}
+	id textView=nil;
 	
-	id tabController=objc_msgSend(windowController,@selector(activeWorkspaceTabController));
-	//NSLog(@"%s: tc=%p (%s)\n",__FUNCTION__,tc,class_getName([tc class]));
-	if(!tabController)
+	for(NSResponder *responder=[mainWindow firstResponder];responder;responder=[responder nextResponder])
 	{
-		NSLog(@"Can't find IDE text view - no tab controller.\n");
-		return nil;
-	}
-	
-	id editorArea=objc_msgSend(tabController,@selector(editorArea));
-	//NSLog(@"%s: ea=%p (%s)\n",__FUNCTION__,editorArea,class_getName([ea class]));
-	if(!editorArea)
-	{
-		NSLog(@"Can't find IDE text view - no editor area.\n");
-		return nil;
-	}
-	
-	id primaryEditorContext=objc_msgSend(editorArea,@selector(primaryEditorContext));
-	if(!primaryEditorContext)
-	{
-		NSLog(@"Can't find IDE text view - no primary editor context.\n");
-		return nil;
-	}
-	
-	if(![primaryEditorContext isKindOfClass:objc_getClass("IDEEditorContext")])
-	{
-		NSLog(@"Can't find IDE text view - primary editor context is class %@.\n",[mainWindow class]);
-		return nil;
-	}
-	
-	id editor=objc_msgSend(primaryEditorContext,@selector(editor));
-	if(!editor)
-	{
-		NSLog(@"Can't find IDE text view - no primary editor context editor.\n");
-		return nil;
-	}
-	
-	if([editor isKindOfClass:objc_getClass("IDESourceCodeEditor")])
-	{
-		id textView=objc_msgSend(editor,@selector(textView));
-		if(!textView)
+		if([responder isKindOfClass:DVTCompletingTextView])
 		{
-			NSLog(@"Can't find IDE text view - primary editor context's IDESourceCodeEditor editor has nil text view.\n");
-			return nil;
+			textView=responder;
+			break;
 		}
-		
-		return textView;
 	}
-	else if([editor isKindOfClass:objc_getClass("IDEComparisonEditor")])
+	
+	if(!textView)
 	{
-		id keyEditor=objc_msgSend(editor,@selector(keyEditor));
-		if(!keyEditor)
-		{
-			NSLog(@"Can't find IDE text view - primary editor context's IDEComparisonEditor has nil keyEditor.\n");
-			return nil;
-		}
-
-		if(![keyEditor isKindOfClass:objc_getClass("IDESourceCodeEditor")])
-		{
-			NSLog(@"Can't find IDE text view - primary editor context's IDEComparisonEditor keyEditor is class %@.\n",[keyEditor class]);
-			return nil;
-		}
-		
-		id textView=objc_msgSend(keyEditor,@selector(textView));
-		if(!textView)
-		{
-			NSLog(@"Can't find IDE text view - primary editor context's IDEComparisonEditor IDESourceCodeEditor keyEditor has nil text view.\n");
-			return nil;
-		}
-
-		return textView;
-	}
-	else
-	{
-		NSLog(@"Can't find IDE text view - primary editor context's editor is unsupported class %@.\n",[editor class]);
+		NSLog(@"Can't find IDE text view - no DVTCompletingTextView in the responder chain.\n");
 		return nil;
 	}
 	
+	return textView;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -226,7 +158,17 @@ static NSRange NSMakeRangeFromStartAndEnd(NSUInteger start,NSUInteger end)
 		NSLog(@"Not running scripts - IDE text view has no text storage.\n");
 		return;
 	}
-
+	
+	NSArray *inputRanges=[textView selectedRanges];
+	NSLog(@"%s: %u selected ranges:\n",__FUNCTION__,[inputRanges count]);
+	for(NSUInteger i=0;i<[inputRanges count];++i)
+	{
+		NSRange range=[[inputRanges objectAtIndex:i] rangeValue];
+		NSLog(@"    %u. %@\n",i,NSStringFromRange(range));
+	}
+	
+	NSLog(@"%s: select range: %@\n",__FUNCTION__,NSStringFromRange([textView selectedRange]));
+			  
 	NSString *inputStr=nil;
 	NSData *inputData=nil;
 	NSRange inputRange=[textView selectedRange];
