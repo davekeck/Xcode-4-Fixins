@@ -26,7 +26,7 @@ __InhibitTabNextPlaceholder__: This fixin disables using the tab key to select b
 
 __OptionClickDocumentation__: This fixin changes Xcode's behavior when option-clicking a symbol, by opening the documentation for the given symbol rather than opening the Quick Help popup. (Normally this behavior is accessed by option-clicking a symbol and then clicking the book icon in the Quick Help popup.) Note that this fixin is necessary because option-double-clicking a symbol doesn't display the documentation for the symbol - it just opens the documentation dialog with the symbol entered into the search field.
 
-__XCFixin_CurrentLineHighlighter__: This plugin adds highlighting to the line of the current cursor position. This makes visually tracking the current insertion point easier. Many editors have this feature. When in the editor, the Editor menu item will have a new item, "Current Line Highlight Color...", which allows the user to select the color.
+__CurrentLineHighlighter__: This plugin adds highlighting to the line of the current cursor position. This makes visually tracking the current insertion point easier. Many editors have this feature. When in the editor, the Editor menu item will have a new item, "Current Line Highlight Color...", which allows the user to select the color.
 
 __===== EXPERIMENTAL FIXINS =====__
 
