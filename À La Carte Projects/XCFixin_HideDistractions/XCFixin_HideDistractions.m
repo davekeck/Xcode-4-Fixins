@@ -1,39 +1,7 @@
 #import <Cocoa/Cocoa.h>
 #import <objc/runtime.h>
 
-#define HDAssertMessageFormat @"Assertion failed (file: %s, function: %s, line: %u): %s\n"
-#define HDNoOp (void)0
-
-#define HDAssertOrPerform(condition, action)                                                                                                                              \
-({                                                                                                                                                                        \
-                                                                                                                                                                          \
-    bool __evaluated_condition = false;                                                                                                                                   \
-                                                                                                                                                                          \
-    __evaluated_condition = (condition);                                                                                                                                  \
-                                                                                                                                                                          \
-    if (!__evaluated_condition)                                                                                                                                           \
-    {                                                                                                                                                                     \
-                                                                                                                                                                          \
-        NSLog(HDAssertMessageFormat, __FILE__, __PRETTY_FUNCTION__, __LINE__, (#condition));                                                                              \
-        action;                                                                                                                                                           \
-                                                                                                                                                                          \
-    }                                                                                                                                                                     \
-                                                                                                                                                                          \
-})
-
-#define HDAssertOrRaise(condition) HDAssertOrPerform((condition), [NSException raise: NSGenericException format: @"A XCFixin_HideDistractions exception occurred"])
-
-#define HDConfirmOrPerform(condition, action)         \
-({                                                    \
-                                                      \
-    if (!(condition))                                 \
-    {                                                 \
-                                                      \
-        action;                                       \
-                                                      \
-    }                                                 \
-                                                      \
-})
+#import "XCFixin.h"
 
 static NSString *const kDisableAnimationsClassName = @"XCFixin_DisableAnimations";
 
@@ -42,65 +10,38 @@ static NSString *const kDisableAnimationsClassName = @"XCFixin_DisableAnimations
 
 @implementation XCFixin_HideDistractions
 
-+ (void)pluginDidLoad: (NSBundle *)plugin
-{
-
-    NSLog(@"%@ initializing...", NSStringFromClass([self class]));
-    
-    [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(applicationFinishedLaunching:)
-        name: NSApplicationDidFinishLaunchingNotification object: nil];
-    
-    NSLog(@"%@ complete!", NSStringFromClass([self class]));
-    return;
-    failed:
-    {
-    
-        NSLog(@"%@ failed. :(", NSStringFromClass([self class]));
-    
-    }
-
-}
-
 + (void)applicationFinishedLaunching: (NSNotification *)notification
 {
-
     NSMenu *mainMenu = nil,
            *viewMenu = nil;
     NSMenuItem *viewMenuItem = nil,
                *hideDistractionsMenuItem = nil;
     
     mainMenu = [NSApp mainMenu];
-    
-        HDAssertOrPerform(mainMenu, return);
+        XCFixinAssertOrPerform(mainMenu, return);
     
     viewMenuItem = [mainMenu itemWithTitle: @"View"];
-    
-        HDAssertOrPerform(viewMenuItem, return);
+        XCFixinAssertOrPerform(viewMenuItem, return);
     
     viewMenu = [viewMenuItem submenu];
+        XCFixinAssertOrPerform(viewMenuItem, return);
     
-        HDAssertOrPerform(viewMenuItem, return);
-    
-    hideDistractionsMenuItem = [viewMenu addItemWithTitle: @"Hide Distractions" action: @selector(hideDistractions:) keyEquivalent: @"d"];
-    
-        HDAssertOrPerform(hideDistractionsMenuItem, return);
-    
+    /* The 'Hide Distractions' menu item key combination can be set below. */
+    hideDistractionsMenuItem = [[[NSMenuItem alloc] initWithTitle: @"Hide Distractions" action: @selector(hideDistractions:) keyEquivalent: @"D"] autorelease];
+        XCFixinAssertOrPerform(hideDistractionsMenuItem, return);
     [hideDistractionsMenuItem setKeyEquivalentModifierMask: (NSCommandKeyMask | NSShiftKeyMask)];
     [hideDistractionsMenuItem setTarget: self];
-
+    [viewMenu addItem: hideDistractionsMenuItem];
 }
 
 + (void)clickMenuItem: (NSMenuItem *)menuItem
 {
-
     if (menuItem && [menuItem isEnabled])
         [NSApp sendAction: [menuItem action] to: [menuItem target] from: menuItem];
-
 }
 
 + (NSMenuItem *)menuItemWithPath: (NSString *)menuItemPath
 {
-
     NSArray *pathComponents = nil;
     NSString *currentPathComponent = nil;
     NSMenu *currentMenu = nil;
@@ -110,44 +51,36 @@ static NSString *const kDisableAnimationsClassName = @"XCFixin_DisableAnimations
         NSParameterAssert([menuItemPath length]);
     
     currentMenu = [NSApp mainMenu];
-    
-        HDAssertOrPerform(currentMenu, return nil);
+        XCFixinAssertOrPerform(currentMenu, return nil);
     
     pathComponents = [menuItemPath componentsSeparatedByString: @" > "];
     
     for (currentPathComponent in pathComponents)
     {
-    
-            HDAssertOrRaise(currentPathComponent);
-            HDAssertOrRaise([currentPathComponent length]);
+            XCFixinAssertOrRaise(currentPathComponent);
+            XCFixinAssertOrRaise([currentPathComponent length]);
         
         [currentMenu update];
         currentMenuItem = [currentMenu itemWithTitle: currentPathComponent];
-        
-            HDConfirmOrPerform(currentMenuItem && [currentMenuItem isEnabled], return nil);
+            XCFixinConfirmOrPerform(currentMenuItem && [currentMenuItem isEnabled], return nil);
         
         if ([currentMenuItem hasSubmenu])
             currentMenu = [currentMenuItem submenu];
-        
         else
             currentMenu = nil;
-    
     }
     
     return currentMenuItem;
-
 }
 
 + (void)hideDistractions: (id)sender
 {
-
     NSWindow *activeWindow = nil;
     
     /* Get the front window */
     
     activeWindow = [NSApp keyWindow];
-    
-        HDConfirmOrPerform(activeWindow, return);
+        XCFixinConfirmOrPerform(activeWindow, return);
     
     /* If we get here, everything checks out; that is, we have an active window and we have
        references to the required menus items. */
@@ -174,7 +107,16 @@ static NSString *const kDisableAnimationsClassName = @"XCFixin_DisableAnimations
     
     if (NSClassFromString(kDisableAnimationsClassName))
         [activeWindow enableFlushWindow];
+}
 
++ (void)pluginDidLoad: (NSBundle *)plugin
+{
+    XCFixinPreflight();
+    
+    [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(applicationFinishedLaunching:)
+        name: NSApplicationDidFinishLaunchingNotification object: nil];
+    
+    XCFixinPostflight();
 }
 
 @end
