@@ -33,13 +33,9 @@
 //  WITH THE SOFTWARE.
 
 #import <Cocoa/Cocoa.h>
+#import "XCFixin.h"
 
-// Singleton instance
-//
-static id singleton = nil;
-
-
-@interface XCodeCurrentLineHighlighter : NSObject
+@interface XCFixin_XCodeCurrentLineHighlighter : NSObject
 {
   @private
     Class         sourceEditorViewClass;
@@ -48,25 +44,7 @@ static id singleton = nil;
 @end
 
 
-@implementation XCodeCurrentLineHighlighter
-
-//-----------------------------------------------------------------------------------------------
-+ (void) load { // This class method gets called when the library is loaded
-//-----------------------------------------------------------------------------------------------
-  // This library will get loaded by every subprocess that gets spawned,
-  // so make sure to ignore anything but the main Xcode application.
-  //
-  if ( [[[NSProcessInfo processInfo] processName] isEqualToString:@"Xcode"] ) {
-
-    // NSLog(@"Xcode current line highlighter plugin loaded");
-     
-    if (singleton == nil) {
-      NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];       
-      singleton = [[XCodeCurrentLineHighlighter alloc] init];            
-      [pool drain];
-    }
-  }
-}
+@implementation XCFixin_XCodeCurrentLineHighlighter
 
 //-----------------------------------------------------------------------------------------------
 - (id) init {
@@ -280,5 +258,22 @@ static id singleton = nil;
   }
 }
 
+//-----------------------------------------------------------------------------------------------
++ (void) pluginDidLoad: (NSBundle*)plugin
+//-----------------------------------------------------------------------------------------------
+{
+    // Singleton instance
+    static id highlighter = nil;
+
+    XCFixinPreflight();
+
+    highlighter = [[XCFixin_XCodeCurrentLineHighlighter alloc] init];            
+
+    if (!highlighter) {
+      NSLog(@"%s: highlighter init failed.\n",__FUNCTION__);
+    }
+
+    XCFixinPostflight();
+}
 
 @end

@@ -23,7 +23,7 @@
 	<key>CFBundleVersion</key>
 	<string>1</string>
 	<key>NSPrincipalClass</key>
-	<string>CurrentLineHighlighter</string>
+	<string>XCFixin_CurrentLineHighlighter</string>
 	<key>XC4Compatible</key>
 	<true/>
 	<key>XCGCReady</key>

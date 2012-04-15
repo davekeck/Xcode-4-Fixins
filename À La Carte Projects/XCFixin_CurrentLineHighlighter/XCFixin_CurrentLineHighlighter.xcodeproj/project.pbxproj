@@ -10,6 +10,7 @@
 		55C015D212B7BC2500354E5C /* XCFixin_CurrentLineHighlighter.m in Sources */ = {isa = PBXBuildFile; fileRef = 55C015D112B7BC2500354E5C /* XCFixin_CurrentLineHighlighter.m */; };
 		8D5B49B0048680CD000E48DA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C167DFE841241C02AAC07 /* InfoPlist.strings */; };
 		8D5B49B4048680CD000E48DA /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */; };
+		A120F04B153A772C00FDC691 /* XCFixin.m in Sources */ = {isa = PBXBuildFile; fileRef = A120F04A153A772C00FDC691 /* XCFixin.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -18,6 +19,8 @@
 		55C015D112B7BC2500354E5C /* XCFixin_CurrentLineHighlighter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XCFixin_CurrentLineHighlighter.m; sourceTree = "<group>"; };
 		8D5B49B6048680CD000E48DA /* XCFixin_CurrentLineHighlighter.xcplugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = XCFixin_CurrentLineHighlighter.xcplugin; sourceTree = BUILT_PRODUCTS_DIR; };
 		8D5B49B7048680CD000E48DA /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A120F048153A73DE00FDC691 /* XCFixin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XCFixin.h; path = "/Users/andy/Projects/Xcode-4-Fixins/À La Carte Projects/XCFixin_HideDistractions/../../Shared Code/XCFixin.h"; sourceTree = "<absolute>"; };
+		A120F04A153A772C00FDC691 /* XCFixin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XCFixin.m; path = "/Users/andy/Projects/Xcode-4-Fixins/À La Carte Projects/XCFixin_UserScripts/../../Shared Code/XCFixin.m"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +66,8 @@
 		08FB77AFFE84173DC02AAC07 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				A120F048153A73DE00FDC691 /* XCFixin.h */,
+				A120F04A153A772C00FDC691 /* XCFixin.m */,
 				55C015D112B7BC2500354E5C /* XCFixin_CurrentLineHighlighter.m */,
 			);
 			name = Classes;
@@ -149,6 +154,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				55C015D212B7BC2500354E5C /* XCFixin_CurrentLineHighlighter.m in Sources */,
+				A120F04B153A772C00FDC691 /* XCFixin.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
