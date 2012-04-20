@@ -22,19 +22,23 @@ static NSString *GetObjectDescription(id obj)
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-static NSTextView *FindIDETextView(void)
+static NSTextView *FindIDETextView(BOOL log)
 {
 	NSWindow *mainWindow=[[NSApplication sharedApplication] mainWindow];
 	if(!mainWindow)
 	{
-		NSLog(@"Can't find IDE text view - no main window.\n");
+		if(log)
+			NSLog(@"Can't find IDE text view - no main window.\n");
+		
 		return nil;
 	}
 	
 	Class DVTCompletingTextView=objc_getClass("DVTCompletingTextView");
 	if(!DVTCompletingTextView)
 	{
-		NSLog(@"Can't find IDE text view - DVTCompletingTextView class unavailable.\n");
+		if(log)
+			NSLog(@"Can't find IDE text view - DVTCompletingTextView class unavailable.\n");
+		
 		return nil;
 	}
 	
@@ -51,7 +55,9 @@ static NSTextView *FindIDETextView(void)
 	
 	if(!textView)
 	{
-		NSLog(@"Can't find IDE text view - no DVTCompletingTextView in the responder chain.\n");
+		if(log)
+			NSLog(@"Can't find IDE text view - no DVTCompletingTextView in the responder chain.\n");
+		
 		return nil;
 	}
 	
@@ -145,7 +151,7 @@ static NSRange NSMakeRangeFromStartAndEnd(NSUInteger start,NSUInteger end)
 {
 	NSLog(@"%s: path=%@\n",__FUNCTION__,fileName_);
 	
-	NSTextView *textView=FindIDETextView();
+	NSTextView *textView=FindIDETextView(YES);
 	if(!textView)
 	{
 		NSLog(@"Not running scripts - can't find IDE text view.\n");
@@ -397,7 +403,9 @@ static NSRange NSMakeRangeFromStartAndEnd(NSUInteger start,NSUInteger end)
 ////////////////////////////////////////////////////////////////////////////////
 
 @interface XCFixin_ScriptsHandler:NSObject
-
+{
+	NSMenuItem *refreshMenuItem_;
+}
 @end
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -596,9 +604,10 @@ static NSString *SystemFolderName(int folderType,int domain)
 			[scriptsMenu addItem:[NSMenuItem separatorItem]];
 	}
 
-	[[scriptsMenu addItemWithTitle:@"Refresh"
-							action:@selector(refreshScriptsMenuAction:)
-					 keyEquivalent:@""] setTarget:self];
+	refreshMenuItem_=[scriptsMenu addItemWithTitle:@"Refresh"
+											 action:@selector(refreshScriptsMenuAction:)
+									 keyEquivalent:@""];
+	[refreshMenuItem_ setTarget:self];
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -654,8 +663,19 @@ static NSString *SystemFolderName(int folderType,int domain)
 
 -(BOOL)validateMenuItem:(NSMenuItem *)menuItem
 {
-	NSLog(@"%s: title=\"%@\"\n",__FUNCTION__,[menuItem title]);
-	return YES;
+	if(menuItem==refreshMenuItem_)
+	{
+		// `Refresh' is always enabled.
+		return YES;
+	}
+	
+	if(FindIDETextView(NO))
+	{
+		// Script items are enabled if the focus is on a text editor.
+		return YES;
+	}
+	
+	return NO;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
