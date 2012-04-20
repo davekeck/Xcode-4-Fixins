@@ -19,8 +19,8 @@
 		55C015D112B7BC2500354E5C /* XCFixin_CurrentLineHighlighter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XCFixin_CurrentLineHighlighter.m; sourceTree = "<group>"; };
 		8D5B49B6048680CD000E48DA /* XCFixin_CurrentLineHighlighter.xcplugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = XCFixin_CurrentLineHighlighter.xcplugin; sourceTree = BUILT_PRODUCTS_DIR; };
 		8D5B49B7048680CD000E48DA /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		A120F048153A73DE00FDC691 /* XCFixin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XCFixin.h; path = "/Users/andy/Projects/Xcode-4-Fixins/À La Carte Projects/XCFixin_HideDistractions/../../Shared Code/XCFixin.h"; sourceTree = "<absolute>"; };
-		A120F04A153A772C00FDC691 /* XCFixin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XCFixin.m; path = "/Users/andy/Projects/Xcode-4-Fixins/À La Carte Projects/XCFixin_UserScripts/../../Shared Code/XCFixin.m"; sourceTree = "<absolute>"; };
+		A120F048153A73DE00FDC691 /* XCFixin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XCFixin.h; path = "../../Shared Code/XCFixin.h"; sourceTree = "<group>"; };
+		A120F04A153A772C00FDC691 /* XCFixin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XCFixin.m; path = "../../Shared Code/XCFixin.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
