@@ -6,7 +6,13 @@ This project includes plugins that extend Xcode and fix some of its annoying beh
 
 __===== INSTALLATION =====__
 
-A particular fixin can be installed by (1) opening the XCFixins workspace, (2) changing the scheme to the fixin you want to install, and (3) building the scheme (command-B). The fixin will automatically be installed as a part of the build process. Xcode must be relaunched for the fixins to take effect.
+To install a fixin:
+
+1. Open the XCFixins workspace
+2. Change the scheme to the fixin you want to install
+3. Build the scheme (command-B)
+
+The fixin will automatically be installed as a part of the build process. Xcode must be relaunched for the fixins to take effect.
 
 Fixins are installed into ~/Library/Application Support/Developer/Shared/Xcode/Plug-ins/.
 
