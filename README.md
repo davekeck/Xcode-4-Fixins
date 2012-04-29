@@ -6,15 +6,17 @@ This project includes plugins that extend Xcode and fix some of its annoying beh
 
 __===== INSTALLATION =====__
 
-To install all of the stable fixins, open XCFixins.xcworkspace and build it, and the fixins will automatically be installed as a part of the build process. Experimental fixins must be installed individually by building their respective projects found in the _À La Carte Projects_ directory.
-
-Xcode must be relaunched for the fixins to take effect.
+To install one of the fixins, simply open its respective project and build it; it will automatically be installed as a part of the build process. Xcode must be relaunched for the fixins to take effect.
 
 Fixins are installed into ~/Library/Application Support/Developer/Shared/Xcode/Plug-ins/.
 
-__===== STABLE FIXINS =====__
+__===== FIXINS =====__
+
+__CurrentLineHighlighter__: This fixin adds highlighting to the line of the current cursor position. This makes visually tracking the current insertion point easier. Many editors have this feature. When in the editor, the Editor menu item will have a new item, "Current Line Highlight Color...", which allows the user to select the color.
 
 __DisableAnimations__: This fixin disables Xcode's various NSAnimation-based animations. For example, the Show/Hide Debug Area, Show/Hide Navigator, and Show/Hide Utilities animations are disabled with this fixin.
+
+__DisableWriteStateData (Experimental)__: This fixin improves Xcode's responsiveness by disabling the -[IDEWorkspaceDocument writeStateData] method. This method is of course undocumented and I'm unsure what data it typically writes. In my testing, I've noticed this fixin prevents the active source file from being remembered across Xcode launches, and it's very likely that it prevents other data from being written as well. With that said, on my machine this fixin really improves Xcode's responsiveness.
 
 __FindFix__: By default, when Xcode's inline find bar opens, it doesn't display any options to customize searching. This fixin makes Xcode show all find options (such as "Ignore Case") in the find bar when it opens. This fixin also makes text-replacement the default mode in the inline find bar, giving immediate access to the "Replace" and "Replace All" buttons.
 
@@ -26,12 +28,4 @@ __InhibitTabNextPlaceholder__: This fixin disables using the tab key to select b
 
 __OptionClickDocumentation__: This fixin changes Xcode's behavior when option-clicking a symbol, by opening the documentation for the given symbol rather than opening the Quick Help popup. (Normally this behavior is accessed by option-clicking a symbol and then clicking the book icon in the Quick Help popup.) Note that this fixin is necessary because option-double-clicking a symbol doesn't display the documentation for the symbol - it just opens the documentation dialog with the symbol entered into the search field.
 
-__CurrentLineHighlighter__: This plugin adds highlighting to the line of the current cursor position. This makes visually tracking the current insertion point easier. Many editors have this feature. When in the editor, the Editor menu item will have a new item, "Current Line Highlight Color...", which allows the user to select the color.
-
-__===== EXPERIMENTAL FIXINS =====__
-
-These fixins must be built individually to be installed; see their individual projects in the _À La Carte Projects_ directory.
-
-__DisableWriteStateData__: This fixin improves Xcode's responsiveness by disabling the -[IDEWorkspaceDocument writeStateData] method. This method is of course undocumented and I'm unsure what data it typically writes. In my testing, I've noticed this fixin prevents the active source file from being remembered across Xcode launches, and it's very likely that it prevents other data from being written as well. With that said, on my machine this fixin really improves Xcode's responsiveness.
-
-__UserScripts__: Reinstates some semblance of the Xcode 3.x User Scripts menu. See documentation in the XCFixin_UserScripts directory.
+__UserScripts (Experimental)__: Reinstates some semblance of the Xcode 3.x User Scripts menu. See documentation in the XCFixin_UserScripts directory.

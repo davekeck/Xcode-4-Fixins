@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5514A4031506CB9E00A8AD77 /* XCFixin.m in Sources */ = {isa = PBXBuildFile; fileRef = 5514A4021506CB9E00A8AD77 /* XCFixin.m */; };
-		55C015D212B7BC2500354E5C /* XCFixin_HideDistractions.m in Sources */ = {isa = PBXBuildFile; fileRef = 55C015D112B7BC2500354E5C /* XCFixin_HideDistractions.m */; };
+		5514A3FD1506CB9500A8AD77 /* XCFixin.m in Sources */ = {isa = PBXBuildFile; fileRef = 5514A3FC1506CB9500A8AD77 /* XCFixin.m */; };
+		55C015D212B7BC2500354E5C /* XCFixin_DisableWriteStateData.m in Sources */ = {isa = PBXBuildFile; fileRef = 55C015D112B7BC2500354E5C /* XCFixin_DisableWriteStateData.m */; };
 		8D5B49B0048680CD000E48DA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C167DFE841241C02AAC07 /* InfoPlist.strings */; };
 		8D5B49B4048680CD000E48DA /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */; };
 /* End PBXBuildFile section */
@@ -16,10 +16,10 @@
 /* Begin PBXFileReference section */
 		089C167EFE841241C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
-		5514A4021506CB9E00A8AD77 /* XCFixin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XCFixin.m; path = "../../Shared Code/XCFixin.m"; sourceTree = "<group>"; };
-		5595EEF1150067D400A30634 /* XCFixin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XCFixin.h; path = "../../Shared Code/XCFixin.h"; sourceTree = "<group>"; };
-		55C015D112B7BC2500354E5C /* XCFixin_HideDistractions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XCFixin_HideDistractions.m; sourceTree = "<group>"; };
-		8D5B49B6048680CD000E48DA /* XCFixin_HideDistractions.xcplugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = XCFixin_HideDistractions.xcplugin; sourceTree = BUILT_PRODUCTS_DIR; };
+		5514A3FC1506CB9500A8AD77 /* XCFixin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XCFixin.m; path = "../Shared Code/XCFixin.m"; sourceTree = "<group>"; };
+		5595EEED150067CE00A30634 /* XCFixin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XCFixin.h; path = "../Shared Code/XCFixin.h"; sourceTree = "<group>"; };
+		55C015D112B7BC2500354E5C /* XCFixin_DisableWriteStateData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XCFixin_DisableWriteStateData.m; sourceTree = "<group>"; };
+		8D5B49B6048680CD000E48DA /* XCFixin_DisableWriteStateData.xcplugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = XCFixin_DisableWriteStateData.xcplugin; sourceTree = BUILT_PRODUCTS_DIR; };
 		8D5B49B7048680CD000E48DA /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -35,7 +35,7 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		089C166AFE841209C02AAC07 /* XCFixin_HideDistractions */ = {
+		089C166AFE841209C02AAC07 /* XCFixin_DisableWriteStateData */ = {
 			isa = PBXGroup;
 			children = (
 				08FB77AFFE84173DC02AAC07 /* Classes */,
@@ -43,7 +43,7 @@
 				089C1671FE841209C02AAC07 /* Frameworks and Libraries */,
 				19C28FB8FE9D52D311CA2CBB /* Products */,
 			);
-			name = XCFixin_HideDistractions;
+			name = XCFixin_DisableWriteStateData;
 			sourceTree = "<group>";
 		};
 		089C1671FE841209C02AAC07 /* Frameworks and Libraries */ = {
@@ -66,9 +66,9 @@
 		08FB77AFFE84173DC02AAC07 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				5595EEF1150067D400A30634 /* XCFixin.h */,
-				5514A4021506CB9E00A8AD77 /* XCFixin.m */,
-				55C015D112B7BC2500354E5C /* XCFixin_HideDistractions.m */,
+				5595EEED150067CE00A30634 /* XCFixin.h */,
+				5514A3FC1506CB9500A8AD77 /* XCFixin.m */,
+				55C015D112B7BC2500354E5C /* XCFixin_DisableWriteStateData.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -84,7 +84,7 @@
 		19C28FB8FE9D52D311CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				8D5B49B6048680CD000E48DA /* XCFixin_HideDistractions.xcplugin */,
+				8D5B49B6048680CD000E48DA /* XCFixin_DisableWriteStateData.xcplugin */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -92,9 +92,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		8D5B49AC048680CD000E48DA /* XCFixin_HideDistractions */ = {
+		8D5B49AC048680CD000E48DA /* XCFixin_DisableWriteStateData */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1DEB913A08733D840010E9CD /* Build configuration list for PBXNativeTarget "XCFixin_HideDistractions" */;
+			buildConfigurationList = 1DEB913A08733D840010E9CD /* Build configuration list for PBXNativeTarget "XCFixin_DisableWriteStateData" */;
 			buildPhases = (
 				8D5B49AF048680CD000E48DA /* Resources */,
 				8D5B49B1048680CD000E48DA /* Sources */,
@@ -104,10 +104,10 @@
 			);
 			dependencies = (
 			);
-			name = XCFixin_HideDistractions;
+			name = XCFixin_DisableWriteStateData;
 			productInstallPath = "$(HOME)/Library/Bundles";
-			productName = XCFixin_HideDistractions;
-			productReference = 8D5B49B6048680CD000E48DA /* XCFixin_HideDistractions.xcplugin */;
+			productName = XCFixin_DisableWriteStateData;
+			productReference = 8D5B49B6048680CD000E48DA /* XCFixin_DisableWriteStateData.xcplugin */;
 			productType = "com.apple.product-type.bundle";
 		};
 /* End PBXNativeTarget section */
@@ -118,7 +118,7 @@
 			attributes = {
 				LastUpgradeCheck = 0410;
 			};
-			buildConfigurationList = 1DEB913E08733D840010E9CD /* Build configuration list for PBXProject "XCFixin_HideDistractions" */;
+			buildConfigurationList = 1DEB913E08733D840010E9CD /* Build configuration list for PBXProject "XCFixin_DisableWriteStateData" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 1;
@@ -128,11 +128,11 @@
 				French,
 				German,
 			);
-			mainGroup = 089C166AFE841209C02AAC07 /* XCFixin_HideDistractions */;
+			mainGroup = 089C166AFE841209C02AAC07 /* XCFixin_DisableWriteStateData */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				8D5B49AC048680CD000E48DA /* XCFixin_HideDistractions */,
+				8D5B49AC048680CD000E48DA /* XCFixin_DisableWriteStateData */,
 			);
 		};
 /* End PBXProject section */
@@ -153,8 +153,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				55C015D212B7BC2500354E5C /* XCFixin_HideDistractions.m in Sources */,
-				5514A4031506CB9E00A8AD77 /* XCFixin.m in Sources */,
+				55C015D212B7BC2500354E5C /* XCFixin_DisableWriteStateData.m in Sources */,
+				5514A3FD1506CB9500A8AD77 /* XCFixin.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -183,7 +183,7 @@
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "/Library/Application Support/Developer/Shared/Xcode/Plug-ins";
 				LD_RUNPATH_SEARCH_PATHS = /Developer;
-				PRODUCT_NAME = XCFixin_HideDistractions;
+				PRODUCT_NAME = XCFixin_DisableWriteStateData;
 				STRIP_INSTALLED_PRODUCT = YES;
 				VALID_ARCHS = "i386 x86_64";
 				WRAPPER_EXTENSION = xcplugin;
@@ -202,7 +202,7 @@
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "/Library/Application Support/Developer/Shared/Xcode/Plug-ins";
 				LD_RUNPATH_SEARCH_PATHS = /Developer;
-				PRODUCT_NAME = XCFixin_HideDistractions;
+				PRODUCT_NAME = XCFixin_DisableWriteStateData;
 				STRIP_INSTALLED_PRODUCT = YES;
 				VALID_ARCHS = "i386 x86_64";
 				WRAPPER_EXTENSION = xcplugin;
@@ -235,7 +235,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1DEB913A08733D840010E9CD /* Build configuration list for PBXNativeTarget "XCFixin_HideDistractions" */ = {
+		1DEB913A08733D840010E9CD /* Build configuration list for PBXNativeTarget "XCFixin_DisableWriteStateData" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1DEB913B08733D840010E9CD /* Debug */,
@@ -244,7 +244,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		1DEB913E08733D840010E9CD /* Build configuration list for PBXProject "XCFixin_HideDistractions" */ = {
+		1DEB913E08733D840010E9CD /* Build configuration list for PBXProject "XCFixin_DisableWriteStateData" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1DEB913F08733D840010E9CD /* Debug */,
