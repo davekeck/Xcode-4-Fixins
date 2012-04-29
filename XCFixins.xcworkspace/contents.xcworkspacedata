@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <FileRef
+      location = "group:XCFixin_CurrentLineHighlighter/XCFixin_CurrentLineHighlighter.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:XCFixin_DisableAnimations/XCFixin_DisableAnimations.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:XCFixin_DisableWriteStateData/XCFixin_DisableWriteStateData.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:XCFixin_FindFix/XCFixin_FindFix.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:XCFixin_HideDistractions/XCFixin_HideDistractions.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:XCFixin_InhibitTabNextPlaceholder/XCFixin_InhibitTabNextPlaceholder.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:XCFixin_OptionClickDocumentation/XCFixin_OptionClickDocumentation.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:XCFixin_UserScripts/XCFixin_UserScripts.xcodeproj">
+   </FileRef>
+</Workspace>

@@ -1,12 +1,12 @@
 __This branch is known to be compatible with Xcode 4.3 and 4.3.2. For Xcode 4.0.2 support, see the xcode_402 branch.__
 
-__===== PROJECT DESCRIPTION =====__
+__===== DESCRIPTION =====__
 
 This project includes plugins that extend Xcode and fix some of its annoying behaviors, known as _fixins_.
 
 __===== INSTALLATION =====__
 
-To install one of the fixins, simply open its respective project and build it; it will automatically be installed as a part of the build process. Xcode must be relaunched for the fixins to take effect.
+A particular fixin can be installed by (1) opening the XCFixins workspace, (2) changing the scheme to the fixin you want to install, and (3) building the scheme (command-B). The fixin will automatically be installed as a part of the build process. Xcode must be relaunched for the fixins to take effect.
 
 Fixins are installed into ~/Library/Application Support/Developer/Shared/Xcode/Plug-ins/.
 
