@@ -35,3 +35,5 @@ __InhibitTabNextPlaceholder__: This fixin disables using the tab key to select b
 __OptionClickDocumentation__: This fixin changes Xcode's behavior when option-clicking a symbol, by opening the documentation for the given symbol rather than opening the Quick Help popup. (Normally this behavior is accessed by option-clicking a symbol and then clicking the book icon in the Quick Help popup.) Note that this fixin is necessary because option-double-clicking a symbol doesn't display the documentation for the symbol - it just opens the documentation dialog with the symbol entered into the search field.
 
 __UserScripts (Experimental)__: Reinstates some semblance of the Xcode 3.x User Scripts menu. See documentation in the XCFixin_UserScripts directory.
+
+__XCFixin_CustomizeWarningErrorHighlights__: Customize the inline error/warning message highlight color. Useful if want to be able to read tour code when you use a dark background color.

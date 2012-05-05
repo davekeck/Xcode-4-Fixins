@@ -39,9 +39,8 @@ static void overridenewMessageAttributesForFont(id self, SEL _cmd, DVTTextAnnota
 
 
 
-
 + (void)pluginDidLoad: (NSBundle *)plugin{
-		
+	
     XCFixinPreflight();
 
 	//define gradient for warning text highlight
