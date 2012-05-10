@@ -27,7 +27,8 @@ static void overridenewMessageAttributesForFont(id self, SEL _cmd, DVTTextAnnota
 
 	const char* className = class_getName([self class]);	
 	DVTTextAnnotationTheme * newTheme  = arg1;
-	
+
+	//NSLog(@">>> %s\n", className);
 	if (  strcmp(className, "IDEBuildIssueStaticAnalyzerResultAnnotation") == 0 ){	// apply our own theme for Warning Messages	
 		newTheme = analyzerTheme;
 	}
@@ -36,7 +37,8 @@ static void overridenewMessageAttributesForFont(id self, SEL _cmd, DVTTextAnnota
 		newTheme = warningTheme;
 	}
 
-	if (  strcmp(className, "IDEDiagnosticErrorAnnotation") == 0 ){		// apply our own theme for Error Messages	
+	if (  strcmp(className, "IDEDiagnosticErrorAnnotation") == 0 ||
+		strcmp(className, "IDEBuildIssueErrorAnnotation") == 0  ){		// apply our own theme for Error Messages	
 		newTheme = errorTheme;
 	}
 
