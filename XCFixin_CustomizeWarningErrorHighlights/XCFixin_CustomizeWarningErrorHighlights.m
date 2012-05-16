@@ -19,6 +19,7 @@ static IMP gOriginalnewMessageAttributesForFont = nil;
 static DVTTextAnnotationTheme * warningTheme;
 static DVTTextAnnotationTheme * errorTheme;
 static DVTTextAnnotationTheme * analyzerTheme;
+static DVTTextAnnotationTheme * debuggerTheme;
 
 
 @implementation XCFixin_CustomizeWarningErrorHighlights
@@ -42,6 +43,11 @@ static void overridenewMessageAttributesForFont(id self, SEL _cmd, DVTTextAnnota
 		newTheme = errorTheme;
 	}
 
+	if (  strcmp(className, "DBGInstructionPointerAnnotation") == 0 ){	// apply our own theme for debugging annotations	
+		newTheme = debuggerTheme;
+	}
+
+	
     ((void (*)(id, SEL, DVTTextAnnotationTheme*, id))gOriginalnewMessageAttributesForFont)(self, _cmd , newTheme, arg2);
 }
 
@@ -101,6 +107,24 @@ static void overridenewMessageAttributesForFont(id self, SEL _cmd, DVTTextAnnota
 							   highlightedRangeBorderColor: [NSColor clearColor] 
 	 ];
 	[gAnalyzer release];
+
+	
+	//define gradient for debugger text highlight
+	NSGradient * gDebugger = [[NSGradient alloc] initWithStartingColor:[NSColor colorWithDeviceRed:0 green:1 blue:1 alpha:0.2]
+														   endingColor: [NSColor colorWithDeviceRed:0 green:1 blue:1 alpha:0.2]];
+	
+	//define static debugger text highlight theme
+	debuggerTheme = 
+	[[DVTTextAnnotationTheme alloc] initWithHighlightColor: [NSColor colorWithDeviceRed:0.0 green:1 blue:1 alpha:0.15] 
+											borderTopColor: [NSColor clearColor]
+										 borderBottomColor: [NSColor clearColor]
+										   overlayGradient: nil
+								  messageBubbleBorderColor: [NSColor colorWithDeviceRed:0.0 green:1 blue:1 alpha:0.25] 
+									 messageBubbleGradient: gDebugger
+												caretColor: [NSColor blueColor]  
+							   highlightedRangeBorderColor: [NSColor clearColor] 
+	 ];
+	[gDebugger release];
 
 	gOriginalnewMessageAttributesForFont = XCFixinOverrideMethodString(@"DVTTextAnnotation", @selector(setTheme:forState:), (IMP)&overridenewMessageAttributesForFont);
 		XCFixinAssertOrPerform(gOriginalnewMessageAttributesForFont, goto failed);
