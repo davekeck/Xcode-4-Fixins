@@ -26,8 +26,6 @@ static DVTTextAnnotationTheme * grayTheme;
 @implementation XCFixin_CustomizeWarningErrorHighlights
 
 static void overridenewMessageAttributesForFont(id self, SEL _cmd, DVTTextAnnotationTheme* arg1, id arg2){
-
-	//IDEBuildIssueWarningAnnotation
 	
 	const char* className = class_getName([self class]);	
 	DVTTextAnnotationTheme * newTheme  = arg1;
@@ -53,6 +51,11 @@ static void overridenewMessageAttributesForFont(id self, SEL _cmd, DVTTextAnnota
 
 	if (  strcmp(className, "IDEBuildIssueNoticeAnnotation") == 0 ){	// apply our own theme for Build Issue Notice annotations	
 		newTheme = grayTheme;
+	}else
+	
+	if (  strcmp(className, "IBAnnotation") == 0 ){	
+		// nothing to be done here... this is the anotation that links Nib files with source code (round little icon 
+		//by the sidebar on IBOutlet on .h files)
 	}else{
 		/// what the heck is it then?
 		NSLog(@">>> %s\n", className);
@@ -66,17 +69,21 @@ static void overridenewMessageAttributesForFont(id self, SEL _cmd, DVTTextAnnota
 + (void)pluginDidLoad: (NSBundle *)plugin{
 	
     XCFixinPreflight();
+	float lineAlpha = 0.20;	//whole line
+	float topAlpha = 0.4;	//the right-hand label
+	float bottomAlpha = 0.4;
 
 	//define gradient for warning text highlight
-	NSGradient * gWarning = [[NSGradient alloc] initWithStartingColor:[NSColor colorWithDeviceRed:1 green:1 blue:0 alpha:0.5]
-												   endingColor: [NSColor colorWithDeviceRed:1 green:1 blue:0 alpha:0.5]];
+	NSColor * warningColor = [NSColor colorWithDeviceRed:1 green:1 blue:0 alpha: lineAlpha];
+	NSGradient * gWarning = [[NSGradient alloc] initWithStartingColor: [warningColor colorWithAlphaComponent: topAlpha]
+														  endingColor: [warningColor colorWithAlphaComponent: bottomAlpha]];
 	//define warning text highlight theme
 	warningTheme = 
-	[[DVTTextAnnotationTheme alloc] initWithHighlightColor: [NSColor colorWithDeviceRed:1 green:1 blue:0 alpha:0.15] 
+	[[DVTTextAnnotationTheme alloc] initWithHighlightColor: warningColor 
 											borderTopColor: [NSColor clearColor]
 										 borderBottomColor: [NSColor clearColor]
 										   overlayGradient: nil
-								  messageBubbleBorderColor: [NSColor colorWithDeviceRed:1 green:1 blue:0 alpha:0.25] 
+								  messageBubbleBorderColor: [NSColor clearColor] 
 									 messageBubbleGradient: gWarning
 												caretColor: [NSColor yellowColor]  
 							   highlightedRangeBorderColor: [NSColor clearColor] 
@@ -85,15 +92,16 @@ static void overridenewMessageAttributesForFont(id self, SEL _cmd, DVTTextAnnota
 	
 	
 	//define gradient for error text highlight
-	NSGradient * gError = [[NSGradient alloc] initWithStartingColor:[NSColor colorWithDeviceRed:1 green:0 blue:0 alpha:0.5]
-												   endingColor: [NSColor colorWithDeviceRed:1 green:0 blue:0 alpha:0.5]];
+	NSColor * errorColor = [NSColor colorWithDeviceRed:1 green:0 blue:0 alpha: lineAlpha];
+	NSGradient * gError = [[NSGradient alloc] initWithStartingColor: [errorColor colorWithAlphaComponent: topAlpha]
+														endingColor: [errorColor colorWithAlphaComponent: bottomAlpha]];
 	//define error text highlight theme
 	errorTheme = 
-	[[DVTTextAnnotationTheme alloc] initWithHighlightColor: [NSColor colorWithDeviceRed:1 green:0 blue:0 alpha:0.2] 
+	[[DVTTextAnnotationTheme alloc] initWithHighlightColor: errorColor 
 											borderTopColor: [NSColor clearColor]
 										 borderBottomColor: [NSColor clearColor]
 										   overlayGradient: nil
-								  messageBubbleBorderColor: [NSColor colorWithDeviceRed:1 green:0 blue:0 alpha:0.3] 
+								  messageBubbleBorderColor: [NSColor clearColor] 
 									 messageBubbleGradient: gError
 												caretColor: [NSColor redColor]  
 							   highlightedRangeBorderColor: [NSColor clearColor] 
@@ -102,15 +110,16 @@ static void overridenewMessageAttributesForFont(id self, SEL _cmd, DVTTextAnnota
 	
 
 	//define gradient for static Analyzer text highlight
-	NSGradient * gAnalyzer = [[NSGradient alloc] initWithStartingColor:[NSColor colorWithDeviceRed:0.8 green:0.8 blue:1 alpha:0.5]
-														endingColor: [NSColor colorWithDeviceRed:0.8 green:0.8 blue:1 alpha:0.5]];
+	NSColor * analyzerColor = [NSColor colorWithDeviceRed:0.5 green:0.5 blue:1 alpha: lineAlpha];
+	NSGradient * gAnalyzer = [[NSGradient alloc] initWithStartingColor: [analyzerColor colorWithAlphaComponent: topAlpha]
+														   endingColor: [analyzerColor colorWithAlphaComponent: bottomAlpha]];
 	//define static Analyzer text highlight theme
 	analyzerTheme = 
-	[[DVTTextAnnotationTheme alloc] initWithHighlightColor: [NSColor colorWithDeviceRed:0.8 green:0.8 blue:1 alpha:0.2] 
+	[[DVTTextAnnotationTheme alloc] initWithHighlightColor: analyzerColor 
 											borderTopColor: [NSColor clearColor]
 										 borderBottomColor: [NSColor clearColor]
 										   overlayGradient: nil
-								  messageBubbleBorderColor: [NSColor colorWithDeviceRed:0.8 green:0.8 blue:1 alpha:0.3] 
+								  messageBubbleBorderColor: [NSColor clearColor] 
 									 messageBubbleGradient: gAnalyzer
 												caretColor: [NSColor blueColor]  
 							   highlightedRangeBorderColor: [NSColor clearColor] 
@@ -119,37 +128,39 @@ static void overridenewMessageAttributesForFont(id self, SEL _cmd, DVTTextAnnota
 
 	
 	//define gradient for debugger text highlight
-	NSGradient * gDebugger = [[NSGradient alloc] initWithStartingColor:[NSColor colorWithDeviceRed:0 green:1 blue:1 alpha:0.3]
-														   endingColor: [NSColor colorWithDeviceRed:0 green:1 blue:1 alpha:0.3]];
+	NSColor * debuggerColor = [NSColor colorWithDeviceRed:0.0 green:1 blue:0.5 alpha: lineAlpha];
+	NSGradient * gDebugger = [[NSGradient alloc] initWithStartingColor: [debuggerColor colorWithAlphaComponent: topAlpha]
+														   endingColor: [debuggerColor colorWithAlphaComponent: bottomAlpha]];
 	//define static debugger text highlight theme
 	debuggerTheme = 
-	[[DVTTextAnnotationTheme alloc] initWithHighlightColor: [NSColor colorWithDeviceRed:0.0 green:1 blue:1 alpha:0.15] 
+	[[DVTTextAnnotationTheme alloc] initWithHighlightColor: debuggerColor 
 											borderTopColor: [NSColor clearColor]
 										 borderBottomColor: [NSColor clearColor]
 										   overlayGradient: nil
-								  messageBubbleBorderColor: [NSColor colorWithDeviceRed:0.0 green:1 blue:1 alpha:0.25] 
+								  messageBubbleBorderColor: [NSColor clearColor] 
 									 messageBubbleGradient: gDebugger
-												caretColor: [NSColor cyanColor]  
+												caretColor: [NSColor greenColor]  
 							   highlightedRangeBorderColor: [NSColor clearColor] 
 	 ];
 	[gDebugger release];
 	
 
-	//define gradient for debugger text highlight
-	NSGradient * gNotice = [[NSGradient alloc] initWithStartingColor:[NSColor colorWithDeviceRed:0.5 green:0.5 blue:0.5 alpha:0.3]
-														   endingColor: [NSColor colorWithDeviceRed:0.5 green:0.5 blue:0.5 alpha:0.3]];
+	//define gradient for Notice text highlight
+	NSColor * noticeColor = [NSColor colorWithDeviceRed:0.25 green:0.25 blue:0.25 alpha: lineAlpha];
+	NSGradient * gNotice = [[NSGradient alloc] initWithStartingColor: [noticeColor colorWithAlphaComponent: topAlpha]
+														 endingColor: [noticeColor colorWithAlphaComponent: bottomAlpha]];
 	//define Notice text highlight theme
 	grayTheme = 
-	[[DVTTextAnnotationTheme alloc] initWithHighlightColor: [NSColor colorWithDeviceRed:0.5 green:0.5 blue:0.5 alpha:0.25] 
+	[[DVTTextAnnotationTheme alloc] initWithHighlightColor: noticeColor 
 											borderTopColor: [NSColor clearColor]
 										 borderBottomColor: [NSColor clearColor]
 										   overlayGradient: nil
-								  messageBubbleBorderColor: [NSColor colorWithDeviceRed:0.5 green:0.5 blue:0.5 alpha:0.35] 
+								  messageBubbleBorderColor: [NSColor clearColor] 
 									 messageBubbleGradient: gNotice
 												caretColor: [NSColor grayColor]  
 							   highlightedRangeBorderColor: [NSColor clearColor] 
 	 ];
-	[grayTheme release];
+	[gNotice release];
 
 	gOriginalnewMessageAttributesForFont = XCFixinOverrideMethodString(@"DVTTextAnnotation", @selector(setTheme:forState:), (IMP)&overridenewMessageAttributesForFont);
 		XCFixinAssertOrPerform(gOriginalnewMessageAttributesForFont, goto failed);
