@@ -53,9 +53,9 @@ static void overridenewMessageAttributesForFont(id self, SEL _cmd, DVTTextAnnota
 		newTheme = grayTheme;
 	}else
 	
-	if (  strcmp(className, "IBAnnotation") == 0 ){	
-		// nothing to be done here... this is the anotation that links Nib files with source code (round little icon 
-		//by the sidebar on IBOutlet on .h files)
+	if (  strcmp(className, "IBAnnotation") == 0 || strcmp(className, "DBGBreakpointAnnotation") == 0 ){	
+		// nothing to be done here... those anotations are only for the sidebar, so no overlay applied
+		//on top of the source code for those ones
 	}else{
 		/// what the heck is it then?
 		NSLog(@">>> %s\n", className);
