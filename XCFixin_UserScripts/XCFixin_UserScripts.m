@@ -638,14 +638,14 @@ static NSString *SystemFolderName(int folderType,int domain)
 		return NO;
 	}
 	
-	NSInteger helpIndex=[mainMenu indexOfItemWithTitle:@"Help"];
-	if(helpIndex<0)
-		helpIndex=[mainMenu numberOfItems];
+	NSInteger menuIndex=[mainMenu indexOfItemWithTitle:@"Window"];
+	if(menuIndex<0)
+		menuIndex=[mainMenu numberOfItems];
 	
 	NSMenuItem *scriptsMenuItem=[mainMenu insertItemWithTitle:@"Scripts"
 													   action:NULL
 												keyEquivalent:@""
-													  atIndex:helpIndex];
+													  atIndex:menuIndex];
 	[scriptsMenuItem setEnabled:YES];
 	
 	NSMenu *scriptsMenu=[[[NSMenu alloc] initWithTitle:@"Scripts"] autorelease];
