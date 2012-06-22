@@ -2,6 +2,42 @@
 
 #import <objc/runtime.h>
 
+// tries to figure out (based on the main bundle path) whether the app named
+// by `appFileName' is the one that's loading.
+static BOOL IsApp(NSString *appFileName)
+{
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
+	NSString *bundlePath = [[NSBundle mainBundle] bundlePath];
+	
+	NSString *lastPathComponent = [bundlePath lastPathComponent];
+	
+	NSComparisonResult cmpResult = [lastPathComponent compare:appFileName
+													  options:NSCaseInsensitiveSearch];
+	
+	//NSLog(@"bundlePath=%@; lastPathComponent=%@; appFileName=%@; same=%d\n",bundlePath,lastPathComponent,appFileName,(int)same);
+	
+	[pool drain];
+	pool = nil;
+	
+	if (cmpResult != NSOrderedSame)
+		return NO;
+	
+	return YES;
+}
+
+BOOL XCFixinShouldLoad(void)
+{
+	if (IsApp(@"FileMerge.app"))
+	{
+		// Don't load plugins as part of opendiff; they mostly don't
+		// work, and they spam stdout when running from the terminal.
+		return NO;
+	}
+	
+	return YES;
+}
+
 const NSUInteger XCFixinMaxLoadAttempts = 3;
 IMP XCFixinOverrideMethod(Class class, SEL selector, IMP newImplementation)
 {
