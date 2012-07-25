@@ -7,7 +7,8 @@ static IMP gOriginalnewMessageAttributesForFont = nil;
 
 
 @interface DVTTextAnnotationTheme : NSObject{}
-- (id)initWithHighlightColor:(id)arg1 borderTopColor:(id)arg2 borderBottomColor:(id)arg3 overlayGradient:(id)arg4 messageBubbleBorderColor:(id)arg5 messageBubbleGradient:(id)arg6 caretColor:(id)arg7 highlightedRangeBorderColor:(id)arg8;
+//- (id)initWithHighlightColor:(id)arg1 borderTopColor:(id)arg2 borderBottomColor:(id)arg3 overlayGradient:(id)arg4 messageBubbleBorderColor:(id)arg5 messageBubbleGradient:(id)arg6 caretColor:(id)arg7 highlightedRangeBorderColor:(id)arg8;
+- (id)initWithHighlightColor:(id)arg1 borderTopColor:(id)arg2 borderBottomColor:(id)arg3 overlayGradient:(id)arg4 overlayTintedGradient:(id)arg5 messageBubbleBorderColor:(id)arg6 messageBubbleGradient:(id)arg7 caretColor:(id)arg8 highlightedRangeBorderColor:(id)arg9;
 @end
 
 
@@ -83,13 +84,13 @@ static void overridenewMessageAttributesForFont(id self, SEL _cmd, DVTTextAnnota
 											borderTopColor: [NSColor clearColor]
 										 borderBottomColor: [NSColor clearColor]
 										   overlayGradient: nil
+									 overlayTintedGradient: nil
 								  messageBubbleBorderColor: [NSColor clearColor] 
 									 messageBubbleGradient: gWarning
 												caretColor: [NSColor yellowColor]  
 							   highlightedRangeBorderColor: [NSColor clearColor] 
 	 ];
 	[gWarning release];
-	
 	
 	//define gradient for error text highlight
 	NSColor * errorColor = [NSColor colorWithDeviceRed:1 green:0 blue:0 alpha: lineAlpha];
@@ -101,6 +102,7 @@ static void overridenewMessageAttributesForFont(id self, SEL _cmd, DVTTextAnnota
 											borderTopColor: [NSColor clearColor]
 										 borderBottomColor: [NSColor clearColor]
 										   overlayGradient: nil
+									 overlayTintedGradient: nil
 								  messageBubbleBorderColor: [NSColor clearColor] 
 									 messageBubbleGradient: gError
 												caretColor: [NSColor redColor]  
@@ -119,6 +121,7 @@ static void overridenewMessageAttributesForFont(id self, SEL _cmd, DVTTextAnnota
 											borderTopColor: [NSColor clearColor]
 										 borderBottomColor: [NSColor clearColor]
 										   overlayGradient: nil
+									 overlayTintedGradient: nil
 								  messageBubbleBorderColor: [NSColor clearColor] 
 									 messageBubbleGradient: gAnalyzer
 												caretColor: [NSColor blueColor]  
@@ -137,6 +140,7 @@ static void overridenewMessageAttributesForFont(id self, SEL _cmd, DVTTextAnnota
 											borderTopColor: [NSColor clearColor]
 										 borderBottomColor: [NSColor clearColor]
 										   overlayGradient: nil
+									 overlayTintedGradient: nil
 								  messageBubbleBorderColor: [NSColor clearColor] 
 									 messageBubbleGradient: gDebugger
 												caretColor: [NSColor greenColor]  
@@ -155,6 +159,7 @@ static void overridenewMessageAttributesForFont(id self, SEL _cmd, DVTTextAnnota
 											borderTopColor: [NSColor clearColor]
 										 borderBottomColor: [NSColor clearColor]
 										   overlayGradient: nil
+									 overlayTintedGradient: nil
 								  messageBubbleBorderColor: [NSColor clearColor] 
 									 messageBubbleGradient: gNotice
 												caretColor: [NSColor grayColor]  
