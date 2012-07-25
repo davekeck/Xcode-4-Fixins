@@ -28,5 +28,7 @@
 	<true/>
 	<key>XCPluginHasUI</key>
 	<false/>
+	<key>NSPrincipalClass</key>
+	<string>XCFixin_UserScripts</string>
 </dict>
 </plist>
