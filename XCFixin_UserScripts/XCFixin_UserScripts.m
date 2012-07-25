@@ -166,11 +166,11 @@ static NSRange NSMakeRangeFromStartAndEnd(NSUInteger start,NSUInteger end)
 	}
 	
 	NSArray *inputRanges=[textView selectedRanges];
-	NSLog(@"%s: %u selected ranges:\n",__FUNCTION__,[inputRanges count]);
+	NSLog(@"%s: %zu selected ranges:\n",__FUNCTION__,(size_t)[inputRanges count]);
 	for(NSUInteger i=0;i<[inputRanges count];++i)
 	{
 		NSRange range=[[inputRanges objectAtIndex:i] rangeValue];
-		NSLog(@"    %u. %@\n",i,NSStringFromRange(range));
+		NSLog(@"    %zu. %@\n",(size_t)i,NSStringFromRange(range));
 	}
 	
 	NSLog(@"%s: select range: %@\n",__FUNCTION__,NSStringFromRange([textView selectedRange]));
@@ -238,7 +238,7 @@ static NSRange NSMakeRangeFromStartAndEnd(NSUInteger start,NSUInteger end)
 		{
 			@try
 			{
-				NSLog(@"%s: writing %u bytes to task's stdin...\n",__FUNCTION__,[inputData length]);
+				NSLog(@"%s: writing %zu bytes to task's stdin...\n",__FUNCTION__,(size_t)[inputData length]);
 				[[stdinPipe fileHandleForWriting] writeData:inputData];
 				NSLog(@"%s: wrote to task's stdin.\n",__FUNCTION__);
 			}
@@ -255,7 +255,7 @@ static NSRange NSMakeRangeFromStartAndEnd(NSUInteger start,NSUInteger end)
 		{
 			NSLog(@"%s: reading from task's stdout...\n",__FUNCTION__);
 			outputData=[[stdoutPipe fileHandleForReading] readDataToEndOfFile];
-			NSLog(@"%s: read %u bytes from task's stdout.\n",__FUNCTION__,[outputData length]);
+			NSLog(@"%s: read %zu bytes from task's stdout.\n",__FUNCTION__,(size_t)[outputData length]);
 		}
 		@catch(NSException *e)
 		{
