@@ -25,4 +25,7 @@
    <FileRef
       location = "group:XCFixin_UserScripts/XCFixin_UserScripts.xcodeproj">
    </FileRef>
+   <FileRef
+      location = "group:XCFixin_TabAcceptsCompletions/XCFixin_TabAcceptsCompletions.xcodeproj">
+   </FileRef>
 </Workspace>
