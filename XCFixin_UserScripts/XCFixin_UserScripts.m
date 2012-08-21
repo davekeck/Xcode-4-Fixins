@@ -8,6 +8,19 @@
 
 #import "XCFixin.h"
 
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+
+// if true, extra verbose logging via NSLog.
+#define VERBOSE_LOGGING 0
+
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+
+// if true, an extra test menu item for whatever I'm testing at the
+// moment.
+#define TEST_UI 0
+
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -19,6 +32,27 @@ static NSString *GetObjectDescription(id obj)
 		return [NSString stringWithFormat:@"(%s *)%p: %@",class_getName([obj class]),obj,obj];
 }
 
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+
+#if VERBOSE_LOGGING
+
+static void Log(NSString *fmt,...)  NS_FORMAT_FUNCTION(1,2);
+
+static void Log(NSString *fmt,...)
+{
+	va_list v;
+	va_start(v,fmt);
+	NSLogv(fmt,v);
+	va_end(v);
+}
+
+#else//VERBOSE_LOGGING
+
+#define Log(...) ((void)0)
+
+#endif//VERBOSE_LOGGING
+
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -28,7 +62,7 @@ static NSTextView *FindIDETextView(BOOL log)
 	if(!mainWindow)
 	{
 		if(log)
-			NSLog(@"Can't find IDE text view - no main window.\n");
+			Log(@"Can't find IDE text view - no main window.\n");
 		
 		return nil;
 	}
@@ -37,7 +71,7 @@ static NSTextView *FindIDETextView(BOOL log)
 	if(!DVTCompletingTextView)
 	{
 		if(log)
-			NSLog(@"Can't find IDE text view - DVTCompletingTextView class unavailable.\n");
+			Log(@"Can't find IDE text view - DVTCompletingTextView class unavailable.\n");
 		
 		return nil;
 	}
@@ -56,7 +90,7 @@ static NSTextView *FindIDETextView(BOOL log)
 	if(!textView)
 	{
 		if(log)
-			NSLog(@"Can't find IDE text view - no DVTCompletingTextView in the responder chain.\n");
+			Log(@"Can't find IDE text view - no DVTCompletingTextView in the responder chain.\n");
 		
 		return nil;
 	}
@@ -149,31 +183,28 @@ static NSRange NSMakeRangeFromStartAndEnd(NSUInteger start,NSUInteger end)
 
 -(void)run
 {
-	NSLog(@"%s: path=%@\n",__FUNCTION__,fileName_);
+	Log(@"%s: path=%@\n",__FUNCTION__,fileName_);
 	
 	NSTextView *textView=FindIDETextView(YES);
 	if(!textView)
 	{
-		NSLog(@"Not running scripts - can't find IDE text view.\n");
+		Log(@"Not running scripts - can't find IDE text view.\n");
 		return;
 	}
 	
 	NSTextStorage *textStorage=[textView textStorage];
 	if(!textStorage)
 	{
-		NSLog(@"Not running scripts - IDE text view has no text storage.\n");
+		Log(@"Not running scripts - IDE text view has no text storage.\n");
 		return;
 	}
 	
 	NSArray *inputRanges=[textView selectedRanges];
-	NSLog(@"%s: %zu selected ranges:\n",__FUNCTION__,(size_t)[inputRanges count]);
+	Log(@"%s: %zu selected ranges:\n",__FUNCTION__,(size_t)[inputRanges count]);
 	for(NSUInteger i=0;i<[inputRanges count];++i)
-	{
-		NSRange range=[[inputRanges objectAtIndex:i] rangeValue];
-		NSLog(@"    %zu. %@\n",(size_t)i,NSStringFromRange(range));
-	}
+		Log(@"    %zu. %@\n",(size_t)i,NSStringFromRange([[inputRanges objectAtIndex:i] rangeValue]));
 	
-	NSLog(@"%s: select range: %@\n",__FUNCTION__,NSStringFromRange([textView selectedRange]));
+	Log(@"%s: select range: %@\n",__FUNCTION__,NSStringFromRange([textView selectedRange]));
 			  
 	NSString *inputStr=nil;
 	NSData *inputData=nil;
@@ -215,7 +246,7 @@ static NSRange NSMakeRangeFromStartAndEnd(NSUInteger start,NSUInteger end)
 	NSTask *task=[[[NSTask alloc] init] autorelease];
 	
 	[task setLaunchPath:fileName_];
-	NSLog(@"%s: [task launchPath] = %@\n",__FUNCTION__,[task launchPath]);
+	Log(@"%s: [task launchPath] = %@\n",__FUNCTION__,[task launchPath]);
 	
 	NSPipe *stdinPipe=[NSPipe pipe];
 	NSPipe *stdoutPipe=[NSPipe pipe];
@@ -225,27 +256,26 @@ static NSRange NSMakeRangeFromStartAndEnd(NSUInteger start,NSUInteger end)
 	[task setStandardInput:stdinPipe];
 	[task setStandardError:stderrPipe];
 	
-	int exitCode=0;
-	NSData *outputData=nil;
+	NSData *stdoutData=nil;
 	
 	@try
 	{
-		NSLog(@"%s: launching task...\n",__FUNCTION__);
+		Log(@"%s: launching task...\n",__FUNCTION__);
 		[task launch];
-		NSLog(@"%s: task launched.\n",__FUNCTION__);
+		Log(@"%s: task launched.\n",__FUNCTION__);
 		
 		if(inputData)
 		{
 			@try
 			{
-				NSLog(@"%s: writing %zu bytes to task's stdin...\n",__FUNCTION__,(size_t)[inputData length]);
+				Log(@"%s: writing %zu bytes to task's stdin...\n",__FUNCTION__,(size_t)[inputData length]);
 				[[stdinPipe fileHandleForWriting] writeData:inputData];
-				NSLog(@"%s: wrote to task's stdin.\n",__FUNCTION__);
+				Log(@"%s: wrote to task's stdin.\n",__FUNCTION__);
 			}
 			@catch(NSException *e)
 			{
 				// Maybe the task finished really quickly and it doesn't care what's in its stdin.
-				NSLog(@"%s: ignoring error (%@) writing to task's stdin.\n",__FUNCTION__,e);
+				Log(@"%s: ignoring error (%@) writing to task's stdin.\n",__FUNCTION__,e);
 			}
 		}
 		
@@ -253,30 +283,70 @@ static NSRange NSMakeRangeFromStartAndEnd(NSUInteger start,NSUInteger end)
 		
 		@try
 		{
-			NSLog(@"%s: reading from task's stdout...\n",__FUNCTION__);
-			outputData=[[stdoutPipe fileHandleForReading] readDataToEndOfFile];
-			NSLog(@"%s: read %zu bytes from task's stdout.\n",__FUNCTION__,(size_t)[outputData length]);
+			Log(@"%s: reading from task's stdout...\n",__FUNCTION__);
+			stdoutData=[[stdoutPipe fileHandleForReading] readDataToEndOfFile];
+			Log(@"%s: read %zu bytes from task's stdout.\n",__FUNCTION__,(size_t)[stdoutData length]);
 		}
 		@catch(NSException *e)
 		{
-			NSLog(@"%s: error (%@) reading from task's stdout.\n",__FUNCTION__,e);
+			Log(@"%s: error (%@) reading from task's stdout.\n",__FUNCTION__,e);
 		}
-		
-		NSLog(@"%s: waiting for task exit...\n",__FUNCTION__);
+
+		Log(@"%s: waiting for task exit...\n",__FUNCTION__);
 		[task waitUntilExit];
-		NSLog(@"%s: task exit.\n",__FUNCTION__);
+		Log(@"%s: task exit.\n",__FUNCTION__);
 		
-		exitCode=[task terminationStatus];
+		int exitCode=[task terminationStatus];
+		
 		if(exitCode!=0)
-			NSLog(@"Script failed - exit code %d.\n",exitCode);
+		{
+			NSData *stderrData=nil;
+			
+			@try
+			{
+				Log(@"%s: reading from task's stderr...\n",__FUNCTION__);
+				stderrData=[[stderrPipe fileHandleForReading] readDataToEndOfFile];
+				Log(@"%s: read %zu bytes from task's stderr.\n",__FUNCTION__,(size_t)[stderrData length]);
+			}
+			@catch(NSException *e)
+			{
+				Log(@"%s: ignoring error (%@) reading from task's stderr.\n",__FUNCTION__,e);
+				stderrData=nil;
+			}
+			
+			NSString *alertBody=@"";
+			if(stderrData)
+			{
+				alertBody=[[[NSString alloc] initWithData:stderrData
+												 encoding:NSUTF8StringEncoding] autorelease];
+			}
+			
+			NSUInteger maxLen=1000;
+			if([alertBody length]>maxLen)
+				alertBody=[[alertBody substringToIndex:maxLen] stringByAppendingString:[NSString stringWithFormat:@"\n\n(%u chars snipped)",(unsigned)([alertBody length]-maxLen)]];
+			
+			if([alertBody length]==0)
+				alertBody=@"No error output was provided.";
+			
+			[[NSAlert alertWithMessageText:[NSString stringWithFormat:@"Script failed - exit code %d",exitCode]
+							 defaultButton:@"OK"
+						   alternateButton:nil
+							   otherButton:nil
+				 informativeTextWithFormat:@"%@",alertBody] runModal];
+			return;
+		}
 	}
 	@catch(NSException *e)
 	{
 		if([[e name] isEqualToString:@"NSInvalidArgumentException"])
 		{
-			exitCode=-1;
-		
-			NSLog(@"Script launch failed.\n");
+			[[NSAlert alertWithMessageText:@"Script launch failed"
+							 defaultButton:@"OK"
+						   alternateButton:nil
+							   otherButton:nil
+				 informativeTextWithFormat:@"Failed to launch \"%@\".\n\nReason: %@.",[task launchPath],[e reason]] runModal];
+			
+			return;
 		}
 		else
 			@throw e;
@@ -285,14 +355,12 @@ static NSRange NSMakeRangeFromStartAndEnd(NSUInteger start,NSUInteger end)
 	{
 	}
 	
-	if(exitCode!=0)
-		outputData=nil;
-	
-	if(outputData)
+	if(stdoutData)
 	{
 		NSString *selectionMarker=@"%%\x25{PBXSelection}%%%";
 		
-		NSString *outputStr=[[[NSString alloc] initWithData:outputData encoding:NSUTF8StringEncoding] autorelease];
+		NSString *stdoutStr=[[[NSString alloc] initWithData:stdoutData
+												   encoding:NSUTF8StringEncoding] autorelease];
 		
 		NSRange a;//before 1st marker
 		NSRange b;//between 1st marker and 2nd marker (selection goes here)
@@ -303,24 +371,24 @@ static NSRange NSMakeRangeFromStartAndEnd(NSUInteger start,NSUInteger end)
 			case SRM_ALL:
 			{
 				a=NSMakeRange(0,0);
-				b=NSMakeRange(0,[outputStr length]);
-				c=NSMakeRange([outputStr length],0);
+				b=NSMakeRange(0,[stdoutStr length]);
+				c=NSMakeRange([stdoutStr length],0);
 			}
 				break;
 				
 			case SRM_MARKER:
 			{
-				NSRange r1=[outputStr rangeOfString:selectionMarker
+				NSRange r1=[stdoutStr rangeOfString:selectionMarker
 											options:NSLiteralSearch
 											  range:NSMakeRangeFromStartAndEnd(0,
-																			   [outputStr length])];
+																			   [stdoutStr length])];
 				
 				if(r1.location==NSNotFound)
 				{
 					// no selection anywhere
 					a=NSMakeRangeFromStartAndEnd(0,
-												 [outputStr length]);
-					c=b=NSMakeRange([outputStr length],
+												 [stdoutStr length]);
+					c=b=NSMakeRange([stdoutStr length],
 									0);
 				}
 				else
@@ -328,24 +396,24 @@ static NSRange NSMakeRangeFromStartAndEnd(NSUInteger start,NSUInteger end)
 					a=NSMakeRangeFromStartAndEnd(0,
 												 r1.location);
 					
-					NSRange r2=[outputStr rangeOfString:selectionMarker
+					NSRange r2=[stdoutStr rangeOfString:selectionMarker
 												options:NSLiteralSearch
 												  range:NSMakeRangeFromStartAndEnd(r1.location+[selectionMarker length],
-																				   [outputStr length])];
+																				   [stdoutStr length])];
 					
 					if(r2.location==NSNotFound)
 					{
 						b=NSMakeRange(r1.location+[selectionMarker length],
 									  0);
 						c=NSMakeRangeFromStartAndEnd(r1.location+[selectionMarker length],
-													 [outputStr length]);
+													 [stdoutStr length]);
 					}
 					else
 					{
 						b=NSMakeRangeFromStartAndEnd(r1.location+[selectionMarker length],
 													 r2.location);
 						c=NSMakeRangeFromStartAndEnd(r2.location+[selectionMarker length],
-													 [outputStr length]);
+													 [stdoutStr length]);
 					}
 				}
 			}
@@ -354,15 +422,15 @@ static NSRange NSMakeRangeFromStartAndEnd(NSUInteger start,NSUInteger end)
 			default:
 			case SRM_NONE:
 			{
-				a=NSMakeRange(0,[outputStr length]);
-				b=NSMakeRange([outputStr length],0);
-				c=NSMakeRange([outputStr length],0);
+				a=NSMakeRange(0,[stdoutStr length]);
+				b=NSMakeRange([stdoutStr length],0);
+				c=NSMakeRange([stdoutStr length],0);
 			}
 				break;
 		}
 		
 		
-		outputStr=[[[outputStr substringWithRange:a] stringByAppendingString:[outputStr substringWithRange:b]] stringByAppendingString:[outputStr substringWithRange:c]];
+		stdoutStr=[[[stdoutStr substringWithRange:a] stringByAppendingString:[stdoutStr substringWithRange:b]] stringByAppendingString:[stdoutStr substringWithRange:c]];
 		
 		[textView breakUndoCoalescing];
 		
@@ -370,9 +438,9 @@ static NSRange NSMakeRangeFromStartAndEnd(NSUInteger start,NSUInteger end)
 		//
 		// this is a fix for scripts that just pop a %%%{PBXSeleciton}%%%
 		// into their input to put the cursor somewhere.
-		if(![outputStr isEqualToString:inputStr])
+		if(![stdoutStr isEqualToString:inputStr])
 		{
-			[textView insertText:outputStr
+			[textView insertText:stdoutStr
 				replacementRange:inputRange];
 		}
 		
@@ -386,7 +454,7 @@ static NSRange NSMakeRangeFromStartAndEnd(NSUInteger start,NSUInteger end)
 
 -(void)dealloc
 {
-	NSLog(@"%s: (%s *)%p: %@\n",__FUNCTION__,class_getName([self class]),self,fileName_);
+	Log(@"%s: (%s *)%p: %@\n",__FUNCTION__,class_getName([self class]),self,fileName_);
 	
 	[fileName_ release];
 	fileName_=nil;
@@ -404,6 +472,9 @@ static NSRange NSMakeRangeFromStartAndEnd(NSUInteger start,NSUInteger end)
 
 @interface XCFixin_ScriptsHandler:NSObject
 {
+#if TEST_UI
+	NSMenuItem *testUIMenuItem_;
+#endif//TEST_UI
 	NSMenuItem *refreshMenuItem_;
 }
 @end
@@ -437,14 +508,14 @@ static NSString *SystemFolderName(int folderType,int domain)
 	NSMenu *mainMenu=[NSApp mainMenu];
 	if(!mainMenu)
 	{
-		NSLog(@"%s: main menu not found.\n",__FUNCTION__);
+		Log(@"%s: main menu not found.\n",__FUNCTION__);
 		return;
 	}
 	
 	int scriptsMenuIndex=[mainMenu indexOfItemWithTitle:@"Scripts"];
 	if(scriptsMenuIndex<0)
 	{
-		NSLog(@"%s: Scripts menu not found.\n",__FUNCTION__);
+		Log(@"%s: Scripts menu not found.\n",__FUNCTION__);
 		return;
 	}
 	
@@ -454,18 +525,18 @@ static NSString *SystemFolderName(int folderType,int domain)
 	[scriptsMenu removeAllItems];
 	
 	NSString *appSupportFolderName=SystemFolderName(kApplicationSupportFolderType,kUserDomain);
-	NSLog(@"appSupportFolderName=%@\n",appSupportFolderName);
+	Log(@"appSupportFolderName=%@\n",appSupportFolderName);
 	
 	NSString *scriptsFolderName=[NSString pathWithComponents:[NSArray arrayWithObjects:appSupportFolderName,@"Developer/Shared/Xcode/Scripts",nil]];
-	NSLog(@"scriptsFolderName=%@\n",scriptsFolderName);
+	Log(@"scriptsFolderName=%@\n",scriptsFolderName);
 	
 	NSString *scriptsPListName=[NSString pathWithComponents:[NSArray arrayWithObjects:scriptsFolderName,@"Scripts.xml",nil]];
-	NSLog(@"scriptsPListName=%@\n",scriptsPListName);
+	Log(@"scriptsPListName=%@\n",scriptsPListName);
 	NSDictionary *scriptsProperties=[NSDictionary dictionaryWithContentsOfFile:scriptsPListName];
 	if(!scriptsProperties)
-		NSLog(@"%s: No scripts plist loaded.\n",__FUNCTION__);
+		Log(@"%s: No scripts plist loaded.\n",__FUNCTION__);
 	else
-		NSLog(@"%s: Scripts plist: %@\n",__FUNCTION__,scriptsProperties);
+		Log(@"%s: Scripts plist: %@\n",__FUNCTION__,scriptsProperties);
 
 	NSArray *scriptsFolderContents=[[NSFileManager defaultManager] contentsOfDirectoryAtPath:scriptsFolderName
 																					   error:nil];
@@ -483,19 +554,19 @@ static NSString *SystemFolderName(int folderType,int domain)
 			struct stat st;
 			if(stat([path UTF8String],&st)!=0)
 			{
-				NSLog(@"%@: not a script (stat failed)\n",path);
+				Log(@"%@: not a script (stat failed)\n",path);
 				continue;
 			}
 			
 			if(!(st.st_mode&(S_IFLNK|S_IFREG)))
 			{
-				NSLog(@"%@: not a script (not symlink or regular file)\n",path);
+				Log(@"%@: not a script (not symlink or regular file)\n",path);
 				continue;
 			}
 			
 			if(![defaultManager isExecutableFileAtPath:path])
 			{
-				NSLog(@"%@: not a script (not executable)\n",path);
+				Log(@"%@: not a script (not executable)\n",path);
 				continue;
 			}
 			
@@ -509,7 +580,7 @@ static NSString *SystemFolderName(int folderType,int domain)
 				NSString *name=[scripts objectAtIndex:scriptIdx];
 				NSString *path=[NSString pathWithComponents:[NSArray arrayWithObjects:scriptsFolderName,name,nil]];
 				
-				NSLog(@"Creating XCFixin_Script for %@.\n",path);
+				Log(@"Creating XCFixin_Script for %@.\n",path);
 				XCFixin_Script *script=[[[XCFixin_Script alloc] initWithFileName:path] autorelease];
 				
 				NSMenuItem *scriptMenuItem=[[[NSMenuItem alloc] initWithTitle:name
@@ -523,7 +594,7 @@ static NSString *SystemFolderName(int folderType,int domain)
 				if(![scriptProperties isKindOfClass:[NSDictionary class]])
 					scriptProperties=nil;
 				
-				NSLog(@"    Script properties: %@\n",scriptProperties);
+				Log(@"    Script properties: %@\n",scriptProperties);
 
 				NSString *keyEquivalent=[scriptProperties objectForKey:@"keyEquivalent"];
 				if(keyEquivalent&&[keyEquivalent length]>0)
@@ -604,6 +675,13 @@ static NSString *SystemFolderName(int folderType,int domain)
 			[scriptsMenu addItem:[NSMenuItem separatorItem]];
 	}
 
+#if TEST_UI
+	testUIMenuItem_=[scriptsMenu addItemWithTitle:@"Test Item"
+										   action:@selector(testUIAction:)
+									keyEquivalent:@""];
+	[testUIMenuItem_ setTarget:self];
+#endif//TEST_UI
+	
 	refreshMenuItem_=[scriptsMenu addItemWithTitle:@"Refresh"
 											 action:@selector(refreshScriptsMenuAction:)
 									 keyEquivalent:@""];
@@ -621,6 +699,22 @@ static NSString *SystemFolderName(int folderType,int domain)
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
+#if TEST_UI
+-(IBAction)testUIAction:(id)arg
+{
+	NSAlert *alert=[NSAlert alertWithMessageText:@"UI Test Text"
+								   defaultButton:@"OK"
+								 alternateButton:nil
+									 otherButton:nil
+					   informativeTextWithFormat:@"UI Test Body (%p)",self];
+	int x=[alert runModal];
+	Log(@"%s: result: %d\n",__FUNCTION__,x);
+}
+#endif//TEST_UI
+
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+
 -(IBAction)refreshScriptsMenuAction:(id)arg
 {
 	[self refreshScriptsMenu];
@@ -634,7 +728,7 @@ static NSString *SystemFolderName(int folderType,int domain)
 	NSMenu *mainMenu=[NSApp mainMenu];
 	if(!mainMenu)
 	{
-		NSLog(@"%s: main menu not found!\n",__FUNCTION__);
+		Log(@"%s: main menu not found!\n",__FUNCTION__);
 		return NO;
 	}
 	
@@ -693,7 +787,7 @@ static BOOL GetClasses(const char *name0,...)
 		*c=objc_getClass(name);
 		if(!*c)
 		{
-			NSLog(@"FATAL: class %s not found.\n",name);
+			Log(@"FATAL: class %s not found.\n",name);
 			return NO;
 		}
 	}
@@ -723,11 +817,12 @@ static BOOL GetClasses(const char *name0,...)
     
 	XCFixin_ScriptsHandler *handler=[[XCFixin_ScriptsHandler alloc] init];
 	if(!handler)
-		NSLog(@"%s: handler init failed.\n",__FUNCTION__);
+		Log(@"%s: handler init failed.\n",__FUNCTION__);
 	else
 	{
 		BOOL goodInstall=[handler install];
-		NSLog(@"%s: handler installed: %s\n",__FUNCTION__,goodInstall?"YES":"NO");
+		(void)goodInstall;
+		Log(@"%s: handler installed: %s\n",__FUNCTION__,goodInstall?"YES":"NO");
 	}
     
     XCFixinPostflight();
