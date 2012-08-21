@@ -95,12 +95,14 @@ The current option names are:
 		 - =none= :: no data sent
 		 - =selection= (default) :: selection is used; no data
                       sent if no selection
+		 - =line= :: current line (including line ending
+                             char(s)) sent
+		 - =linetext= :: current line (excluding line ending
+                                 char(s)) sent
 		 - =linetextOrSelection= :: selection is used, if any;
-                      current line (excluding line ending chars) sent
-                      if no selection
+		      otherwise, as per =linetext=
                  - =lineOrSelection= :: selection is used, if any;
-                      current line (including line ending chars) sent
-                      if no selection
+		      otherwise, as per =line=
 
 - =reselectMode= :: value is string indicating how the selection
                     should be reinstated after the script has run,

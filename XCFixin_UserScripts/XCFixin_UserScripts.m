@@ -47,11 +47,55 @@ static void Log(NSString *fmt,...)
 	va_end(v);
 }
 
+static void DumpData(NSData *data,NSString *prefix)
+{
+	const uint8_t *p=(const uint8_t *)[data bytes];
+	NSUInteger n=[data length];
+	NSUInteger stride=16;
+	
+	for(NSUInteger i=0;i<MAX(n,1);i+=stride)
+	{
+		NSMutableString *line=[NSMutableString stringWithCapacity:100];
+		
+		if(i==0)
+			[line appendString:prefix];
+		else
+			[line appendFormat:@"%-*s",(int)[prefix length],""];
+		
+		[line appendFormat:@"%08X:",(unsigned)i];
+		
+		for(NSUInteger j=0;j<stride;++j)
+		{
+			if(i+j<n)
+				[line appendFormat:@" %02X",p[i+j]];
+			else
+				[line appendString:@"   "];
+		}
+		
+		[line appendString:@" "];
+		
+		for(NSUInteger j=0;j<stride;++j)
+		{
+			if(i+j<n)
+				[line appendFormat:@"%c",isprint((char)p[i+j])?(char)p[i+j]:'.'];
+			else
+				[line appendString:@" "];
+		}
+		
+		Log(@"%@\n",line);
+	}
+}
+
 #else//VERBOSE_LOGGING
 
 #define Log(...) ((void)0)
 
+#define DumpData(DATA,PREFIX) ((void)0)
+
 #endif//VERBOSE_LOGGING
+
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -112,12 +156,15 @@ typedef enum ScriptReselectMode ScriptReselectMode;
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
+// TODO: this mechanism needs tidying up.
 enum ScriptStdinMode
 {
 	SSM_NONE,
 	SSM_SELECTION,
 	SSM_LINETEXT_OR_SELECTION,
 	SSM_LINE_OR_SELECTION,
+	SSM_LINETEXT,
+	SSM_LINE,
 };
 typedef enum ScriptStdinMode ScriptStdinMode;
 
@@ -218,6 +265,8 @@ static NSRange NSMakeRangeFromStartAndEnd(NSUInteger start,NSUInteger end)
 			case SSM_LINE_OR_SELECTION:
 				if(inputRange.length==0)
 				{
+				case SSM_LINETEXT:
+				case SSM_LINE:;
 					NSUInteger startIndex,contentsEndIndex,endIndex;
 					[textStorageString getLineStart:&startIndex
 												end:&endIndex
@@ -226,7 +275,7 @@ static NSRange NSMakeRangeFromStartAndEnd(NSUInteger start,NSUInteger end)
 					
 					inputRange.location=startIndex;
 					
-					if(stdinMode_==SSM_LINE_OR_SELECTION)
+					if(stdinMode_==SSM_LINE_OR_SELECTION||stdinMode_==SSM_LINE)
 						inputRange.length=endIndex-startIndex;
 					else
 						inputRange.length=contentsEndIndex-startIndex;
@@ -271,6 +320,7 @@ static NSRange NSMakeRangeFromStartAndEnd(NSUInteger start,NSUInteger end)
 				Log(@"%s: writing %zu bytes to task's stdin...\n",__FUNCTION__,(size_t)[inputData length]);
 				[[stdinPipe fileHandleForWriting] writeData:inputData];
 				Log(@"%s: wrote to task's stdin.\n",__FUNCTION__);
+				DumpData(inputData,@"stdin data: ");
 			}
 			@catch(NSException *e)
 			{
@@ -286,6 +336,7 @@ static NSRange NSMakeRangeFromStartAndEnd(NSUInteger start,NSUInteger end)
 			Log(@"%s: reading from task's stdout...\n",__FUNCTION__);
 			stdoutData=[[stdoutPipe fileHandleForReading] readDataToEndOfFile];
 			Log(@"%s: read %zu bytes from task's stdout.\n",__FUNCTION__,(size_t)[stdoutData length]);
+			DumpData(stdoutData,@"stdout data: ");
 		}
 		@catch(NSException *e)
 		{
@@ -654,6 +705,10 @@ static NSString *SystemFolderName(int folderType,int domain)
 						[script setStdinMode:SSM_LINE_OR_SELECTION];
 					else if([stdinMode caseInsensitiveCompare:@"linetextorselection"]==NSOrderedSame)
 						[script setStdinMode:SSM_LINETEXT_OR_SELECTION];
+					else if([stdinMode caseInsensitiveCompare:@"line"]==NSOrderedSame)
+						[script setStdinMode:SSM_LINE];
+					else if([stdinMode caseInsensitiveCompare:@"linetext"]==NSOrderedSame)
+						[script setStdinMode:SSM_LINETEXT];
 				}
 				
 				NSString *reselectMode=[scriptProperties objectForKey:@"reselectMode"];
