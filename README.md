@@ -2,7 +2,7 @@ __These plugins are known to be compatible with Xcode 4.5.2. For Xcode 4.0.2 sup
 
 __===== DESCRIPTION =====__
 
-This project includes plugins that extend Xcode and fix some of its annoying behaviors, known as _fixins_.
+This project includes plugins (known as _fixins_) that extend Xcode and fix some of its annoying behaviors.
 
 __===== INSTALLATION =====__
 
