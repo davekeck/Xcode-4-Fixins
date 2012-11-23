@@ -1,7 +1,5 @@
 #import <Foundation/Foundation.h>
 
-BOOL XCFixinShouldLoad(void);
-
 #define XCFixinPreflight()                         \
     if (!XCFixinShouldLoad())                      \
         return;                                    \
@@ -58,6 +56,7 @@ BOOL XCFixinShouldLoad(void);
     }                                                   \
 })
 
+BOOL XCFixinShouldLoad(void);
 extern const NSUInteger XCFixinMaxLoadAttempts;
 
 /* This function overrides a method at the given class level, and returns the old implementation. If no method existed at

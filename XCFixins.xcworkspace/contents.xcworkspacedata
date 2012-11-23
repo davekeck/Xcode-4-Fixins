@@ -8,9 +8,6 @@
       location = "group:XCFixin_DisableAnimations/XCFixin_DisableAnimations.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:XCFixin_DisableWriteStateData/XCFixin_DisableWriteStateData.xcodeproj">
-   </FileRef>
-   <FileRef
       location = "group:XCFixin_FindFix/XCFixin_FindFix.xcodeproj">
    </FileRef>
    <FileRef
@@ -20,12 +17,9 @@
       location = "group:XCFixin_InhibitTabNextPlaceholder/XCFixin_InhibitTabNextPlaceholder.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:XCFixin_OptionClickDocumentation/XCFixin_OptionClickDocumentation.xcodeproj">
+      location = "group:XCFixin_TabAcceptsCompletions/XCFixin_TabAcceptsCompletions.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:XCFixin_UserScripts/XCFixin_UserScripts.xcodeproj">
-   </FileRef>
-   <FileRef
-      location = "group:XCFixin_TabAcceptsCompletions/XCFixin_TabAcceptsCompletions.xcodeproj">
    </FileRef>
 </Workspace>

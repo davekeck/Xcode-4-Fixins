@@ -4,6 +4,8 @@
 #import "XCFixin.h"
 
 static NSString *const kDisableAnimationsClassName = @"XCFixin_DisableAnimations";
+static NSString *const kHideDistractionsKey = @"D";
+static NSUInteger kHideDistractionsKeyModifiers = (NSCommandKeyMask | NSShiftKeyMask);
 
 @interface XCFixin_HideDistractions : NSObject
 @end
@@ -27,9 +29,9 @@ static NSString *const kDisableAnimationsClassName = @"XCFixin_DisableAnimations
         XCFixinAssertOrPerform(viewMenuItem, return);
     
     /* The 'Hide Distractions' menu item key combination can be set below. */
-    hideDistractionsMenuItem = [[[NSMenuItem alloc] initWithTitle: @"Hide Distractions" action: @selector(hideDistractions:) keyEquivalent: @"D"] autorelease];
+    hideDistractionsMenuItem = [[[NSMenuItem alloc] initWithTitle: @"Hide Distractions" action: @selector(hideDistractions:) keyEquivalent: kHideDistractionsKey] autorelease];
         XCFixinAssertOrPerform(hideDistractionsMenuItem, return);
-    [hideDistractionsMenuItem setKeyEquivalentModifierMask: (NSCommandKeyMask | NSShiftKeyMask)];
+    [hideDistractionsMenuItem setKeyEquivalentModifierMask: kHideDistractionsKeyModifiers];
     [hideDistractionsMenuItem setTarget: self];
     [viewMenu addItem: hideDistractionsMenuItem];
 }
