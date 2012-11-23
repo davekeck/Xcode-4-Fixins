@@ -16,7 +16,7 @@ The fixin will automatically be installed as a part of the build process. Xcode 
 
 Fixins are installed into ~/Library/Application Support/Developer/Shared/Xcode/Plug-ins/.
 
-__===== FIXINS =====__
+__===== THE FIXINS =====__
 
 __CurrentLineHighlighter__: This fixin highlights the line currently being edited in the source editor, making it easier to track the current insertion point. This fixin adds a "Current Line Highlight Color..." menu item to the Editor menu to set the highlight color.
 
