@@ -1,4 +1,4 @@
-__This branch is known to be compatible with Xcode 4.5.2. For Xcode 4.0.2 support, see the xcode_402 branch.__
+__These plugins are known to be compatible with Xcode 4.5.2. For Xcode 4.0.2 support, see the xcode_402 branch.__
 
 __===== DESCRIPTION =====__
 
