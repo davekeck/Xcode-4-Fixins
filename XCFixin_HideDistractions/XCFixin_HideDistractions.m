@@ -7,6 +7,11 @@ static NSString *const kDisableAnimationsClassName = @"XCFixin_DisableAnimations
 static NSString *const kHideDistractionsKey = @"D";
 static NSUInteger kHideDistractionsKeyModifiers = (NSCommandKeyMask | NSShiftKeyMask);
 
+static NSMenu *viewMenu = nil;
+static NSMenuItem *hideDistractionsMenuItem = nil,
+                  *showDistractionsMenuItem = nil;
+static BOOL isShowingDistractions = YES;
+
 @interface XCFixin_HideDistractions : NSObject
 @end
 
@@ -14,10 +19,8 @@ static NSUInteger kHideDistractionsKeyModifiers = (NSCommandKeyMask | NSShiftKey
 
 + (void)applicationFinishedLaunching: (NSNotification *)notification
 {
-    NSMenu *mainMenu = nil,
-           *viewMenu = nil;
-    NSMenuItem *viewMenuItem = nil,
-               *hideDistractionsMenuItem = nil;
+    NSMenu *mainMenu = nil;
+    NSMenuItem *viewMenuItem = nil;
     
     mainMenu = [NSApp mainMenu];
         XCFixinAssertOrPerform(mainMenu, return);
@@ -34,6 +37,12 @@ static NSUInteger kHideDistractionsKeyModifiers = (NSCommandKeyMask | NSShiftKey
     [hideDistractionsMenuItem setKeyEquivalentModifierMask: kHideDistractionsKeyModifiers];
     [hideDistractionsMenuItem setTarget: self];
     [viewMenu addItem: hideDistractionsMenuItem];
+
+    /* The 'Show Distractions' menu item key combination can be set below. */
+    showDistractionsMenuItem = [[[NSMenuItem alloc] initWithTitle: @"Show Distractions" action: @selector(showDistractions:) keyEquivalent: kHideDistractionsKey] autorelease];
+        XCFixinAssertOrPerform(showDistractionsMenuItem, return);
+    [showDistractionsMenuItem setKeyEquivalentModifierMask: kHideDistractionsKeyModifiers];
+    [showDistractionsMenuItem setTarget: self];
 }
 
 + (void)clickMenuItem: (NSMenuItem *)menuItem
@@ -75,6 +84,22 @@ static NSUInteger kHideDistractionsKeyModifiers = (NSCommandKeyMask | NSShiftKey
     return currentMenuItem;
 }
 
++ (void)toggleMenu
+{
+    isShowingDistractions = !isShowingDistractions;
+
+    if (isShowingDistractions)
+    {
+        [viewMenu removeItem:showDistractionsMenuItem];
+        [viewMenu addItem:hideDistractionsMenuItem];
+    }
+    else
+    {
+        [viewMenu removeItem:hideDistractionsMenuItem];
+        [viewMenu addItem:showDistractionsMenuItem];
+    }
+}
+
 + (void)hideDistractions: (id)sender
 {
     NSWindow *activeWindow = nil;
@@ -109,6 +134,40 @@ static NSUInteger kHideDistractionsKeyModifiers = (NSCommandKeyMask | NSShiftKey
     
     if (NSClassFromString(kDisableAnimationsClassName))
         [activeWindow enableFlushWindow];
+
+    /* Replace the menu item */
+    [self toggleMenu];
+}
+
++ (void)showDistractions: (id)sender
+{
+    NSWindow *activeWindow = nil;
+
+    /* Get the front window */
+
+    activeWindow = [NSApp keyWindow];
+    XCFixinConfirmOrPerform(activeWindow, return);
+
+    /* If we get here, everything checks out; that is, we have an active window and we have
+     references to the required menus items. */
+
+    if (NSClassFromString(kDisableAnimationsClassName))
+        [activeWindow disableFlushWindow];
+
+    [self clickMenuItem: [self menuItemWithPath: @"View > Show Toolbar"]];
+    [self clickMenuItem: [self menuItemWithPath: @"View > Show Tab Bar"]];
+
+    /* Perform the rest of our menu items now that the toolbar's taken care of. */
+
+    [self clickMenuItem: [self menuItemWithPath: @"View > Navigators > Show Navigator"]];
+    [self clickMenuItem: [self menuItemWithPath: @"View > Utilities > Show Utilities"]];
+    [self clickMenuItem: [self menuItemWithPath: @"Editor > Issues > Show All Issues"]];
+
+    if (NSClassFromString(kDisableAnimationsClassName))
+        [activeWindow enableFlushWindow];
+
+    /* Replace the menu item */
+    [self toggleMenu];
 }
 
 + (void)pluginDidLoad: (NSBundle *)plugin
