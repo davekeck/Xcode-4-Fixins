@@ -23,7 +23,7 @@
 	<key>CFBundleVersion</key>
 	<string>1</string>
 	<key>NSPrincipalClass</key>
-	<string>XCFixin_DisableWriteStateData</string>
+	<string>XCFixin_TabAcceptsCompletions</string>
 	<key>XC4Compatible</key>
 	<true/>
 	<key>XCGCReady</key>

@@ -25,8 +25,11 @@ symlinks to them. Any it finds have their names added to the new
 Select script from the menu, and the script runs. The current
 selection is passed to the script as its standard input.
 
-The script's standard output replaces the current selection. Any
-standard error output is ignored.
+If the script's exit code is 0, the script's standard output replaces
+the current selection.
+
+If the script's exit code is anything else, an alert box is shown with
+the first 1K or so of the script's standard error output.
 
 * Setting selection from a script
 
@@ -92,12 +95,14 @@ The current option names are:
 		 - =none= :: no data sent
 		 - =selection= (default) :: selection is used; no data
                       sent if no selection
+		 - =line= :: current line (including line ending
+                             char(s)) sent
+		 - =linetext= :: current line (excluding line ending
+                                 char(s)) sent
 		 - =linetextOrSelection= :: selection is used, if any;
-                      current line (excluding line ending chars) sent
-                      if no selection
+		      otherwise, as per =linetext=
                  - =lineOrSelection= :: selection is used, if any;
-                      current line (including line ending chars) sent
-                      if no selection
+		      otherwise, as per =line=
 
 - =reselectMode= :: value is string indicating how the selection
                     should be reinstated after the script has run,
@@ -115,9 +120,6 @@ The current option names are:
 
 - The key equivalent emacs notation 'thing' is lame and I need to find
   some better way of doing it.
-
-- Error reporting is not great. If you run Console.app, you might find
-  that the fixin has printed something useful there.
 
 - If you run a script on text that includes the string
   "%%%{PBXSelection}%%%", that string will disappear. (Presumably this

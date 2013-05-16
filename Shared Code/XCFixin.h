@@ -1,27 +1,33 @@
 #import <Foundation/Foundation.h>
 
-#define XCFixinPreflight()                                                                                                     \
-    static NSUInteger loadAttempt = 0;                                                                                         \
-    loadAttempt++;                                                                                                             \
-    NSLog(@"%@ initialization attempt %ju/%ju...", NSStringFromClass([self class]), (uintmax_t)loadAttempt, (uintmax_t)XCFixinMaxLoadAttempts);
+#define XCFixinPreflight()                         \
+    if (!XCFixinShouldLoad())                      \
+        return;                                    \
+                                                   \
+    static NSUInteger loadAttempt = 0;             \
+    loadAttempt++;                                 \
+    NSLog(@"%@ initialization attempt %ju/%ju...", \
+		  NSStringFromClass([self class]),         \
+		  (uintmax_t)loadAttempt,                  \
+		  (uintmax_t)XCFixinMaxLoadAttempts);
 
-#define XCFixinPostflight()                                                                                      \
-    NSLog(@"%@ initialization successful!", NSStringFromClass([self class]));                                    \
-    return;                                                                                                      \
-    failed:                                                                                                      \
-    {                                                                                                            \
-        NSLog(@"%@ initialization failed.", NSStringFromClass([self class]));                                    \
-                                                                                                                 \
-        if (loadAttempt < XCFixinMaxLoadAttempts)                                                                \
-        {                                                                                                        \
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1.0 * NSEC_PER_SEC), dispatch_get_main_queue(),      \
-                ^(void)                                                                                          \
-                {                                                                                                \
-                    [self pluginDidLoad: plugin];                                                                \
-                });                                                                                              \
-        }                                                                                                        \
-                                                                                                                 \
-        else NSLog(@"%@ failing permanently. :(", NSStringFromClass([self class]));                              \
+#define XCFixinPostflight()                                                                                 \
+    NSLog(@"%@ initialization successful!", NSStringFromClass([self class]));                               \
+    return;                                                                                                 \
+    failed:                                                                                                 \
+    {                                                                                                       \
+        NSLog(@"%@ initialization failed.", NSStringFromClass([self class]));                               \
+                                                                                                            \
+        if (loadAttempt < XCFixinMaxLoadAttempts)                                                           \
+        {                                                                                                   \
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1.0 * NSEC_PER_SEC), dispatch_get_main_queue(), \
+                ^(void)                                                                                     \
+                {                                                                                           \
+                    [self pluginDidLoad: plugin];                                                           \
+                });                                                                                         \
+        }                                                                                                   \
+                                                                                                            \
+        else NSLog(@"%@ failing permanently. :(", NSStringFromClass([self class]));                         \
     }
 
 #define XCFixinAssertMessageFormat @"Assertion failed (file: %s, function: %s, line: %u): %s\n"
@@ -50,6 +56,7 @@
     }                                                   \
 })
 
+BOOL XCFixinShouldLoad(void);
 extern const NSUInteger XCFixinMaxLoadAttempts;
 
 /* This function overrides a method at the given class level, and returns the old implementation. If no method existed at

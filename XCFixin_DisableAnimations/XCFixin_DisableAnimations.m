@@ -5,6 +5,8 @@
 
 static IMP gOriginalInitWithDuration = nil;
 static IMP gOriginalSetDuration = nil;
+static IMP gOriginalSetAlphaValue = nil;
+static IMP gOriginalShowWindowForTextFrameExplicitAnimation = nil;
 
 @interface XCFixin_DisableAnimations : NSObject
 @end
@@ -23,6 +25,22 @@ static void overrideSetDuration(id self, SEL _cmd, NSTimeInterval arg1)
     ((void (*)(id, SEL, NSTimeInterval))gOriginalSetDuration)(self, _cmd, 0.0);
 }
 
+static void overrideShowWindowForTextFrameExplicitAnimation(id self, SEL _cmd, NSRect arg1, BOOL arg2)
+{
+    /* -[DVTTextCompletionListWindowController showWindowForTextFrame:(NSRect)textFrame explicitAnimation:(BOOL)usesExplicitAnimation] */
+    ((void (*)(id, SEL, NSRect, BOOL))gOriginalShowWindowForTextFrameExplicitAnimation)(self, _cmd, arg1, NO);
+}
+
+static void overrideSetAlphaValue(id self, SEL _cmd, CGFloat windowAlpha)
+{
+    /* -[DVTTextCompletionWindow setAlphaValue:(CGFloat)windowAlpha] */
+	if(windowAlpha == 0.0) {
+		((void (*)(id, SEL, NSTimeInterval))gOriginalSetAlphaValue)(self, _cmd, 0.0);
+	} else {
+		((void (*)(id, SEL, NSTimeInterval))gOriginalSetAlphaValue)(self, _cmd, 1.0);
+	}
+}
+
 + (void)pluginDidLoad: (NSBundle *)plugin
 {
     XCFixinPreflight();
@@ -34,6 +52,14 @@ static void overrideSetDuration(id self, SEL _cmd, NSTimeInterval arg1)
     /* Override -[NSAnimation setDuration:(NSTimeInterval)duration] */
     gOriginalSetDuration = XCFixinOverrideMethodString(@"NSAnimation", @selector(setDuration:), (IMP)&overrideSetDuration);
         XCFixinAssertOrPerform(gOriginalSetDuration, goto failed);
+
+    /* Override -[DVTTextCompletionWindow setAlphaValue:(CGFloat)windowAlpha] */
+    gOriginalSetAlphaValue = XCFixinOverrideMethodString(@"DVTTextCompletionWindow", @selector(setAlphaValue:), (IMP)&overrideSetAlphaValue);
+        XCFixinAssertOrPerform(gOriginalSetAlphaValue, goto failed);
+
+    /* Override -[DVTTextCompletionListWindowController showWindowForTextFrame:(NSRect)textFrame explicitAnimation:(BOOL)usesExplicitAnimation] */
+    gOriginalShowWindowForTextFrameExplicitAnimation = XCFixinOverrideMethodString(@"DVTTextCompletionListWindowController", @selector(showWindowForTextFrame:explicitAnimation:), (IMP)&overrideShowWindowForTextFrameExplicitAnimation);
+        XCFixinAssertOrPerform(gOriginalShowWindowForTextFrameExplicitAnimation, goto failed);
     
     XCFixinPostflight();
 }
