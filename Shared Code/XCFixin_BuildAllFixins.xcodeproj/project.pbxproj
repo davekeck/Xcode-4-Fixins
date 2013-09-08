@@ -11,9 +11,11 @@
 			isa = PBXAggregateTarget;
 			buildConfigurationList = 7BBB5BDF17DC016E0087E13D /* Build configuration list for PBXAggregateTarget "Build All Fixins" */;
 			buildPhases = (
-				7B4CC1DF17DC3AD5003FA23B /* ShellScript */,
+				7B4CC1DF17DC3AD5003FA23B /* XCode5 Compatibility Script */,
+				7B742C7C17DC50AD003025EF /* Temporarily Disable Plugins */,
 			);
 			dependencies = (
+				7B0F10FE17DC5FFF0013D5D4 /* PBXTargetDependency */,
 				7BBB5C1D17DC01D90087E13D /* PBXTargetDependency */,
 				7BBB5C1F17DC01D90087E13D /* PBXTargetDependency */,
 				7BBB5C2117DC01D90087E13D /* PBXTargetDependency */,
@@ -28,6 +30,13 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXContainerItemProxy section */
+		7B0F10FD17DC5FFF0013D5D4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7BBB5BEA17DC01CE0087E13D /* XCFixin_CurrentLineHighlighter.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 8D5B49AC048680CD000E48DA;
+			remoteInfo = XCFixin_CurrentLineHighlighter;
+		};
 		7B4CC1DD17DC3A73003FA23B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 7BBB5BEA17DC01CE0087E13D /* XCFixin_CurrentLineHighlighter.xcodeproj */;
@@ -343,22 +352,43 @@
 /* End PBXReferenceProxy section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		7B4CC1DF17DC3AD5003FA23B /* ShellScript */ = {
+		7B4CC1DF17DC3AD5003FA23B /* XCode5 Compatibility Script */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
+			name = "XCode5 Compatibility Script";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\nXCUUID=\"63FC1C47-140D-42B0-BB4D-A10B2D225574\"\n\nfor FIXIN in $(ls \"${BUILT_PRODUCTS_DIR}\")\ndo\n\tFXINFO=\"${BUILT_PRODUCTS_DIR}/$FIXIN/Contents/Info\"\n    defaults write \"$FXINFO\" DVTPlugInCompatibilityUUIDs -array-add \"$XCUUID\"\n\tdefaults write \"$FXINFO\" XC5Compatible -boolean YES\ndone\n";
+			shellScript = "\ncd \t\t\t\t\t\t \"${INSTALL_DIR}\"\n# this may change when xcode5GM comes out?\nXCUUID=( \t\t\t\t \"63FC1C47-140D-42B0-BB4D-A10B2D225574\" )\n\n# makes a folder to move the plgins specified below\nDISABLEDFOLDER=$(dirname \"${INSTALL_DIR}\")\"/Disabled Plug-ins\"\n\n# Move any modules that aren't working.  Compatibility issues, crashes, etc.\nDISABLED=(\t\t\t\t \"XCFixin_CurrentLineHighlighter\"\n                         \"XCFixin_FindFix\"\n)\n[[ ! -z \"$DISABLED\" ]] && mkdir -p \"$DISABLEDFOLDER\"\n\nFIXINS=\"XC*.xcplugin\"\n\nfor FIXIN in $FIXINS\ndo\n\tBASE=\"${FIXIN%%.*}\"\n\tif [ $(echo \"${DISABLED[@]:0}\" | grep -o \"$BASE\") ]\n    then\n\n    \tlogger \"$BASE\" needs to be disabled\n\t\trm -r \"$DISABLEDFOLDER/$FIXIN\" && \\\n       \tmv -f \"${INSTALL_DIR}/$FIXIN\" \"$DISABLEDFOLDER/$FIXIN\"\n    else\n        FXINFO=\"${INSTALL_DIR}/$FIXIN/Contents/Info\"\n        defaults write \"$FXINFO\" DVTPlugInCompatibilityUUIDs -array \"${XCUUID[@]}\"\n\t\tdefaults write \"$FXINFO\" XC5Compatible -boolean YES\n        logger \"$BASE\" should be OK\n    fi\ndone\n";
+			showEnvVarsInLog = 0;
+		};
+		7B742C7C17DC50AD003025EF /* Temporarily Disable Plugins */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Temporarily Disable Plugins";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "#env | mate\n#[[ -z \"$DISABLED\" ]] && exit 0\n\n\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		7B0F10FE17DC5FFF0013D5D4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = XCFixin_CurrentLineHighlighter;
+			targetProxy = 7B0F10FD17DC5FFF0013D5D4 /* PBXContainerItemProxy */;
+		};
 		7BBB5C1D17DC01D90087E13D /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = XCFixin_CustomizeWarningErrorHighlights;
@@ -400,12 +430,16 @@
 		7BBB5BDC17DC01580087E13D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				DSTROOT = "$(HOME)";
+				INSTALL_PATH = "/Library/Application Support/Developer/Shared/Xcode/Plug-ins";
 			};
 			name = Debug;
 		};
 		7BBB5BDD17DC01580087E13D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				DSTROOT = "$(HOME)";
+				INSTALL_PATH = "/Library/Application Support/Developer/Shared/Xcode/Plug-ins";
 			};
 			name = Release;
 		};
