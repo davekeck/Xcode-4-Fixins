@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:Shared Code/XCFixin_BuildAllFixins.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:XCFixin_CustomizeWarningErrorHighlights/XCFixin_CustomizeWarningErrorHighlights.xcodeproj">
    </FileRef>
    <FileRef
