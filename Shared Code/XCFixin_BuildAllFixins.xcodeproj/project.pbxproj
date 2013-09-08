@@ -1,0 +1,484 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXAggregateTarget section */
+		7BBB5BDE17DC016E0087E13D /* Build All Fixins */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 7BBB5BDF17DC016E0087E13D /* Build configuration list for PBXAggregateTarget "Build All Fixins" */;
+			buildPhases = (
+				7B4CC1DF17DC3AD5003FA23B /* XCode5 Compatibility Script */,
+				7B742C7C17DC50AD003025EF /* Temporarily Disable Plugins */,
+			);
+			dependencies = (
+				7B0F10FE17DC5FFF0013D5D4 /* PBXTargetDependency */,
+				7BBB5C1D17DC01D90087E13D /* PBXTargetDependency */,
+				7BBB5C1F17DC01D90087E13D /* PBXTargetDependency */,
+				7BBB5C2117DC01D90087E13D /* PBXTargetDependency */,
+				7BBB5C2317DC01D90087E13D /* PBXTargetDependency */,
+				7BBB5C2517DC01D90087E13D /* PBXTargetDependency */,
+				7BBB5C2717DC01D90087E13D /* PBXTargetDependency */,
+				7BBB5C2917DC01D90087E13D /* PBXTargetDependency */,
+			);
+			name = "Build All Fixins";
+			productName = "Build All Fixins";
+		};
+/* End PBXAggregateTarget section */
+
+/* Begin PBXContainerItemProxy section */
+		7B0F10FD17DC5FFF0013D5D4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7BBB5BEA17DC01CE0087E13D /* XCFixin_CurrentLineHighlighter.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 8D5B49AC048680CD000E48DA;
+			remoteInfo = XCFixin_CurrentLineHighlighter;
+		};
+		7B4CC1DD17DC3A73003FA23B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7BBB5BEA17DC01CE0087E13D /* XCFixin_CurrentLineHighlighter.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 8D5B49B6048680CD000E48DA;
+			remoteInfo = XCFixin_CurrentLineHighlighter;
+		};
+		7BBB5C0617DC01CE0087E13D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7BBB5BED17DC01CE0087E13D /* XCFixin_CustomizeWarningErrorHighlights.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 8D5B49B6048680CD000E48DA;
+			remoteInfo = XCFixin_CustomizeWarningErrorHighlights;
+		};
+		7BBB5C0917DC01CE0087E13D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7BBB5BF017DC01CE0087E13D /* XCFixin_DisableAnimations.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 8D5B49B6048680CD000E48DA;
+			remoteInfo = XCFixin_DisableAnimations;
+		};
+		7BBB5C0C17DC01CE0087E13D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7BBB5BF317DC01CE0087E13D /* XCFixin_FindFix.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 8D5B49B6048680CD000E48DA;
+			remoteInfo = XCFixin_FindFix;
+		};
+		7BBB5C0F17DC01CE0087E13D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7BBB5BF617DC01CE0087E13D /* XCFixin_HideDistractions.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 8D5B49B6048680CD000E48DA;
+			remoteInfo = XCFixin_HideDistractions;
+		};
+		7BBB5C1217DC01CE0087E13D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7BBB5BF917DC01CE0087E13D /* XCFixin_InhibitTabNextPlaceholder.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 8D5B49B6048680CD000E48DA;
+			remoteInfo = XCFixin_InhibitTabNextPlaceholder;
+		};
+		7BBB5C1517DC01CE0087E13D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7BBB5BFC17DC01CE0087E13D /* XCFixin_TabAcceptsCompletions.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 8D5B49B6048680CD000E48DA;
+			remoteInfo = XCFixin_TabAcceptsCompletions;
+		};
+		7BBB5C1817DC01CE0087E13D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7BBB5BFF17DC01CE0087E13D /* XCFixin_UserScripts.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 8D5B49B6048680CD000E48DA;
+			remoteInfo = XCFixin_UserScripts;
+		};
+		7BBB5C1C17DC01D90087E13D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7BBB5BED17DC01CE0087E13D /* XCFixin_CustomizeWarningErrorHighlights.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 8D5B49AC048680CD000E48DA;
+			remoteInfo = XCFixin_CustomizeWarningErrorHighlights;
+		};
+		7BBB5C1E17DC01D90087E13D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7BBB5BF017DC01CE0087E13D /* XCFixin_DisableAnimations.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 8D5B49AC048680CD000E48DA;
+			remoteInfo = XCFixin_DisableAnimations;
+		};
+		7BBB5C2017DC01D90087E13D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7BBB5BF317DC01CE0087E13D /* XCFixin_FindFix.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 8D5B49AC048680CD000E48DA;
+			remoteInfo = XCFixin_FindFix;
+		};
+		7BBB5C2217DC01D90087E13D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7BBB5BF617DC01CE0087E13D /* XCFixin_HideDistractions.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 8D5B49AC048680CD000E48DA;
+			remoteInfo = XCFixin_HideDistractions;
+		};
+		7BBB5C2417DC01D90087E13D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7BBB5BF917DC01CE0087E13D /* XCFixin_InhibitTabNextPlaceholder.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 8D5B49AC048680CD000E48DA;
+			remoteInfo = XCFixin_InhibitTabNextPlaceholder;
+		};
+		7BBB5C2617DC01D90087E13D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7BBB5BFC17DC01CE0087E13D /* XCFixin_TabAcceptsCompletions.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 8D5B49AC048680CD000E48DA;
+			remoteInfo = XCFixin_TabAcceptsCompletions;
+		};
+		7BBB5C2817DC01D90087E13D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7BBB5BFF17DC01CE0087E13D /* XCFixin_UserScripts.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 8D5B49AC048680CD000E48DA;
+			remoteInfo = XCFixin_UserScripts;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		7BBB5BEA17DC01CE0087E13D /* XCFixin_CurrentLineHighlighter.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = XCFixin_CurrentLineHighlighter.xcodeproj; path = ../XCFixin_CurrentLineHighlighter/XCFixin_CurrentLineHighlighter.xcodeproj; sourceTree = "<group>"; };
+		7BBB5BED17DC01CE0087E13D /* XCFixin_CustomizeWarningErrorHighlights.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = XCFixin_CustomizeWarningErrorHighlights.xcodeproj; path = ../XCFixin_CustomizeWarningErrorHighlights/XCFixin_CustomizeWarningErrorHighlights.xcodeproj; sourceTree = "<group>"; };
+		7BBB5BF017DC01CE0087E13D /* XCFixin_DisableAnimations.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = XCFixin_DisableAnimations.xcodeproj; path = ../XCFixin_DisableAnimations/XCFixin_DisableAnimations.xcodeproj; sourceTree = "<group>"; };
+		7BBB5BF317DC01CE0087E13D /* XCFixin_FindFix.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = XCFixin_FindFix.xcodeproj; path = ../XCFixin_FindFix/XCFixin_FindFix.xcodeproj; sourceTree = "<group>"; };
+		7BBB5BF617DC01CE0087E13D /* XCFixin_HideDistractions.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = XCFixin_HideDistractions.xcodeproj; path = ../XCFixin_HideDistractions/XCFixin_HideDistractions.xcodeproj; sourceTree = "<group>"; };
+		7BBB5BF917DC01CE0087E13D /* XCFixin_InhibitTabNextPlaceholder.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = XCFixin_InhibitTabNextPlaceholder.xcodeproj; path = ../XCFixin_InhibitTabNextPlaceholder/XCFixin_InhibitTabNextPlaceholder.xcodeproj; sourceTree = "<group>"; };
+		7BBB5BFC17DC01CE0087E13D /* XCFixin_TabAcceptsCompletions.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = XCFixin_TabAcceptsCompletions.xcodeproj; path = ../XCFixin_TabAcceptsCompletions/XCFixin_TabAcceptsCompletions.xcodeproj; sourceTree = "<group>"; };
+		7BBB5BFF17DC01CE0087E13D /* XCFixin_UserScripts.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = XCFixin_UserScripts.xcodeproj; path = ../XCFixin_UserScripts/XCFixin_UserScripts.xcodeproj; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		7B4CC1DA17DC3A73003FA23B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				7B4CC1DE17DC3A73003FA23B /* XCFixin_CurrentLineHighlighter.xcplugin */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		7BBB5BD717DC01580087E13D = {
+			isa = PBXGroup;
+			children = (
+				7BBB5BEA17DC01CE0087E13D /* XCFixin_CurrentLineHighlighter.xcodeproj */,
+				7BBB5BED17DC01CE0087E13D /* XCFixin_CustomizeWarningErrorHighlights.xcodeproj */,
+				7BBB5BF017DC01CE0087E13D /* XCFixin_DisableAnimations.xcodeproj */,
+				7BBB5BF317DC01CE0087E13D /* XCFixin_FindFix.xcodeproj */,
+				7BBB5BF617DC01CE0087E13D /* XCFixin_HideDistractions.xcodeproj */,
+				7BBB5BF917DC01CE0087E13D /* XCFixin_InhibitTabNextPlaceholder.xcodeproj */,
+				7BBB5BFC17DC01CE0087E13D /* XCFixin_TabAcceptsCompletions.xcodeproj */,
+				7BBB5BFF17DC01CE0087E13D /* XCFixin_UserScripts.xcodeproj */,
+			);
+			sourceTree = "<group>";
+		};
+		7BBB5BEE17DC01CE0087E13D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				7BBB5C0717DC01CE0087E13D /* XCFixin_CustomizeWarningErrorHighlights.xcplugin */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		7BBB5BF117DC01CE0087E13D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				7BBB5C0A17DC01CE0087E13D /* XCFixin_DisableAnimations.xcplugin */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		7BBB5BF417DC01CE0087E13D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				7BBB5C0D17DC01CE0087E13D /* XCFixin_FindFix.xcplugin */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		7BBB5BF717DC01CE0087E13D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				7BBB5C1017DC01CE0087E13D /* XCFixin_HideDistractions.xcplugin */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		7BBB5BFA17DC01CE0087E13D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				7BBB5C1317DC01CE0087E13D /* XCFixin_InhibitTabNextPlaceholder.xcplugin */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		7BBB5BFD17DC01CE0087E13D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				7BBB5C1617DC01CE0087E13D /* XCFixin_TabAcceptsCompletions.xcplugin */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		7BBB5C0017DC01CE0087E13D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				7BBB5C1917DC01CE0087E13D /* XCFixin_UserScripts.xcplugin */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXProject section */
+		7BBB5BD817DC01580087E13D /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0500;
+			};
+			buildConfigurationList = 7BBB5BDB17DC01580087E13D /* Build configuration list for PBXProject "XCFixin_BuildAllFixins" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 7BBB5BD717DC01580087E13D;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 7B4CC1DA17DC3A73003FA23B /* Products */;
+					ProjectRef = 7BBB5BEA17DC01CE0087E13D /* XCFixin_CurrentLineHighlighter.xcodeproj */;
+				},
+				{
+					ProductGroup = 7BBB5BEE17DC01CE0087E13D /* Products */;
+					ProjectRef = 7BBB5BED17DC01CE0087E13D /* XCFixin_CustomizeWarningErrorHighlights.xcodeproj */;
+				},
+				{
+					ProductGroup = 7BBB5BF117DC01CE0087E13D /* Products */;
+					ProjectRef = 7BBB5BF017DC01CE0087E13D /* XCFixin_DisableAnimations.xcodeproj */;
+				},
+				{
+					ProductGroup = 7BBB5BF417DC01CE0087E13D /* Products */;
+					ProjectRef = 7BBB5BF317DC01CE0087E13D /* XCFixin_FindFix.xcodeproj */;
+				},
+				{
+					ProductGroup = 7BBB5BF717DC01CE0087E13D /* Products */;
+					ProjectRef = 7BBB5BF617DC01CE0087E13D /* XCFixin_HideDistractions.xcodeproj */;
+				},
+				{
+					ProductGroup = 7BBB5BFA17DC01CE0087E13D /* Products */;
+					ProjectRef = 7BBB5BF917DC01CE0087E13D /* XCFixin_InhibitTabNextPlaceholder.xcodeproj */;
+				},
+				{
+					ProductGroup = 7BBB5BFD17DC01CE0087E13D /* Products */;
+					ProjectRef = 7BBB5BFC17DC01CE0087E13D /* XCFixin_TabAcceptsCompletions.xcodeproj */;
+				},
+				{
+					ProductGroup = 7BBB5C0017DC01CE0087E13D /* Products */;
+					ProjectRef = 7BBB5BFF17DC01CE0087E13D /* XCFixin_UserScripts.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				7BBB5BDE17DC016E0087E13D /* Build All Fixins */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		7B4CC1DE17DC3A73003FA23B /* XCFixin_CurrentLineHighlighter.xcplugin */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = XCFixin_CurrentLineHighlighter.xcplugin;
+			remoteRef = 7B4CC1DD17DC3A73003FA23B /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		7BBB5C0717DC01CE0087E13D /* XCFixin_CustomizeWarningErrorHighlights.xcplugin */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = XCFixin_CustomizeWarningErrorHighlights.xcplugin;
+			remoteRef = 7BBB5C0617DC01CE0087E13D /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		7BBB5C0A17DC01CE0087E13D /* XCFixin_DisableAnimations.xcplugin */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = XCFixin_DisableAnimations.xcplugin;
+			remoteRef = 7BBB5C0917DC01CE0087E13D /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		7BBB5C0D17DC01CE0087E13D /* XCFixin_FindFix.xcplugin */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = XCFixin_FindFix.xcplugin;
+			remoteRef = 7BBB5C0C17DC01CE0087E13D /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		7BBB5C1017DC01CE0087E13D /* XCFixin_HideDistractions.xcplugin */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = XCFixin_HideDistractions.xcplugin;
+			remoteRef = 7BBB5C0F17DC01CE0087E13D /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		7BBB5C1317DC01CE0087E13D /* XCFixin_InhibitTabNextPlaceholder.xcplugin */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = XCFixin_InhibitTabNextPlaceholder.xcplugin;
+			remoteRef = 7BBB5C1217DC01CE0087E13D /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		7BBB5C1617DC01CE0087E13D /* XCFixin_TabAcceptsCompletions.xcplugin */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = XCFixin_TabAcceptsCompletions.xcplugin;
+			remoteRef = 7BBB5C1517DC01CE0087E13D /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		7BBB5C1917DC01CE0087E13D /* XCFixin_UserScripts.xcplugin */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = XCFixin_UserScripts.xcplugin;
+			remoteRef = 7BBB5C1817DC01CE0087E13D /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		7B4CC1DF17DC3AD5003FA23B /* XCode5 Compatibility Script */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "XCode5 Compatibility Script";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\ncd \t\t\t\t\t\t \"${INSTALL_DIR}\"\n# this may change when xcode5GM comes out?\nXCUUID=( \t\t\t\t \"63FC1C47-140D-42B0-BB4D-A10B2D225574\" )\n\n# makes a folder to move the plgins specified below\nDISABLEDFOLDER=$(dirname \"${INSTALL_DIR}\")\"/Disabled Plug-ins\"\n\n# Move any modules that aren't working.  Compatibility issues, crashes, etc.\nDISABLED=(\t\t\t\t \"XCFixin_CurrentLineHighlighter\"\n                         \"XCFixin_FindFix\"\n)\n[[ ! -z \"$DISABLED\" ]] && mkdir -p \"$DISABLEDFOLDER\"\n\nFIXINS=\"XC*.xcplugin\"\n\nfor FIXIN in $FIXINS\ndo\n\tBASE=\"${FIXIN%%.*}\"\n\tif [ $(echo \"${DISABLED[@]:0}\" | grep -o \"$BASE\") ]\n    then\n\n    \tlogger \"$BASE\" needs to be disabled\n\t\trm -r \"$DISABLEDFOLDER/$FIXIN\" && \\\n       \tmv -f \"${INSTALL_DIR}/$FIXIN\" \"$DISABLEDFOLDER/$FIXIN\"\n    else\n        FXINFO=\"${INSTALL_DIR}/$FIXIN/Contents/Info\"\n        defaults write \"$FXINFO\" DVTPlugInCompatibilityUUIDs -array \"${XCUUID[@]}\"\n\t\tdefaults write \"$FXINFO\" XC5Compatible -boolean YES\n        logger \"$BASE\" should be OK\n    fi\ndone\n";
+			showEnvVarsInLog = 0;
+		};
+		7B742C7C17DC50AD003025EF /* Temporarily Disable Plugins */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Temporarily Disable Plugins";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "#env | mate\n#[[ -z \"$DISABLED\" ]] && exit 0\n\n\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		7B0F10FE17DC5FFF0013D5D4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = XCFixin_CurrentLineHighlighter;
+			targetProxy = 7B0F10FD17DC5FFF0013D5D4 /* PBXContainerItemProxy */;
+		};
+		7BBB5C1D17DC01D90087E13D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = XCFixin_CustomizeWarningErrorHighlights;
+			targetProxy = 7BBB5C1C17DC01D90087E13D /* PBXContainerItemProxy */;
+		};
+		7BBB5C1F17DC01D90087E13D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = XCFixin_DisableAnimations;
+			targetProxy = 7BBB5C1E17DC01D90087E13D /* PBXContainerItemProxy */;
+		};
+		7BBB5C2117DC01D90087E13D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = XCFixin_FindFix;
+			targetProxy = 7BBB5C2017DC01D90087E13D /* PBXContainerItemProxy */;
+		};
+		7BBB5C2317DC01D90087E13D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = XCFixin_HideDistractions;
+			targetProxy = 7BBB5C2217DC01D90087E13D /* PBXContainerItemProxy */;
+		};
+		7BBB5C2517DC01D90087E13D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = XCFixin_InhibitTabNextPlaceholder;
+			targetProxy = 7BBB5C2417DC01D90087E13D /* PBXContainerItemProxy */;
+		};
+		7BBB5C2717DC01D90087E13D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = XCFixin_TabAcceptsCompletions;
+			targetProxy = 7BBB5C2617DC01D90087E13D /* PBXContainerItemProxy */;
+		};
+		7BBB5C2917DC01D90087E13D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = XCFixin_UserScripts;
+			targetProxy = 7BBB5C2817DC01D90087E13D /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		7BBB5BDC17DC01580087E13D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DSTROOT = "$(HOME)";
+				INSTALL_PATH = "/Library/Application Support/Developer/Shared/Xcode/Plug-ins";
+			};
+			name = Debug;
+		};
+		7BBB5BDD17DC01580087E13D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DSTROOT = "$(HOME)";
+				INSTALL_PATH = "/Library/Application Support/Developer/Shared/Xcode/Plug-ins";
+			};
+			name = Release;
+		};
+		7BBB5BE017DC016E0087E13D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		7BBB5BE117DC016E0087E13D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		7BBB5BDB17DC01580087E13D /* Build configuration list for PBXProject "XCFixin_BuildAllFixins" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7BBB5BDC17DC01580087E13D /* Debug */,
+				7BBB5BDD17DC01580087E13D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7BBB5BDF17DC016E0087E13D /* Build configuration list for PBXAggregateTarget "Build All Fixins" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7BBB5BE017DC016E0087E13D /* Debug */,
+				7BBB5BE117DC016E0087E13D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 7BBB5BD817DC01580087E13D /* Project object */;
+}
