@@ -22,13 +22,17 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
+	<key>DVTPlugInCompatibilityUUIDs</key>
+	<array>
+		<string>37B30044-3B14-46BA-ABAA-F01000C27B63</string>
+	</array>
+	<key>NSPrincipalClass</key>
+	<string>XCFixin_UserScripts</string>
 	<key>XC4Compatible</key>
 	<true/>
 	<key>XCGCReady</key>
 	<true/>
 	<key>XCPluginHasUI</key>
 	<false/>
-	<key>NSPrincipalClass</key>
-	<string>XCFixin_UserScripts</string>
 </dict>
 </plist>
