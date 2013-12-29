@@ -1,10 +1,28 @@
-__These plugins are known to be compatible with Xcode 4.5.2. For Xcode 4.0.2 support, see the xcode_402 branch.__
+__These plugins are known to be compatible with Xcode 4.5.2. Most are
+compatible with Xcode 5. For Xcode 4.0.2 support, see the xcode_402
+branch.__
 
 __===== DESCRIPTION =====__
 
 This project includes plugins (known as _fixins_) that extend Xcode and fix some of its annoying behaviors.
 
-__===== INSTALLATION =====__
+__===== INSTALLATION (Xcode 5) =====__
+
+Despite the name, some of the Xcode 4 Fixins are compatible with
+Xcode 5. Xcode 5 support is still under development.
+
+To install the fixins:
+
+1. Open the XCFixins workspace
+2. Change the scheme to Build All Fixins
+3. Build the fixins
+
+The fixins will automatically be installed as a part of the build
+process. Xcode must be relaunched for the fixins to take effect.
+
+Fixins are installed into ~/Library/Application Support/Developer/Shared/Xcode/Plug-ins/.
+
+__===== INSTALLATION (Xcode 4) =====__
 
 To install a fixin:
 
@@ -18,11 +36,11 @@ Fixins are installed into ~/Library/Application Support/Developer/Shared/Xcode/P
 
 __===== THE FIXINS =====__
 
-__CurrentLineHighlighter__: This fixin highlights the line currently being edited in the source editor, making it easier to track the current insertion point. This fixin adds a "Current Line Highlight Color..." menu item to the Editor menu to set the highlight color.
+__CurrentLineHighlighter__ (_Xcode 4 only_): This fixin highlights the line currently being edited in the source editor, making it easier to track the current insertion point. This fixin adds a "Current Line Highlight Color..." menu item to the Editor menu to set the highlight color.
 
 __DisableAnimations__: This fixin disables Xcode's various NSAnimation-based animations, such as the Show/Hide Debug Area, Show/Hide Navigator, and Show/Hide Utilities animations.
 
-__FindFix__: By default, when Xcode's inline find bar opens, it doesn't display any options to customize searching. This fixin makes Xcode show all find options (such as "Ignore Case") in the find bar when it opens. This fixin also makes text-replacement the default mode in the inline find bar, giving immediate access to the "Replace" and "Replace All" buttons.
+__FindFix__ (_Xcode 4 only_): By default, when Xcode's inline find bar opens, it doesn't display any options to customize searching. This fixin makes Xcode show all find options (such as "Ignore Case") in the find bar when it opens. This fixin also makes text-replacement the default mode in the inline find bar, giving immediate access to the "Replace" and "Replace All" buttons.
 
 __HideDistractions__: This fixin adds a "Hide Distractions" menu item to the View menu, which focuses the current editor by hiding auxiliary views and maximizing the active window. This fixin works best when the XCFixin_DisableAnimations fixin is also installed.
 
