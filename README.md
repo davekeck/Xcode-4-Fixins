@@ -50,6 +50,6 @@ __InhibitTabNextPlaceholder__: This fixin disables using the tab key to select b
 
 __TabAcceptsCompletion__: Upon pressing tab, this fixin makes Xcode accept the currently-highlighted completion suggestion in the popup list. (Xcode's default tab behavior accepts only as much of the highlighted completion that is common amongst other suggestions.)
 
-__UserScripts (Experimental)__: Reinstates some semblance of the Xcode 3.x User Scripts menu. See documentation in the XCFixin_UserScripts directory.
+__UserScripts__: Reinstates some semblance of the Xcode 3.x User Scripts menu. See documentation in the XCFixin_UserScripts directory.
 
 __CustomizeWarningErrorHighlights__: Customize the inline error/warning message highlight color. Useful if want to be able to read your code when using a dark background color.
