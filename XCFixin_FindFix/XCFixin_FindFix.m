@@ -51,8 +51,13 @@ static void overrideViewDidInstall(id self, SEL _cmd)
 //	DumpSubviews(view, @"");
 //	NSLog(@"End FindBar subviews.");
 	
+	id optionsCtrl = [self optionsCtrl];
+	
 	view = [[view subviews] objectAtIndex:0];
-	[view addSubview:[[self optionsCtrl] view]];
+	[view addSubview:[optionsCtrl matchingStyleView]];
+	[view addSubview:[optionsCtrl hitsMustContainView]];
+	[view addSubview:[optionsCtrl matchCaseView]];
+	[view addSubview:[optionsCtrl wrapView]];
 }
 
 static void overrideShowFindOptionsPopover(id self, SEL _cmd, id arg1)
