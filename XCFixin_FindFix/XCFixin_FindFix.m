@@ -5,15 +5,9 @@
 #import "XCFixin.h"
 
 static IMP gOriginalViewDidInstall = nil;
-
-typedef id (*initWithSupportForRegexImp)(id, SEL, BOOL, BOOL, BOOL);
-static initWithSupportForRegexImp gOriginalInitWithSupportForRegex = nil;
-
 static IMP gOriginalShowFindOptionsPopover = nil;
-
 static IMP gOriginalSetFinderMode = nil;
 static IMP gOriginalChangeFinderMode = nil;
-
 static IMP gOriginalRecentsMenu = nil;
 
 @interface XCFixin_FindFix : NSObject
