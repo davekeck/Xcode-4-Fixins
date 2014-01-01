@@ -14,6 +14,8 @@ static BOOL gIsXcode5 = NO;
 
 @implementation XCFixin_FindFix
 
+#define MSGSEND(SELF, SEL, ...) (objc_msgSend((SELF), @selector(SEL), ##__VA_ARGS__))
+
 static void DumpSubviews(NSView *view, NSString *prefix)
 {
 	NSArray *subviews = [view subviews];
@@ -29,10 +31,10 @@ static void DumpSubviews(NSView *view, NSString *prefix)
 
 static void ForEachOption(id optionsCtrl, void (*fn)(id option, id context), id context)
 {
-	(*fn)([optionsCtrl matchingStyleView], context);
-	(*fn)([optionsCtrl hitsMustContainView], context);
-	(*fn)([optionsCtrl matchCaseView], context);
-	(*fn)([optionsCtrl wrapView], context);
+	(*fn)(MSGSEND(optionsCtrl, matchingStyleView), context);
+	(*fn)(MSGSEND(optionsCtrl, hitsMustContainView), context);
+	(*fn)(MSGSEND(optionsCtrl, matchCaseView), context);
+	(*fn)(MSGSEND(optionsCtrl, wrapView), context);
 }
 
 static void RemoveOptionFromSuperview(id option, id context)
@@ -89,7 +91,7 @@ static void overrideViewDidInstall(id self, SEL _cmd)
 		//	DumpSubviews(view, @"");
 		//	NSLog(@"End FindBar subviews.");
 		
-		id optionsCtrl = [self optionsCtrl];
+		id optionsCtrl = MSGSEND(self, optionsCtrl);
 		
 		RemoveOptionsFromSuperview(optionsCtrl);
 		AddOptionsToFindBar(optionsCtrl, [self view]);
@@ -98,7 +100,7 @@ static void overrideViewDidInstall(id self, SEL _cmd)
 	{
 		dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.0), dispatch_get_main_queue(),
 					   ^{
-						   [self setShowsOptions:(BOOL)YES];
+						   MSGSEND(self, setShowsOptions:, (BOOL)YES);
 					   });
 	}
 }
@@ -106,19 +108,19 @@ static void overrideViewDidInstall(id self, SEL _cmd)
 static void overrideSetFinderMode(id self, SEL _cmd, unsigned long long newFinderMode)
 {
 	// Don't allow setting of find mode if replace is supported.
-	if (newFinderMode == 0 && (BOOL)[self supportsReplace])
+	if (newFinderMode == 0 && (BOOL)MSGSEND(self, supportsReplace))
 		newFinderMode = 1;
 	
-	unsigned long long oldFinderMode = (unsigned long long)[self finderMode];
+	unsigned long long oldFinderMode = (unsigned long long)MSGSEND(self, finderMode);
 	if (newFinderMode != oldFinderMode)
 	{
 		if (gIsXcode5)
-			RemoveOptionsFromSuperview([self optionsCtrl]);
+			RemoveOptionsFromSuperview(MSGSEND(self, optionsCtrl));
 		
 		((void (*)(id, SEL, unsigned long long))gOriginalSetFinderMode)(self, _cmd, newFinderMode);
 		
 		if (gIsXcode5)
-			AddOptionsToFindBar([self optionsCtrl], [self view]);
+			AddOptionsToFindBar(MSGSEND(self, optionsCtrl), [self view]);
 	}
 }
 
@@ -140,7 +142,14 @@ static id overrideRecentsMenu(id self, SEL _cmd)
 			if ([item target] == self && [item action] == @selector(_showFindOptionsPopover:))
 				[recentsMenu removeItemAtIndex:i];
 			else
+			{
+				if ([[item title] isEqualToString:@"Insert Pattern"])
+				{
+					
+				}
+				
 				++i;
+			}
 		}
 	}
 	
