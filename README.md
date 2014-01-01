@@ -43,10 +43,11 @@ __DisableAnimations__: This fixin disables Xcode's various NSAnimation-based ani
 
 __FindFix__: By default, when Xcode's inline find bar opens, it doesn't display any options to customize searching. This fixin makes Xcode show all find options (such as "Ignore Case") in the find bar when it opens. This fixin also makes text-replacement the default mode in the inline find bar, giving immediate access to the "Replace" and "Replace All" buttons.
 
-The FindFix fixin also installs an additional option in the Find menu:
-__Auto Populate Find Bar__. When ticked, and the find bar is
-activated, the search text will be set to the text of the current
-selection, if any, or the word at the cursor.
+The FindFix fixin also installs an additional option in the Find menu
+(Xcode 5) or Edit > Find menu (Xcode 4): __Auto Populate Find Bar__.
+When ticked, and the find bar is activated, the search text will be
+set to the text of the current selection, if any, or the word at the
+cursor.
 
 __HideDistractions__: This fixin adds a "Hide Distractions" menu item to the View menu, which focuses the current editor by hiding auxiliary views and maximizing the active window. This fixin works best when the XCFixin_DisableAnimations fixin is also installed.
 

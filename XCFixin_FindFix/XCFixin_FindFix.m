@@ -261,12 +261,30 @@ static id overrideRecentsMenu(id self, SEL _cmd)
 	
 	// Add auto populate menu option.
 	{
-		NSMenu *mainMenu = [NSApp mainMenu];
-		int findMenuIndex = [mainMenu indexOfItemWithTitle:@"Find"];
-		if (findMenuIndex >= 0)
+		NSMenu *findMenu = nil;
+		
+		if (gIsXcode5)
 		{
-			NSMenu *findMenu = [[mainMenu itemAtIndex:findMenuIndex] submenu];
-			
+			NSMenu *mainMenu = [NSApp mainMenu];
+			int findMenuIndex = [mainMenu indexOfItemWithTitle:@"Find"];
+			if (findMenuIndex >= 0)
+				findMenu = [[mainMenu itemAtIndex:findMenuIndex] submenu];
+		}
+		else
+		{
+			NSMenu *mainMenu = [NSApp mainMenu];
+			int editMenuIndex = [mainMenu indexOfItemWithTitle:@"Edit"];
+			if (editMenuIndex >= 0)
+			{
+				NSMenu *editMenu = [[mainMenu itemAtIndex:editMenuIndex] submenu];
+				int findMenuIndex = [editMenu indexOfItemWithTitle:@"Find"];
+				if (findMenuIndex >= 0)
+					findMenu = [[editMenu itemAtIndex:findMenuIndex] submenu];
+			}
+		}
+		
+		if (findMenu)
+		{
 			NSMenuItem *autoPopulateItem = [NSMenuItem new];
 		
 			[autoPopulateItem setTitle:@"Auto Populate Find Bar"];
