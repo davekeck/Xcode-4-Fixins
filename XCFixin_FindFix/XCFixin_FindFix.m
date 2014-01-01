@@ -103,7 +103,8 @@ static void overrideShowFindOptionsPopover(id self, SEL _cmd, id arg1)
 
 static void overrideSetFinderMode(id self, SEL _cmd, unsigned long long arg1)
 {
-	if (arg1 != [self finderMode])
+	unsigned long long oldFinderMode = (unsigned long long)[self finderMode];
+	if (arg1 != oldFinderMode)
 	{
 		id optionsCtrl = [self optionsCtrl];
 		
