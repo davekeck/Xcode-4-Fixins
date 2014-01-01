@@ -11,6 +11,9 @@ static initWithSupportForRegexImp gOriginalInitWithSupportForRegex = nil;
 
 static IMP gOriginalShowFindOptionsPopover = nil;
 
+static IMP gOriginalSetFinderMode = nil;
+static IMP gOriginalChangeFinderMode = nil;
+
 @interface XCFixin_FindFix : NSObject
 @end
 
@@ -29,6 +32,40 @@ static void DumpSubviews(NSView *view, NSString *prefix)
 	}
 }
 
+static void ForEachOption(id optionsCtrl, void (*fn)(id option, id context), id context)
+{
+	(*fn)([optionsCtrl matchingStyleView], context);
+	(*fn)([optionsCtrl hitsMustContainView], context);
+	(*fn)([optionsCtrl matchCaseView], context);
+	(*fn)([optionsCtrl wrapView], context);
+}
+
+static void RemoveOptionFromSuperview(id option, id context)
+{
+	[option retain];
+	[option removeFromSuperview];
+}
+
+// RemoveOptionsFromSuperview and AddOptionToFindBar must be called as a
+// pair, because they contain matching release and retain calls.
+
+static void RemoveOptionsFromSuperview(id optionsCtrl)
+{
+	ForEachOption(optionsCtrl, &RemoveOptionFromSuperview, nil);
+}
+
+static void AddOptionToFindBar(id option, id findBarView)
+{
+	NSView *stackView = [[findBarView subviews] objectAtIndex:0];
+	[stackView addSubview:option];
+	[option release];
+}
+
+static void AddOptionsToFindBar(id optionsCtrl, id findBarView)
+{
+	ForEachOption(optionsCtrl, &AddOptionToFindBar, findBarView);
+}
+
 static void overrideViewDidInstall(id self, SEL _cmd)
 {
     /* -(void)[DVTFindBar viewDidInstall] */
@@ -45,19 +82,14 @@ static void overrideViewDidInstall(id self, SEL _cmd)
     
     ((void (*)(id, SEL))gOriginalViewDidInstall)(self, _cmd);
 	
-	NSView *view = [self view];
-	
 //	NSLog(@"Begin FindBar subviews.");
 //	DumpSubviews(view, @"");
 //	NSLog(@"End FindBar subviews.");
 	
 	id optionsCtrl = [self optionsCtrl];
 	
-	view = [[view subviews] objectAtIndex:0];
-	[view addSubview:[optionsCtrl matchingStyleView]];
-	[view addSubview:[optionsCtrl hitsMustContainView]];
-	[view addSubview:[optionsCtrl matchCaseView]];
-	[view addSubview:[optionsCtrl wrapView]];
+	RemoveOptionsFromSuperview(optionsCtrl);
+	AddOptionsToFindBar(optionsCtrl, [self view]);
 }
 
 static void overrideShowFindOptionsPopover(id self, SEL _cmd, id arg1)
@@ -67,6 +99,29 @@ static void overrideShowFindOptionsPopover(id self, SEL _cmd, id arg1)
 	//
 	// Long term, should really do something a bit neater, such as remove
 	// the item from the menu, or at least disable it.
+}
+
+static void overrideSetFinderMode(id self, SEL _cmd, unsigned long long arg1)
+{
+	if (arg1 != [self finderMode])
+	{
+		id optionsCtrl = [self optionsCtrl];
+		
+		RemoveOptionsFromSuperview(optionsCtrl);
+		
+		((void (*)(id, SEL, unsigned long long))gOriginalSetFinderMode)(self, _cmd, arg1);
+		
+		AddOptionsToFindBar(optionsCtrl, [self view]);
+	}
+}
+
+static void overrideChangeFinderMode(id self, SEL _cmd, id arg1)
+{
+	// This never seems to get called...
+	
+	//NSLog(@"%s: self=%p _cmd=%p arg1=%p", __FUNCTION__, self, _cmd, arg1);
+	
+	((void (*)(id, SEL, id))gOriginalChangeFinderMode)(self, _cmd, arg1);
 }
 
 + (void)pluginDidLoad: (NSBundle *)plugin
@@ -79,6 +134,12 @@ static void overrideShowFindOptionsPopover(id self, SEL _cmd, id arg1)
 	
 	gOriginalShowFindOptionsPopover = XCFixinOverrideMethodString(@"DVTFindBar", @selector(_showFindOptionsPopover:), (IMP)&overrideShowFindOptionsPopover);
 	XCFixinAssertOrPerform(gOriginalShowFindOptionsPopover, goto failed);
+	
+	gOriginalSetFinderMode = XCFixinOverrideMethodString(@"DVTFindBar", @selector(setFinderMode:), (IMP)&overrideSetFinderMode);
+	XCFixinAssertOrPerform(gOriginalShowFindOptionsPopover, goto failed);
+
+	gOriginalChangeFinderMode = XCFixinOverrideMethodString(@"DVTFindBar", @selector(changeFinderMode:), (IMP)&overrideChangeFinderMode);
+	XCFixinAssertOrPerform(gOriginalChangeFinderMode, goto failed);
     
     XCFixinPostflight();
 }
