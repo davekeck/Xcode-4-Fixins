@@ -12,12 +12,6 @@ static IMP gOriginalRecentsMenu = nil;
 static BOOL gIsXcode5 = NO;
 static NSString *gAutoPopulateUserDefaultsKey = @"XCFixinFindFixAutoPopulate";
 
-@interface XCFixin_AddedView : NSView
-@end
-
-@implementation XCFixin_AddedView
-@end
-
 @interface XCFixin_FindFix : NSObject
 @end
 
@@ -80,16 +74,7 @@ static void RemoveOptionFromSuperview(id option, id context)
 
 static void RemoveOptionsFromSuperview(id optionsCtrl, NSView *findBarView)
 {
-	// Remove the popover options.
 	ForEachOption(optionsCtrl, &RemoveOptionFromSuperview, nil);
-
-	// Remove any added options.
-	NSArray *subviews = [NSArray arrayWithArray:[GetFindBarStackView(findBarView) subviews]];
-	for(NSView *view in subviews)
-	{
-		if ([view isKindOfClass:[XCFixin_AddedView class]])
-			[view removeFromSuperview];
-	}
 }
 
 static void AddOptionToView(id option, id view)
@@ -98,65 +83,11 @@ static void AddOptionToView(id option, id view)
 	[option release];
 }
 
-+(void)autoPopulateButtonClicked:(id)arg
-{
-	NSButton *button = (NSButton *)arg;
-	BOOL autoPopulate = [button state] == NSOnState;
-	SetAutoPopulate(autoPopulate);
-}
-
 static void AddOptionsToFindBar(id optionsCtrl, NSView *findBarView)
 {
 	NSView *findBarStackView = GetFindBarStackView(findBarView);
 	
 	ForEachOption(optionsCtrl, &AddOptionToView, findBarStackView);
-	
-	// Add the auto populate option.
-	{
-		// these are (roughly) the expected values, at least on my PC...
-		NSRect viewRect = NSMakeRect(0.f, 84.f, 256.f, 20.f);
-		NSRect buttonRect = NSMakeRect(106.f, 1.f, 250.f, 18.f);
-		NSFont *buttonFont = nil;
-		
-		NSView *wrapView = MSGSEND(NSView *, optionsCtrl, wrapView);
-		if (wrapView && [[wrapView subviews] count] > 0)
-		{
-			NSButton *wrapButton = [[wrapView subviews] objectAtIndex:0];
-			
-			viewRect = [wrapView frame];
-			viewRect.origin.y += viewRect.size.height;
-			
-			buttonRect = [wrapButton frame];
-			buttonRect.size.width = viewRect.size.width - buttonRect.origin.x;
-			
-			buttonFont = [wrapButton font];
-		}
-		
-		NSView *autoPopulateView = [[[XCFixin_AddedView alloc] initWithFrame:viewRect] autorelease];
-		
-		NSButton *autoPopulateButton = [[[NSButton alloc] initWithFrame:buttonRect] autorelease];
-		
-		[autoPopulateButton setTitle:@"Auto Populate"];
-		[autoPopulateButton setButtonType:NSSwitchButton];
-		[autoPopulateButton setState:GetAutoPopulate() ? NSOnState : NSOffState];
-		
-		[autoPopulateButton setAction:@selector(autoPopulateButtonClicked:)];
-		[autoPopulateButton setTarget:[XCFixin_FindFix class]];
-		 
-		if (buttonFont)
-		{
-			// I was hoping this would make the check box part the same
-			// size as the existing controls - but it doesn't.
-			[autoPopulateButton setFont:buttonFont];
-		}
-		
-		[autoPopulateView addSubview:autoPopulateButton];
-		[findBarStackView addSubview:autoPopulateView];
-		
-		NSLog(@"Begin FindBar subviews.");
-		DumpSubviews(findBarView, @"");
-		NSLog(@"End FindBar subviews.");
-	}
 }
 
 static void overrideViewDidInstall(id self, SEL _cmd)
@@ -177,7 +108,7 @@ static void overrideViewDidInstall(id self, SEL _cmd)
         [self setValue: [NSNumber numberWithUnsignedLongLong: 1] forKey: @"finderMode"];
 		
 		//NSLog(@"%s: set preferredViewHeight.", __FUNCTION__);
-		double preferredViewHeight = gIsXcode5 ? 155. : 45.;
+		double preferredViewHeight = gIsXcode5 ? 135. : 45.;
         [self setValue: [NSNumber numberWithDouble: preferredViewHeight] forKey: @"preferredViewHeight"];
     }
     
@@ -194,39 +125,6 @@ static void overrideViewDidInstall(id self, SEL _cmd)
 		
 		RemoveOptionsFromSuperview(optionsCtrl, [self view]);
 		AddOptionsToFindBar(optionsCtrl, [self view]);
-		
-		if (GetAutoPopulate())
-		{
-			if (textView)
-			{
-				NSLog(@"%s: got text view.", __FUNCTION__);
-				
-				NSArray *selectedRanges = [textView selectedRanges];
-				
-				// Start out with first bit of selection...
-				NSRange populateRange = [[selectedRanges objectAtIndex:0] rangeValue];
-				if (populateRange.length == 0)
-				{
-					// No selection, so use the word about the cursor.
-					//
-					// (NSRange is small, so it's an honarary primitive for the
-					// purposes of manual message sending.)
-					populateRange = MSGSEND(NSRange, textView, wordRangeAtLocation:, (unsigned long long)populateRange.location);
-				}
-				
-				if (populateRange.length > 0)
-				{
-					NSTextStorage *textStorage = [textView textStorage];
-					NSString *textStorageString = [textStorage string];
-					
-					NSString *populateString = [textStorageString substringWithRange:populateRange];
-					
-					NSLog(@"Populate string: ``%@''.", populateString);
-					
-					MSGSEND(void, self, setFindString:, populateString);
-				}
-			}
-		}
 	}
 	else
 	{
@@ -234,6 +132,39 @@ static void overrideViewDidInstall(id self, SEL _cmd)
 					   ^{
 						   MSGSEND(void, self, setShowsOptions:, (BOOL)YES);
 					   });
+	}
+
+	if (GetAutoPopulate())
+	{
+		if (textView)
+		{
+			NSLog(@"%s: got text view.", __FUNCTION__);
+			
+			NSArray *selectedRanges = [textView selectedRanges];
+			
+			// Start out with first bit of selection...
+			NSRange populateRange = [[selectedRanges objectAtIndex:0] rangeValue];
+			if (populateRange.length == 0)
+			{
+				// No selection, so use the word about the cursor.
+				//
+				// (NSRange is small, so it's an honarary primitive for the
+				// purposes of manual message sending.)
+				populateRange = MSGSEND(NSRange, textView, wordRangeAtLocation:, (unsigned long long)populateRange.location);
+			}
+			
+			if (populateRange.length > 0)
+			{
+				NSTextStorage *textStorage = [textView textStorage];
+				NSString *textStorageString = [textStorage string];
+				
+				NSString *populateString = [textStorageString substringWithRange:populateRange];
+				
+				NSLog(@"Populate string: ``%@''.", populateString);
+				
+				MSGSEND(void, self, setFindString:, populateString);
+			}
+		}
 	}
 }
 
@@ -254,11 +185,6 @@ static void overrideSetFinderMode(id self, SEL _cmd, unsigned long long newFinde
 		if (gIsXcode5)
 			AddOptionsToFindBar(MSGSEND(id, self, optionsCtrl), [self view]);
 	}
-}
-
-+(void)populateFindString:(id)arg
-{
-	NSLog(@"Populate.");
 }
 
 static id overrideRecentsMenu(id self, SEL _cmd)
@@ -302,6 +228,18 @@ static id overrideRecentsMenu(id self, SEL _cmd)
 	return recentsMenu;
 }
 
++(void)autoPopulateClicked:(id)arg
+{
+	//	NSLog(@"%s: arg = (%@ *)%p", __FUNCTION__, NSStringFromClass([arg class]), arg);
+	NSMenuItem *item = (NSMenuItem *)arg;
+	
+	BOOL autoPopulate = [item state] == NSOnState;
+	autoPopulate = !autoPopulate;
+	
+	SetAutoPopulate(autoPopulate);
+	[item setState:autoPopulate ? NSOnState : NSOffState];
+}
+
 + (void)pluginDidLoad: (NSBundle *)plugin
 {
     XCFixinPreflight();
@@ -319,6 +257,26 @@ static id overrideRecentsMenu(id self, SEL _cmd)
 
 		gOriginalRecentsMenu = XCFixinOverrideMethodString(@"DVTFindBar", @selector(_recentsMenu), (IMP)&overrideRecentsMenu);
 		XCFixinAssertOrPerform(gOriginalRecentsMenu, goto failed);
+	}
+	
+	// Add auto populate menu option.
+	{
+		NSMenu *mainMenu = [NSApp mainMenu];
+		int findMenuIndex = [mainMenu indexOfItemWithTitle:@"Find"];
+		if (findMenuIndex >= 0)
+		{
+			NSMenu *findMenu = [[mainMenu itemAtIndex:findMenuIndex] submenu];
+			
+			NSMenuItem *autoPopulateItem = [NSMenuItem new];
+		
+			[autoPopulateItem setTitle:@"Auto Populate Find Bar"];
+			[autoPopulateItem setTarget:[XCFixin_FindFix class]];
+			[autoPopulateItem setAction:@selector(autoPopulateClicked:)];
+			[autoPopulateItem setEnabled:YES];
+			[autoPopulateItem setState:GetAutoPopulate() ? NSOnState : NSOffState];
+			
+			[findMenu addItem:autoPopulateItem];
+		}
 	}
 	
 	//NSLog(@"gIsXcode5 = %d.", (int)gIsXcode5);

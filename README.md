@@ -41,7 +41,12 @@ __CurrentLineHighlighter__ (_Xcode 4 only_): This fixin highlights the line curr
 
 __DisableAnimations__: This fixin disables Xcode's various NSAnimation-based animations, such as the Show/Hide Debug Area, Show/Hide Navigator, and Show/Hide Utilities animations.
 
-__FindFix__ (_alpha quality in Xcode 5_): By default, when Xcode's inline find bar opens, it doesn't display any options to customize searching. This fixin makes Xcode show all find options (such as "Ignore Case") in the find bar when it opens. This fixin also makes text-replacement the default mode in the inline find bar, giving immediate access to the "Replace" and "Replace All" buttons.
+__FindFix__: By default, when Xcode's inline find bar opens, it doesn't display any options to customize searching. This fixin makes Xcode show all find options (such as "Ignore Case") in the find bar when it opens. This fixin also makes text-replacement the default mode in the inline find bar, giving immediate access to the "Replace" and "Replace All" buttons.
+
+The FindFix fixin also installs an additional option in the Find menu:
+__Auto Populate Find Bar__. When ticked, and the find bar is
+activated, the search text will be set to the text of the current
+selection, if any, or the word at the cursor.
 
 __HideDistractions__: This fixin adds a "Hide Distractions" menu item to the View menu, which focuses the current editor by hiding auxiliary views and maximizing the active window. This fixin works best when the XCFixin_DisableAnimations fixin is also installed.
 
