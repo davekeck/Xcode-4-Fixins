@@ -5,10 +5,9 @@
 #import "XCFixin.h"
 
 static IMP gOriginalViewDidInstall = nil;
-static IMP gOriginalShowFindOptionsPopover = nil;
 static IMP gOriginalSetFinderMode = nil;
-static IMP gOriginalChangeFinderMode = nil;
 static IMP gOriginalRecentsMenu = nil;
+static BOOL gIsXcode5 = NO;
 
 @interface XCFixin_FindFix : NSObject
 @end
@@ -66,59 +65,61 @@ static void overrideViewDidInstall(id self, SEL _cmd)
 {
     /* -(void)[DVTFindBar viewDidInstall] */
 	
+	//NSLog(@"%s: check supportsReplace.", __FUNCTION__);
 	BOOL supportsReplace = [[self valueForKey: @"supportsReplace"] boolValue];
 	
-	NSLog(@"%s: supportsReplace=%s", __FUNCTION__, supportsReplace ? "YES" : "NO");
+	// NSLog(@"%s: supportsReplace=%s", __FUNCTION__, supportsReplace ? "YES" : "NO");
 	
     if (supportsReplace)
     {
+		//NSLog(@"%s: set finderMode.", __FUNCTION__);
         [self setValue: [NSNumber numberWithUnsignedLongLong: 1] forKey: @"finderMode"];
-        [self setValue: [NSNumber numberWithDouble: 150.0] forKey: @"preferredViewHeight"];
+		
+		//NSLog(@"%s: set preferredViewHeight.", __FUNCTION__);
+		double preferredViewHeight = gIsXcode5 ? 150. : 45.;
+        [self setValue: [NSNumber numberWithDouble: preferredViewHeight] forKey: @"preferredViewHeight"];
     }
     
+	//NSLog(@"%s: calling original.", __FUNCTION__);
     ((void (*)(id, SEL))gOriginalViewDidInstall)(self, _cmd);
 	
-//	NSLog(@"Begin FindBar subviews.");
-//	DumpSubviews(view, @"");
-//	NSLog(@"End FindBar subviews.");
-	
-	id optionsCtrl = [self optionsCtrl];
-	
-	RemoveOptionsFromSuperview(optionsCtrl);
-	AddOptionsToFindBar(optionsCtrl, [self view]);
-}
-
-static void overrideShowFindOptionsPopover(id self, SEL _cmd, id arg1)
-{
-	// Just do nothing. Actually popping up the popover removes the
-	// controls from the find bar, of course...
-	//
-	// Long term, should really do something a bit neater, such as remove
-	// the item from the menu, or at least disable it.
-}
-
-static void overrideSetFinderMode(id self, SEL _cmd, unsigned long long arg1)
-{
-	unsigned long long oldFinderMode = (unsigned long long)[self finderMode];
-	if (arg1 != oldFinderMode)
+	if (gIsXcode5)
 	{
+		//	NSLog(@"Begin FindBar subviews.");
+		//	DumpSubviews(view, @"");
+		//	NSLog(@"End FindBar subviews.");
+		
 		id optionsCtrl = [self optionsCtrl];
 		
 		RemoveOptionsFromSuperview(optionsCtrl);
-		
-		((void (*)(id, SEL, unsigned long long))gOriginalSetFinderMode)(self, _cmd, arg1);
-		
 		AddOptionsToFindBar(optionsCtrl, [self view]);
+	}
+	else
+	{
+		dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.0), dispatch_get_main_queue(),
+					   ^{
+						   [self setShowsOptions:(BOOL)YES];
+					   });
 	}
 }
 
-static void overrideChangeFinderMode(id self, SEL _cmd, id arg1)
+static void overrideSetFinderMode(id self, SEL _cmd, unsigned long long newFinderMode)
 {
-	// This never seems to get called...
+	// Don't allow setting of find mode if replace is supported.
+	if (newFinderMode == 0 && (BOOL)[self supportsReplace])
+		newFinderMode = 1;
 	
-	//NSLog(@"%s: self=%p _cmd=%p arg1=%p", __FUNCTION__, self, _cmd, arg1);
-	
-	((void (*)(id, SEL, id))gOriginalChangeFinderMode)(self, _cmd, arg1);
+	unsigned long long oldFinderMode = (unsigned long long)[self finderMode];
+	if (newFinderMode != oldFinderMode)
+	{
+		if (gIsXcode5)
+			RemoveOptionsFromSuperview([self optionsCtrl]);
+		
+		((void (*)(id, SEL, unsigned long long))gOriginalSetFinderMode)(self, _cmd, newFinderMode);
+		
+		if (gIsXcode5)
+			AddOptionsToFindBar([self optionsCtrl], [self view]);
+	}
 }
 
 static id overrideRecentsMenu(id self, SEL _cmd)
@@ -154,17 +155,18 @@ static id overrideRecentsMenu(id self, SEL _cmd)
     gOriginalViewDidInstall = XCFixinOverrideMethodString(@"DVTFindBar", @selector(viewDidInstall), (IMP)&overrideViewDidInstall);
 	XCFixinAssertOrPerform(gOriginalViewDidInstall, goto failed);
 	
-	gOriginalShowFindOptionsPopover = XCFixinOverrideMethodString(@"DVTFindBar", @selector(_showFindOptionsPopover:), (IMP)&overrideShowFindOptionsPopover);
-	XCFixinAssertOrPerform(gOriginalShowFindOptionsPopover, goto failed);
-	
 	gOriginalSetFinderMode = XCFixinOverrideMethodString(@"DVTFindBar", @selector(setFinderMode:), (IMP)&overrideSetFinderMode);
-	XCFixinAssertOrPerform(gOriginalShowFindOptionsPopover, goto failed);
-
-	gOriginalChangeFinderMode = XCFixinOverrideMethodString(@"DVTFindBar", @selector(changeFinderMode:), (IMP)&overrideChangeFinderMode);
-	XCFixinAssertOrPerform(gOriginalChangeFinderMode, goto failed);
+	XCFixinAssertOrPerform(gOriginalSetFinderMode, goto failed);
 	
-	gOriginalRecentsMenu = XCFixinOverrideMethodString(@"DVTFindBar", @selector(_recentsMenu), (IMP)&overrideRecentsMenu);
-	XCFixinAssertOrPerform(gOriginalRecentsMenu, goto failed);
+	if (class_respondsToSelector(objc_getClass("DVTFindBar"), @selector(_showFindOptionsPopover:)))
+	{
+		gIsXcode5 = YES;
+
+		gOriginalRecentsMenu = XCFixinOverrideMethodString(@"DVTFindBar", @selector(_recentsMenu), (IMP)&overrideRecentsMenu);
+		XCFixinAssertOrPerform(gOriginalRecentsMenu, goto failed);
+	}
+	
+	//NSLog(@"gIsXcode5 = %d.", (int)gIsXcode5);
     
     XCFixinPostflight();
 }
