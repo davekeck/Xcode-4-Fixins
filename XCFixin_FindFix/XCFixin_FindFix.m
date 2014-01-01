@@ -14,6 +14,8 @@ static IMP gOriginalShowFindOptionsPopover = nil;
 static IMP gOriginalSetFinderMode = nil;
 static IMP gOriginalChangeFinderMode = nil;
 
+static IMP gOriginalRecentsMenu = nil;
+
 @interface XCFixin_FindFix : NSObject
 @end
 
@@ -125,6 +127,31 @@ static void overrideChangeFinderMode(id self, SEL _cmd, id arg1)
 	((void (*)(id, SEL, id))gOriginalChangeFinderMode)(self, _cmd, arg1);
 }
 
+static id overrideRecentsMenu(id self, SEL _cmd)
+{
+	NSMenu *recentsMenu = ((id (*)(id, SEL))gOriginalRecentsMenu)(self, _cmd);
+	
+//	NSLog(@"%s: class = %@", __FUNCTION__, NSStringFromClass([recentsMenu class]));
+	
+	// Well, there'll only be one copy of the find options item. But, no
+	// reason to make things flakier than they need to be.
+	{
+		NSInteger i = 0;
+		
+		while (i < [recentsMenu numberOfItems])
+		{
+			NSMenuItem *item = [recentsMenu itemAtIndex:i];
+		
+			if ([item target] == self && [item action] == @selector(_showFindOptionsPopover:))
+				[recentsMenu removeItemAtIndex:i];
+			else
+				++i;
+		}
+	}
+	
+	return recentsMenu;
+}
+
 + (void)pluginDidLoad: (NSBundle *)plugin
 {
     XCFixinPreflight();
@@ -141,6 +168,9 @@ static void overrideChangeFinderMode(id self, SEL _cmd, id arg1)
 
 	gOriginalChangeFinderMode = XCFixinOverrideMethodString(@"DVTFindBar", @selector(changeFinderMode:), (IMP)&overrideChangeFinderMode);
 	XCFixinAssertOrPerform(gOriginalChangeFinderMode, goto failed);
+	
+	gOriginalRecentsMenu = XCFixinOverrideMethodString(@"DVTFindBar", @selector(_recentsMenu), (IMP)&overrideRecentsMenu);
+	XCFixinAssertOrPerform(gOriginalRecentsMenu, goto failed);
     
     XCFixinPostflight();
 }
