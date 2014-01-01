@@ -66,3 +66,6 @@ extern const NSUInteger XCFixinMaxLoadAttempts;
    This function returns nil on failure. */
 IMP XCFixinOverrideMethod(Class class, SEL selector, IMP newImplementation);
 #define XCFixinOverrideMethodString(className, selector, newImplementation) XCFixinOverrideMethod(NSClassFromString(className), selector, newImplementation)
+
+@class NSTextView;
+NSTextView *XCFixinFindIDETextView(BOOL log);

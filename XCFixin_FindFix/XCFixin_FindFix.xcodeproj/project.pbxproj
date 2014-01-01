@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1094458418748C96008495CC /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1094458318748C96008495CC /* AppKit.framework */; };
 		5514A4001506CB9800A8AD77 /* XCFixin.m in Sources */ = {isa = PBXBuildFile; fileRef = 5514A3FF1506CB9800A8AD77 /* XCFixin.m */; };
 		55C015D212B7BC2500354E5C /* XCFixin_FindFix.m in Sources */ = {isa = PBXBuildFile; fileRef = 55C015D112B7BC2500354E5C /* XCFixin_FindFix.m */; };
 		8D5B49B0048680CD000E48DA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C167DFE841241C02AAC07 /* InfoPlist.strings */; };
@@ -14,6 +15,7 @@
 
 /* Begin PBXFileReference section */
 		089C167EFE841241C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		1094458318748C96008495CC /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		5514A3FF1506CB9800A8AD77 /* XCFixin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XCFixin.m; path = "../Shared Code/XCFixin.m"; sourceTree = "<group>"; };
 		5595EEEF150067D100A30634 /* XCFixin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XCFixin.h; path = "../Shared Code/XCFixin.h"; sourceTree = "<group>"; };
 		55C015D112B7BC2500354E5C /* XCFixin_FindFix.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XCFixin_FindFix.m; sourceTree = "<group>"; };
@@ -26,6 +28,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1094458418748C96008495CC /* AppKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -35,6 +38,7 @@
 		089C166AFE841209C02AAC07 /* XCFixin_FindFix */ = {
 			isa = PBXGroup;
 			children = (
+				1094458318748C96008495CC /* AppKit.framework */,
 				08FB77AFFE84173DC02AAC07 /* Classes */,
 				089C167CFE841241C02AAC07 /* Resources */,
 				19C28FB8FE9D52D311CA2CBB /* Products */,
