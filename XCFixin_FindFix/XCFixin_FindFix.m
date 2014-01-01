@@ -1,77 +1,79 @@
 #import <Cocoa/Cocoa.h>
 #import <objc/runtime.h>
+#import <objc/message.h>
 
 #import "XCFixin.h"
 
-static IMP gOriginalInsertScopeBar = nil;
-static IMP gOriginalAdjustViewsForHeightOffset = nil;
-static IMP gOriginalSetFinderMode = nil;
 static IMP gOriginalViewDidInstall = nil;
+
+typedef id (*initWithSupportForRegexImp)(id, SEL, BOOL, BOOL, BOOL);
+static initWithSupportForRegexImp gOriginalInitWithSupportForRegex = nil;
+
+static IMP gOriginalShowFindOptionsPopover = nil;
 
 @interface XCFixin_FindFix : NSObject
 @end
 
 @implementation XCFixin_FindFix
 
-static void overrideInsertScopeBar(id self, SEL _cmd, id arg1, unsigned long long arg2, BOOL arg3)
+static void DumpSubviews(NSView *view, NSString *prefix)
 {
-    /* -(void)[DVTScopeBarsManager insertScopeBar:(id)arg1 atIndex:(unsigned long long)arg2 animate:(BOOL)arg3] */
-    ((void (*)(id, SEL, id, unsigned long long, BOOL))gOriginalInsertScopeBar)(self, _cmd, arg1, arg2, NO);
-}
-
-static void overrideAdjustViewsForHeightOffset(id self, SEL _cmd, double arg1, BOOL arg2, id arg3)
-{
-    /* -(void)[DVTScopeBarsManager _adjustViewsForHeightOffset:(double)arg1 animate:(BOOL)arg2 extraAnimations:(id)arg3] */
-    ((void (*)(id, SEL, double, BOOL, id))gOriginalAdjustViewsForHeightOffset)(self, _cmd, arg1, arg2, arg3);
-}
-
-static void overrideSetFinderMode(id self, SEL _cmd, unsigned long long arg1)
-{
-    /* -(void)[DVTFindBar setFinderMode:(unsigned long long)arg1] */
-    
-    if (!arg1 && [[self valueForKey: @"supportsReplace"] boolValue])
-        arg1 = 1;
-    
-    ((void (*)(id, SEL, unsigned long long))gOriginalSetFinderMode)(self, _cmd, arg1);
+	NSArray *subviews = [view subviews];
+	
+	for(NSUInteger i = 0; i < [subviews count]; ++i)
+	{
+		NSView *subview = [subviews objectAtIndex:i];
+		
+		NSLog(@"%@%lu. %@ (frame=%@)", prefix, (unsigned long)i, NSStringFromClass([subview class]), NSStringFromRect([subview frame]));
+		DumpSubviews(subview, [prefix stringByAppendingString:@"    "]);
+	}
 }
 
 static void overrideViewDidInstall(id self, SEL _cmd)
 {
     /* -(void)[DVTFindBar viewDidInstall] */
-    
-    if ([[self valueForKey: @"supportsReplace"] boolValue])
+	
+	BOOL supportsReplace = [[self valueForKey: @"supportsReplace"] boolValue];
+	
+	NSLog(@"%s: supportsReplace=%s", __FUNCTION__, supportsReplace ? "YES" : "NO");
+	
+    if (supportsReplace)
     {
         [self setValue: [NSNumber numberWithUnsignedLongLong: 1] forKey: @"finderMode"];
-        [self setValue: [NSNumber numberWithDouble: 45.0] forKey: @"preferredViewHeight"];
+        [self setValue: [NSNumber numberWithDouble: 150.0] forKey: @"preferredViewHeight"];
     }
     
     ((void (*)(id, SEL))gOriginalViewDidInstall)(self, _cmd);
-    
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.0), dispatch_get_main_queue(),
-    ^{
-        [self setValue: [NSNumber numberWithBool: YES] forKey: @"showsOptions"];
-    });
+	
+	NSView *view = [self view];
+	
+//	NSLog(@"Begin FindBar subviews.");
+//	DumpSubviews(view, @"");
+//	NSLog(@"End FindBar subviews.");
+	
+	view = [[view subviews] objectAtIndex:0];
+	[view addSubview:[[self optionsCtrl] view]];
+}
+
+static void overrideShowFindOptionsPopover(id self, SEL _cmd, id arg1)
+{
+	// Just do nothing. Actually popping up the popover removes the
+	// controls from the find bar, of course...
+	//
+	// Long term, should really do something a bit neater, such as remove
+	// the item from the menu, or at least disable it.
 }
 
 + (void)pluginDidLoad: (NSBundle *)plugin
 {
     XCFixinPreflight();
     
-    /* Override -(void)[DVTScopeBarsManager insertScopeBar:(id)arg1 atIndex:(unsigned long long)arg2 animate:(BOOL)arg3] */
-    gOriginalInsertScopeBar = XCFixinOverrideMethodString(@"DVTScopeBarsManager", @selector(insertScopeBar: atIndex: animate:), (IMP)&overrideInsertScopeBar);
-        XCFixinAssertOrPerform(gOriginalInsertScopeBar, goto failed);
-    
-    /* Override -(void)[DVTScopeBarsManager _adjustViewsForHeightOffset:(double)arg1 animate:(BOOL)arg2 extraAnimations:(id)arg3] */
-    gOriginalAdjustViewsForHeightOffset = XCFixinOverrideMethodString(@"DVTScopeBarsManager", @selector(_adjustViewsForHeightOffset: animate: extraAnimations:), (IMP)&overrideAdjustViewsForHeightOffset);
-        XCFixinAssertOrPerform(gOriginalAdjustViewsForHeightOffset, goto failed);
-    
-    /* Override -(void)[DVTFindBar setFinderMode:(unsigned long long)arg1] */
-    gOriginalSetFinderMode = XCFixinOverrideMethodString(@"DVTFindBar", @selector(setFinderMode:), (IMP)&overrideSetFinderMode);
-        XCFixinAssertOrPerform(gOriginalSetFinderMode, goto failed);
-    
     /* Override -(void)[DVTFindBar viewDidInstall] */
     gOriginalViewDidInstall = XCFixinOverrideMethodString(@"DVTFindBar", @selector(viewDidInstall), (IMP)&overrideViewDidInstall);
-        XCFixinAssertOrPerform(gOriginalViewDidInstall, goto failed);
+	XCFixinAssertOrPerform(gOriginalViewDidInstall, goto failed);
+	
+	gOriginalShowFindOptionsPopover = XCFixinOverrideMethodString(@"DVTFindBar", @selector(_showFindOptionsPopover:), (IMP)&overrideShowFindOptionsPopover);
+	XCFixinAssertOrPerform(gOriginalShowFindOptionsPopover, goto failed);
     
     XCFixinPostflight();
 }
