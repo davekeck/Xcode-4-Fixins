@@ -149,7 +149,7 @@ typedef enum ScriptStdinMode ScriptStdinMode;
 {
 	if((self=[super init]))
 	{
-		fileName_=[fileName retain];
+		fileName_=fileName;
 		stdinMode_=SSM_SELECTION;
 		reselectMode_=SRM_MARKER;
 	}
@@ -250,7 +250,7 @@ static NSRange NSMakeRangeFromStartAndEnd(NSUInteger start,NSUInteger end)
 		}
 	}
 	
-	NSTask *task=[[[NSTask alloc] init] autorelease];
+	NSTask *task=[[NSTask alloc] init];
 	
 	[task setLaunchPath:fileName_];
 	Log(@"%s: [task launchPath] = %@\n",__FUNCTION__,[task launchPath]);
@@ -326,8 +326,8 @@ static NSRange NSMakeRangeFromStartAndEnd(NSUInteger start,NSUInteger end)
 			NSString *alertBody=@"";
 			if(stderrData)
 			{
-				alertBody=[[[NSString alloc] initWithData:stderrData
-												 encoding:NSUTF8StringEncoding] autorelease];
+				alertBody=[[NSString alloc] initWithData:stderrData
+												 encoding:NSUTF8StringEncoding];
 			}
 			
 			NSUInteger maxLen=1000;
@@ -368,8 +368,8 @@ static NSRange NSMakeRangeFromStartAndEnd(NSUInteger start,NSUInteger end)
 	{
 		NSString *selectionMarker=@"%%\x25{PBXSelection}%%%";
 		
-		NSString *stdoutStr=[[[NSString alloc] initWithData:stdoutData
-												   encoding:NSUTF8StringEncoding] autorelease];
+		NSString *stdoutStr=[[NSString alloc] initWithData:stdoutData
+												   encoding:NSUTF8StringEncoding];
 		
 		NSRange a;//before 1st marker
 		NSRange b;//between 1st marker and 2nd marker (selection goes here)
@@ -465,10 +465,8 @@ static NSRange NSMakeRangeFromStartAndEnd(NSUInteger start,NSUInteger end)
 {
 	Log(@"%s: (%s *)%p: %@\n",__FUNCTION__,class_getName([self class]),self,fileName_);
 	
-	[fileName_ release];
 	fileName_=nil;
 	
-	[super dealloc];
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -506,7 +504,7 @@ static NSString *SystemFolderName(int folderType,int domain)
 		return nil;
 	
 	CFURLRef url=CFURLCreateFromFSRef(kCFAllocatorDefault,&folder);
-	NSString *result=[(NSURL *)url path];
+	NSString *result=[(__bridge NSURL *)url path];
 	CFRelease(url);
 	
 	return result;
@@ -590,11 +588,11 @@ static NSString *SystemFolderName(int folderType,int domain)
 				NSString *path=[NSString pathWithComponents:[NSArray arrayWithObjects:scriptsFolderName,name,nil]];
 				
 				Log(@"Creating XCFixin_Script for %@.\n",path);
-				XCFixin_Script *script=[[[XCFixin_Script alloc] initWithFileName:path] autorelease];
+				XCFixin_Script *script=[[XCFixin_Script alloc] initWithFileName:path];
 				
-				NSMenuItem *scriptMenuItem=[[[NSMenuItem alloc] initWithTitle:name
+				NSMenuItem *scriptMenuItem=[[NSMenuItem alloc] initWithTitle:name
 																	   action:nil
-																keyEquivalent:@""] autorelease];
+																keyEquivalent:@""];
 				[scriptMenuItem setTarget:self];
 				[scriptMenuItem setAction:@selector(runScriptAction:)];
 				[scriptMenuItem setRepresentedObject:script];
@@ -755,7 +753,7 @@ static NSString *SystemFolderName(int folderType,int domain)
 													  atIndex:menuIndex];
 	[scriptsMenuItem setEnabled:YES];
 	
-	NSMenu *scriptsMenu=[[[NSMenu alloc] initWithTitle:@"Scripts"] autorelease];
+	NSMenu *scriptsMenu=[[NSMenu alloc] initWithTitle:@"Scripts"];
 	[scriptsMenu setAutoenablesItems:YES];
 	
 	[scriptsMenuItem setSubmenu:scriptsMenu];
