@@ -529,6 +529,7 @@ static NSRange NSMakeRangeFromStartAndEnd(NSUInteger start,NSUInteger end)
 	NSMenuItem *testUIMenuItem_;
 #endif//TEST_UI
 	NSMenuItem *refreshMenuItem_;
+	XCFixin_ScriptsHandler *retainHack_;
 }
 @end
 
@@ -554,6 +555,26 @@ static NSString *SystemFolderName(int folderType,int domain)
 	CFRelease(url);
 	
 	return result;
+}
+
+-(id)init
+{
+	if((self=[super init]))
+	{
+		Log(@"%s: self=(XCFixin_ScriptsHandler *)%p\n",__FUNCTION__,self);
+	}
+	
+	return self;
+}
+
+-(void)dealloc
+{
+	Log(@"%s: self=(XCFixin_ScriptsHandler *)%p\n",__FUNCTION__,self);
+}
+
+-(void)doRetainHack:(XCFixin_ScriptsHandler *)blah
+{
+	retainHack_=blah;
 }
 
 -(void)refreshScriptsMenu
@@ -877,6 +898,10 @@ static BOOL GetClasses(const char *name0,...)
 		Log(@"%s: handler init failed.\n",__FUNCTION__);
 	else
 	{
+		// *grumble* - this stops ARC deleting it. Seems setting it as
+		// the target of an NSMenuItem doesn't retain it.
+		[handler doRetainHack:handler];
+		
 		BOOL goodInstall=[handler install];
 		(void)goodInstall;
 		Log(@"%s: handler installed: %s\n",__FUNCTION__,goodInstall?"YES":"NO");
