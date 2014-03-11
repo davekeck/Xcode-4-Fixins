@@ -5,6 +5,7 @@
 #import <objc/runtime.h>
 
 #include <sys/stat.h>
+#include <execinfo.h>
 
 #import "XCFixin.h"
 
@@ -473,6 +474,51 @@ static NSRange NSMakeRangeFromStartAndEnd(NSUInteger start,NSUInteger end)
 ////////////////////////////////////////////////////////////////////////////////
 
 @end
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+//@interface XCFixin_NSMenuItem:NSMenuItem
+//{
+//}
+//
+//-(id)initWithTitle:(NSString *)itemName action:(SEL)anAction keyEquivalent:(NSString *)charCode;
+//-(void)setEnabled:(BOOL)flag;
+//
+//@end
+//
+//@implementation XCFixin_NSMenuItem
+//
+//-(id)initWithTitle:(NSString *)itemName action:(SEL)anAction keyEquivalent:(NSString *)charCode
+//{
+//	if((self=[super initWithTitle:itemName action:anAction keyEquivalent:charCode]))
+//	{
+//	}
+//	
+//	return self;
+//}
+//
+//-(void)setEnabled:(BOOL)flag
+//{
+//	Log(@"%s: (NSMenuItem *)%p: \"%@\": flag=%s",__FUNCTION__,self,[self title],flag?"YES":"NO");
+//	
+//	void *bt[100];
+//	int btSize=backtrace(bt,sizeof bt/sizeof bt[0]);
+//	
+//	char **btSymbols=backtrace_symbols(bt,btSize);
+//	
+//	for(int i=0;i<btSize;++i)
+//	{
+//		Log(@"    %d. %s",i,btSymbols[i]);
+//	}
+//	
+//	free(btSymbols);
+//	btSymbols=NULL;
+//	
+//	[super setEnabled:flag];
+//}
+//
+//@end
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
