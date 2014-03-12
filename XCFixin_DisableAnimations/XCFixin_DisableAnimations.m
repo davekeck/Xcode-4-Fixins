@@ -15,24 +15,32 @@ static IMP gOriginalShowWindowForTextFrameExplicitAnimation = nil;
 
 static void overrideInitWithDuration(id self, SEL _cmd, NSTimeInterval arg1, NSAnimationCurve arg2)
 {
+	//NSLog(@"%s: self=%p _cmd=%@ arg1=%f arg2=%d",__FUNCTION__,self,NSStringFromSelector(_cmd),arg1,(int)arg2);
+	
     /* -[NSAnimation initWithDuration:(NSTimeInterval)duration animationCurve:(NSAnimationCurve)animationCurve] */
     ((void (*)(id, SEL, NSTimeInterval, NSAnimationCurve))gOriginalInitWithDuration)(self, _cmd, 0.0, arg2);
 }
 
 static void overrideSetDuration(id self, SEL _cmd, NSTimeInterval arg1)
 {
+	//NSLog(@"%s: self=%p _cmd=%@ arg1=%f",__FUNCTION__,self,NSStringFromSelector(_cmd),arg1);
+	
     /* -[NSAnimation setDuration:(NSTimeInterval)duration] */
     ((void (*)(id, SEL, NSTimeInterval))gOriginalSetDuration)(self, _cmd, 0.0);
 }
 
 static void overrideShowWindowForTextFrameExplicitAnimation(id self, SEL _cmd, NSRect arg1, BOOL arg2)
 {
+	//NSLog(@"%s: self=%p _cmd=%@ arg1=%@ arg2=%s",__FUNCTION__,self,NSStringFromSelector(_cmd),NSStringFromRect(arg1),arg2?"YES":"NO");
+	
     /* -[DVTTextCompletionListWindowController showWindowForTextFrame:(NSRect)textFrame explicitAnimation:(BOOL)usesExplicitAnimation] */
     ((void (*)(id, SEL, NSRect, BOOL))gOriginalShowWindowForTextFrameExplicitAnimation)(self, _cmd, arg1, NO);
 }
 
 static void overrideSetAlphaValue(id self, SEL _cmd, CGFloat windowAlpha)
 {
+	//NSLog(@"%s: self=%p _cmd=%@ windowAlpha=%f",__FUNCTION__,self,NSStringFromSelector(_cmd),windowAlpha);
+	
     /* -[DVTTextCompletionWindow setAlphaValue:(CGFloat)windowAlpha] */
 	if(windowAlpha == 0.0) {
 		((void (*)(id, SEL, NSTimeInterval))gOriginalSetAlphaValue)(self, _cmd, 0.0);
