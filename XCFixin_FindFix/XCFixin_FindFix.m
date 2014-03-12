@@ -47,45 +47,36 @@ static void DumpSubviews(NSView *view, NSString *prefix)
 	}
 }
 
-static NSView *GetFindBarStackView(NSView *findBarView)
+static NSArray *RemoveOptionsFromSuperview(NSViewController *findBar)
 {
-	NSArray *subviews = [findBarView subviews];
-	NSView *stackView = [subviews objectAtIndex:0];
+	NSView *optionsCtrl = MSGSEND(NSView *, findBar, optionsCtrl);
 	
-	return stackView;
-}
-
-static void ForEachOption(id optionsCtrl, void (*fn)(id option, id context), id context)
-{
-	(*fn)(MSGSEND(NSView *, optionsCtrl, matchingStyleView), context);
-	(*fn)(MSGSEND(NSView *, optionsCtrl, hitsMustContainView), context);
-	(*fn)(MSGSEND(NSView *, optionsCtrl, matchCaseView), context);
-	(*fn)(MSGSEND(NSView *, optionsCtrl, wrapView), context);
-}
-
-static void RemoveOptionFromSuperview(id option, id context)
-{
-	[option removeFromSuperview];
-}
-
-// RemoveOptionsFromSuperview and AddOptionToFindBar must be called as a
-// pair, because they contain matching release and retain calls.
-
-static void RemoveOptionsFromSuperview(id optionsCtrl, NSView *findBarView)
-{
-	ForEachOption(optionsCtrl, &RemoveOptionFromSuperview, nil);
-}
-
-static void AddOptionToView(id option, id view)
-{
-	[view addSubview:option];
-}
-
-static void AddOptionsToFindBar(id optionsCtrl, NSView *findBarView)
-{
-	NSView *findBarStackView = GetFindBarStackView(findBarView);
+	NSView *matchingStyleView = MSGSEND(NSView *, optionsCtrl, matchingStyleView);
+	NSView *hitsMustContainView = MSGSEND(NSView *, optionsCtrl, hitsMustContainView);
+	NSView *matchCaseView = MSGSEND(NSView *, optionsCtrl, matchCaseView);
+	NSView *wrapView = MSGSEND(NSView *, optionsCtrl, wrapView);
 	
-	ForEachOption(optionsCtrl, &AddOptionToView, findBarStackView);
+	NSMutableArray *array = [[NSMutableArray alloc] initWithCapacity:4];
+	
+	[array addObject:matchingStyleView];
+	[array addObject:hitsMustContainView];
+	[array addObject:matchCaseView];
+	[array addObject:wrapView];
+	
+	for (NSView *view in array)
+		[view removeFromSuperview];
+	
+	return array;
+}
+
+static void AddOptionsToFindBar(NSViewController *findBar, NSArray *options)
+{
+	NSView *findBarView = [findBar view];
+	NSArray *findBarSubviews = [findBarView subviews];
+	NSView *findBarStackView = [findBarSubviews objectAtIndex:0];
+	
+	for (NSView *view in options)
+		[findBarStackView addSubview:view];
 }
 
 static void overrideViewDidInstall(id self, SEL _cmd)
@@ -119,10 +110,9 @@ static void overrideViewDidInstall(id self, SEL _cmd)
 		//	DumpSubviews(view, @"");
 		//	NSLog(@"End FindBar subviews.");
 		
-		id optionsCtrl = MSGSEND(id, self, optionsCtrl);
+		NSArray *views = RemoveOptionsFromSuperview(self);
 		
-		RemoveOptionsFromSuperview(optionsCtrl, [self view]);
-		AddOptionsToFindBar(optionsCtrl, [self view]);
+		AddOptionsToFindBar(self, views);
 	}
 	else
 	{
@@ -175,13 +165,15 @@ static void overrideSetFinderMode(id self, SEL _cmd, unsigned long long newFinde
 	unsigned long long oldFinderMode = MSGSEND(unsigned long long, self, finderMode);
 	if (newFinderMode != oldFinderMode)
 	{
+		NSArray *views = nil;
+		
 		if (gIsXcode5)
-			RemoveOptionsFromSuperview(MSGSEND(id, self, optionsCtrl), [self view]);
+			views = RemoveOptionsFromSuperview(self);
 		
 		((void (*)(id, SEL, unsigned long long))gOriginalSetFinderMode)(self, _cmd, newFinderMode);
 		
 		if (gIsXcode5)
-			AddOptionsToFindBar(MSGSEND(id, self, optionsCtrl), [self view]);
+			AddOptionsToFindBar(self, views);
 	}
 }
 
