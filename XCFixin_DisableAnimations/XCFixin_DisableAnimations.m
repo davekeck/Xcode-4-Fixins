@@ -13,12 +13,12 @@ static IMP gOriginalShowWindowForTextFrameExplicitAnimation = nil;
 
 @implementation XCFixin_DisableAnimations
 
-static void overrideInitWithDuration(id self, SEL _cmd, NSTimeInterval arg1, NSAnimationCurve arg2)
+static id overrideInitWithDuration(id self, SEL _cmd, NSTimeInterval arg1, NSAnimationCurve arg2)
 {
 	//NSLog(@"%s: self=%p _cmd=%@ arg1=%f arg2=%d",__FUNCTION__,self,NSStringFromSelector(_cmd),arg1,(int)arg2);
 	
     /* -[NSAnimation initWithDuration:(NSTimeInterval)duration animationCurve:(NSAnimationCurve)animationCurve] */
-    ((void (*)(id, SEL, NSTimeInterval, NSAnimationCurve))gOriginalInitWithDuration)(self, _cmd, 0.0, arg2);
+    return ((id (*)(id, SEL, NSTimeInterval, NSAnimationCurve))gOriginalInitWithDuration)(self, _cmd, 0.0, arg2);
 }
 
 static void overrideSetDuration(id self, SEL _cmd, NSTimeInterval arg1)
