@@ -43,9 +43,9 @@ static void overrideSetAlphaValue(id self, SEL _cmd, CGFloat windowAlpha)
 	
     /* -[DVTTextCompletionWindow setAlphaValue:(CGFloat)windowAlpha] */
 	if(windowAlpha == 0.0) {
-		((void (*)(id, SEL, NSTimeInterval))gOriginalSetAlphaValue)(self, _cmd, 0.0);
+		((void (*)(id, SEL, CGFloat))gOriginalSetAlphaValue)(self, _cmd, 0.0);
 	} else {
-		((void (*)(id, SEL, NSTimeInterval))gOriginalSetAlphaValue)(self, _cmd, 1.0);
+		((void (*)(id, SEL, CGFloat))gOriginalSetAlphaValue)(self, _cmd, 1.0);
 	}
 }
 
