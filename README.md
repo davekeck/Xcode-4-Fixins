@@ -80,3 +80,7 @@ Scripts menu. See documentation in the XCFixin_UserScripts directory.
 __CustomizeWarningErrorHighlights__: Customize the inline
 error/warning message highlight color. Useful if want to be able to
 read your code when using a dark background color.
+
+Note that the CustomizeWarningErrorHighlights fixin includes a
+reference to an Xcode framework; to build this fixin, Xcode must be
+installed in the default location of /Applications/Xcode.app/.
