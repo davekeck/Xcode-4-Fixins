@@ -168,6 +168,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_ARC = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEPLOYMENT_LOCATION = YES;
 				DEPLOYMENT_POSTPROCESSING = YES;
@@ -177,7 +178,7 @@
 					"\"$(SYSTEM_APPS_DIR)/Xcode.app/Contents/SharedFrameworks\"",
 					"\"$(SRCROOT)\"",
 				);
-				GCC_ENABLE_OBJC_GC = supported;
+				GCC_ENABLE_OBJC_GC = unsupported;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "/Library/Application Support/Developer/Shared/Xcode/Plug-ins";
 				LD_RUNPATH_SEARCH_PATHS = /Developer;
@@ -196,6 +197,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_ARC = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEPLOYMENT_LOCATION = YES;
@@ -206,7 +208,7 @@
 					"\"$(SYSTEM_APPS_DIR)/Xcode.app/Contents/SharedFrameworks\"",
 					"\"$(SRCROOT)\"",
 				);
-				GCC_ENABLE_OBJC_GC = supported;
+				GCC_ENABLE_OBJC_GC = unsupported;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "/Library/Application Support/Developer/Shared/Xcode/Plug-ins";
 				LD_RUNPATH_SEARCH_PATHS = /Developer;

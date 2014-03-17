@@ -65,7 +65,6 @@ static void ForEachOption(id optionsCtrl, void (*fn)(id option, id context), id 
 
 static void RemoveOptionFromSuperview(id option, id context)
 {
-	[option retain];
 	[option removeFromSuperview];
 }
 
@@ -80,7 +79,6 @@ static void RemoveOptionsFromSuperview(id optionsCtrl, NSView *findBarView)
 static void AddOptionToView(id option, id view)
 {
 	[view addSubview:option];
-	[option release];
 }
 
 static void AddOptionsToFindBar(id optionsCtrl, NSView *findBarView)
@@ -212,9 +210,9 @@ static id overrideRecentsMenu(id self, SEL _cmd)
 		
 		// Insert the populate option
 		{
-			NSMenuItem *populateFindString = [[[NSMenuItem alloc] initWithTitle:@"Populate From Editor"
+			NSMenuItem *populateFindString = [[NSMenuItem alloc] initWithTitle:@"Populate From Editor"
 																		 action:@selector(populateFindString:)
-																  keyEquivalent:@"e"] autorelease];
+																  keyEquivalent:@"e"];
 			
 			[populateFindString setTarget:[XCFixin_FindFix class]];
 			
