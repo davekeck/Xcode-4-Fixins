@@ -1,13 +1,3 @@
-* NO WARRANTY
-
-Do I have to spell it out? Surely we're all programmers here!
-Nevertheless - no warranty, it has bugs, it will probably blow up in
-your face, add you might lose data when it does.
-
-Also, don't forget to uninstall it and try again, before sending Apple
-bug reports about the problems you're having with Xcode 4.x - I'm sure
-they have better things to do than waste their time with my bugs.
-
 * User Scripts Fixin
 
 The fixin adds a new =Scripts= menu to Xcode 4.x. It works a little
@@ -126,3 +116,4 @@ The current option names are:
   happened in Xcode3 too?)
 
 - No support for column select.
+  

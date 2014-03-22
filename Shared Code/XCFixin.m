@@ -1,5 +1,6 @@
 #import "XCFixin.h"
 #import <objc/runtime.h>
+#import <Cocoa/Cocoa.h>
 
 BOOL XCFixinShouldLoad(void)
 {
@@ -86,3 +87,46 @@ IMP XCFixinOverrideMethod(Class class, SEL selector, IMP newImplementation)
     
     return result;
 }
+
+NSTextView *XCFixinFindIDETextView(BOOL log)
+{
+	NSWindow *mainWindow=[[NSApplication sharedApplication] mainWindow];
+	if(!mainWindow)
+	{
+		if(log)
+			NSLog(@"Can't find IDE text view - no main window.\n");
+		
+		return nil;
+	}
+	
+	Class DVTCompletingTextView=objc_getClass("DVTCompletingTextView");
+	if(!DVTCompletingTextView)
+	{
+		if(log)
+			NSLog(@"Can't find IDE text view - DVTCompletingTextView class unavailable.\n");
+		
+		return nil;
+	}
+	
+	id textView=nil;
+	
+	for(NSResponder *responder=[mainWindow firstResponder];responder;responder=[responder nextResponder])
+	{
+		if([responder isKindOfClass:DVTCompletingTextView])
+		{
+			textView=responder;
+			break;
+		}
+	}
+	
+	if(!textView)
+	{
+		if(log)
+			NSLog(@"Can't find IDE text view - no DVTCompletingTextView in the responder chain.\n");
+		
+		return nil;
+	}
+	
+	return textView;
+}
+
