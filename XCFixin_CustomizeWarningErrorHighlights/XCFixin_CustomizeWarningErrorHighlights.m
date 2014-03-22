@@ -90,7 +90,6 @@ static void overridenewMessageAttributesForFont(id self, SEL _cmd, DVTTextAnnota
 												caretColor: [NSColor yellowColor]  
 							   highlightedRangeBorderColor: [NSColor clearColor] 
 	 ];
-	[gWarning release];
 	
 	//define gradient for error text highlight
 	NSColor * errorColor = [NSColor colorWithDeviceRed:1 green:0 blue:0 alpha: lineAlpha];
@@ -108,7 +107,6 @@ static void overridenewMessageAttributesForFont(id self, SEL _cmd, DVTTextAnnota
 												caretColor: [NSColor redColor]  
 							   highlightedRangeBorderColor: [NSColor clearColor] 
 	];
-	[gError release];
 	
 
 	//define gradient for static Analyzer text highlight
@@ -127,7 +125,6 @@ static void overridenewMessageAttributesForFont(id self, SEL _cmd, DVTTextAnnota
 												caretColor: [NSColor blueColor]  
 							   highlightedRangeBorderColor: [NSColor clearColor] 
 	 ];
-	[gAnalyzer release];
 
 	
 	//define gradient for debugger text highlight
@@ -146,7 +143,6 @@ static void overridenewMessageAttributesForFont(id self, SEL _cmd, DVTTextAnnota
 												caretColor: [NSColor greenColor]  
 							   highlightedRangeBorderColor: [NSColor clearColor] 
 	 ];
-	[gDebugger release];
 	
 
 	//define gradient for Notice text highlight
@@ -165,7 +161,6 @@ static void overridenewMessageAttributesForFont(id self, SEL _cmd, DVTTextAnnota
 												caretColor: [NSColor grayColor]  
 							   highlightedRangeBorderColor: [NSColor clearColor] 
 	 ];
-	[gNotice release];
 
 	gOriginalnewMessageAttributesForFont = XCFixinOverrideMethodString(@"DVTTextAnnotation", @selector(setTheme:forState:), (IMP)&overridenewMessageAttributesForFont);
 		XCFixinAssertOrPerform(gOriginalnewMessageAttributesForFont, goto failed);

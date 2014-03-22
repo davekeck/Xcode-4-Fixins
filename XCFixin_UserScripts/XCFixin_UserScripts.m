@@ -5,6 +5,7 @@
 #import <objc/runtime.h>
 
 #include <sys/stat.h>
+#include <execinfo.h>
 
 #import "XCFixin.h"
 
@@ -149,7 +150,7 @@ typedef enum ScriptStdinMode ScriptStdinMode;
 {
 	if((self=[super init]))
 	{
-		fileName_=[fileName retain];
+		fileName_=fileName;
 		stdinMode_=SSM_SELECTION;
 		reselectMode_=SRM_MARKER;
 	}
@@ -250,7 +251,7 @@ static NSRange NSMakeRangeFromStartAndEnd(NSUInteger start,NSUInteger end)
 		}
 	}
 	
-	NSTask *task=[[[NSTask alloc] init] autorelease];
+	NSTask *task=[[NSTask alloc] init];
 	
 	[task setLaunchPath:fileName_];
 	Log(@"%s: [task launchPath] = %@\n",__FUNCTION__,[task launchPath]);
@@ -326,8 +327,8 @@ static NSRange NSMakeRangeFromStartAndEnd(NSUInteger start,NSUInteger end)
 			NSString *alertBody=@"";
 			if(stderrData)
 			{
-				alertBody=[[[NSString alloc] initWithData:stderrData
-												 encoding:NSUTF8StringEncoding] autorelease];
+				alertBody=[[NSString alloc] initWithData:stderrData
+												 encoding:NSUTF8StringEncoding];
 			}
 			
 			NSUInteger maxLen=1000;
@@ -368,8 +369,8 @@ static NSRange NSMakeRangeFromStartAndEnd(NSUInteger start,NSUInteger end)
 	{
 		NSString *selectionMarker=@"%%\x25{PBXSelection}%%%";
 		
-		NSString *stdoutStr=[[[NSString alloc] initWithData:stdoutData
-												   encoding:NSUTF8StringEncoding] autorelease];
+		NSString *stdoutStr=[[NSString alloc] initWithData:stdoutData
+												   encoding:NSUTF8StringEncoding];
 		
 		NSRange a;//before 1st marker
 		NSRange b;//between 1st marker and 2nd marker (selection goes here)
@@ -465,10 +466,8 @@ static NSRange NSMakeRangeFromStartAndEnd(NSUInteger start,NSUInteger end)
 {
 	Log(@"%s: (%s *)%p: %@\n",__FUNCTION__,class_getName([self class]),self,fileName_);
 	
-	[fileName_ release];
 	fileName_=nil;
 	
-	[super dealloc];
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -479,12 +478,58 @@ static NSRange NSMakeRangeFromStartAndEnd(NSUInteger start,NSUInteger end)
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
+//@interface XCFixin_NSMenuItem:NSMenuItem
+//{
+//}
+//
+//-(id)initWithTitle:(NSString *)itemName action:(SEL)anAction keyEquivalent:(NSString *)charCode;
+//-(void)setEnabled:(BOOL)flag;
+//
+//@end
+//
+//@implementation XCFixin_NSMenuItem
+//
+//-(id)initWithTitle:(NSString *)itemName action:(SEL)anAction keyEquivalent:(NSString *)charCode
+//{
+//	if((self=[super initWithTitle:itemName action:anAction keyEquivalent:charCode]))
+//	{
+//	}
+//	
+//	return self;
+//}
+//
+//-(void)setEnabled:(BOOL)flag
+//{
+//	Log(@"%s: (NSMenuItem *)%p: \"%@\": flag=%s",__FUNCTION__,self,[self title],flag?"YES":"NO");
+//	
+//	void *bt[100];
+//	int btSize=backtrace(bt,sizeof bt/sizeof bt[0]);
+//	
+//	char **btSymbols=backtrace_symbols(bt,btSize);
+//	
+//	for(int i=0;i<btSize;++i)
+//	{
+//		Log(@"    %d. %s",i,btSymbols[i]);
+//	}
+//	
+//	free(btSymbols);
+//	btSymbols=NULL;
+//	
+//	[super setEnabled:flag];
+//}
+//
+//@end
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
 @interface XCFixin_ScriptsHandler:NSObject
 {
 #if TEST_UI
 	NSMenuItem *testUIMenuItem_;
 #endif//TEST_UI
 	NSMenuItem *refreshMenuItem_;
+	XCFixin_ScriptsHandler *retainHack_;
 }
 @end
 
@@ -506,10 +551,30 @@ static NSString *SystemFolderName(int folderType,int domain)
 		return nil;
 	
 	CFURLRef url=CFURLCreateFromFSRef(kCFAllocatorDefault,&folder);
-	NSString *result=[(NSURL *)url path];
+	NSString *result=[(__bridge NSURL *)url path];
 	CFRelease(url);
 	
 	return result;
+}
+
+-(id)init
+{
+	if((self=[super init]))
+	{
+		Log(@"%s: self=(XCFixin_ScriptsHandler *)%p\n",__FUNCTION__,self);
+	}
+	
+	return self;
+}
+
+-(void)dealloc
+{
+	Log(@"%s: self=(XCFixin_ScriptsHandler *)%p\n",__FUNCTION__,self);
+}
+
+-(void)doRetainHack:(XCFixin_ScriptsHandler *)blah
+{
+	retainHack_=blah;
 }
 
 -(void)refreshScriptsMenu
@@ -590,11 +655,11 @@ static NSString *SystemFolderName(int folderType,int domain)
 				NSString *path=[NSString pathWithComponents:[NSArray arrayWithObjects:scriptsFolderName,name,nil]];
 				
 				Log(@"Creating XCFixin_Script for %@.\n",path);
-				XCFixin_Script *script=[[[XCFixin_Script alloc] initWithFileName:path] autorelease];
+				XCFixin_Script *script=[[XCFixin_Script alloc] initWithFileName:path];
 				
-				NSMenuItem *scriptMenuItem=[[[NSMenuItem alloc] initWithTitle:name
+				NSMenuItem *scriptMenuItem=[[NSMenuItem alloc] initWithTitle:name
 																	   action:nil
-																keyEquivalent:@""] autorelease];
+																keyEquivalent:@""];
 				[scriptMenuItem setTarget:self];
 				[scriptMenuItem setAction:@selector(runScriptAction:)];
 				[scriptMenuItem setRepresentedObject:script];
@@ -755,7 +820,7 @@ static NSString *SystemFolderName(int folderType,int domain)
 													  atIndex:menuIndex];
 	[scriptsMenuItem setEnabled:YES];
 	
-	NSMenu *scriptsMenu=[[[NSMenu alloc] initWithTitle:@"Scripts"] autorelease];
+	NSMenu *scriptsMenu=[[NSMenu alloc] initWithTitle:@"Scripts"];
 	[scriptsMenu setAutoenablesItems:YES];
 	
 	[scriptsMenuItem setSubmenu:scriptsMenu];
@@ -833,6 +898,10 @@ static BOOL GetClasses(const char *name0,...)
 		Log(@"%s: handler init failed.\n",__FUNCTION__);
 	else
 	{
+		// *grumble* - this stops ARC deleting it. Seems setting it as
+		// the target of an NSMenuItem doesn't retain it.
+		[handler doRetainHack:handler];
+		
 		BOOL goodInstall=[handler install];
 		(void)goodInstall;
 		Log(@"%s: handler installed: %s\n",__FUNCTION__,goodInstall?"YES":"NO");

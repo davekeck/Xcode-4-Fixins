@@ -78,9 +78,6 @@
 - (void) dealloc {
 //-----------------------------------------------------------------------------------------------
   [[NSNotificationCenter defaultCenter] removeObserver:self];
-  [sourceEditorViewClass release];
-  [highlightColorAttributes release];
-  [super dealloc];
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -109,7 +106,6 @@
         [NSDictionary dictionaryWithObjectsAndKeys: color,
                                                     NSBackgroundColorAttributeName,
                                                     nil];
-    [highlightColorAttributes retain];
   }
 }
 
@@ -171,15 +167,10 @@
 //-----------------------------------------------------------------------------------------------
   NSColorPanel* colorPanel = [NSColorPanel sharedColorPanel];
 
-  [highlightColorAttributes release];
-
   highlightColorAttributes = 
       [NSDictionary dictionaryWithObjectsAndKeys: [colorPanel color],
                                                   NSBackgroundColorAttributeName, 
                                                   nil];
-
-  [highlightColorAttributes retain];
-
   [self saveHighlightColor:[colorPanel color]];
                                                     
   // Update window size (grow then back to what it was) in order to cause frame
@@ -233,7 +224,6 @@
 - (void) applicationReady:(NSNotification*)notification {
 //-----------------------------------------------------------------------------------------------
   sourceEditorViewClass = NSClassFromString(@"DVTSourceTextView");
-  [sourceEditorViewClass retain];
   [self loadHighlightColor];
 }
 
