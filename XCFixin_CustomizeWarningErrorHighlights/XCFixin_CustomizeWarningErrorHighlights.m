@@ -68,41 +68,42 @@ static void overridenewMessageAttributesForFont(id self, SEL _cmd, DVTTextAnnota
 
 
 + (void)pluginDidLoad: (NSBundle *)plugin{
-	
+
     XCFixinPreflight();
-	float lineAlpha = 0.20;	//whole line
-	float topAlpha = 0.4;	//the right-hand label
-	float bottomAlpha = 0.4;
+	float lineAlpha = 0.125;	//whole line
+
+	float labelTopAlpha = 0.125;	//the right-hand label
+	float labelBottomAlpha = 0.125;
 
 	//define gradient for warning text highlight
 	NSColor * warningColor = [NSColor colorWithDeviceRed:1 green:1 blue:0 alpha: lineAlpha];
-	NSGradient * gWarning = [[NSGradient alloc] initWithStartingColor: [warningColor colorWithAlphaComponent: topAlpha]
-														  endingColor: [warningColor colorWithAlphaComponent: bottomAlpha]];
+	NSGradient * gWarning = [[NSGradient alloc] initWithStartingColor: [warningColor colorWithAlphaComponent: labelTopAlpha]
+														  endingColor: [warningColor colorWithAlphaComponent: labelBottomAlpha]];
 	//define warning text highlight theme
 	warningTheme = 
 	[[DVTTextAnnotationTheme alloc] initWithHighlightColor: warningColor 
-											borderTopColor: [NSColor clearColor]
-										 borderBottomColor: [NSColor clearColor]
+											borderTopColor: warningColor
+										 borderBottomColor: warningColor
 										   overlayGradient: nil
 									 overlayTintedGradient: nil
-								  messageBubbleBorderColor: [NSColor clearColor] 
+								  messageBubbleBorderColor: [NSColor clearColor]
 									 messageBubbleGradient: gWarning
-												caretColor: [NSColor yellowColor]  
-							   highlightedRangeBorderColor: [NSColor clearColor] 
+												caretColor: [NSColor yellowColor]
+							   highlightedRangeBorderColor: [NSColor clearColor]
 	 ];
 	
 	//define gradient for error text highlight
 	NSColor * errorColor = [NSColor colorWithDeviceRed:1 green:0 blue:0 alpha: lineAlpha];
-	NSGradient * gError = [[NSGradient alloc] initWithStartingColor: [errorColor colorWithAlphaComponent: topAlpha]
-														endingColor: [errorColor colorWithAlphaComponent: bottomAlpha]];
+	NSGradient * gError = [[NSGradient alloc] initWithStartingColor: [errorColor colorWithAlphaComponent: labelTopAlpha]
+														endingColor: [errorColor colorWithAlphaComponent: labelBottomAlpha]];
 	//define error text highlight theme
 	errorTheme = 
 	[[DVTTextAnnotationTheme alloc] initWithHighlightColor: errorColor 
-											borderTopColor: [NSColor clearColor]
-										 borderBottomColor: [NSColor clearColor]
+											borderTopColor: errorColor
+										 borderBottomColor: errorColor
 										   overlayGradient: nil
 									 overlayTintedGradient: nil
-								  messageBubbleBorderColor: [NSColor clearColor] 
+								  messageBubbleBorderColor: [NSColor clearColor]
 									 messageBubbleGradient: gError
 												caretColor: [NSColor redColor]  
 							   highlightedRangeBorderColor: [NSColor clearColor] 
@@ -111,16 +112,16 @@ static void overridenewMessageAttributesForFont(id self, SEL _cmd, DVTTextAnnota
 
 	//define gradient for static Analyzer text highlight
 	NSColor * analyzerColor = [NSColor colorWithDeviceRed:0.5 green:0.5 blue:1 alpha: lineAlpha];
-	NSGradient * gAnalyzer = [[NSGradient alloc] initWithStartingColor: [analyzerColor colorWithAlphaComponent: topAlpha]
-														   endingColor: [analyzerColor colorWithAlphaComponent: bottomAlpha]];
+	NSGradient * gAnalyzer = [[NSGradient alloc] initWithStartingColor: [analyzerColor colorWithAlphaComponent: labelTopAlpha]
+														   endingColor: [analyzerColor colorWithAlphaComponent: labelBottomAlpha]];
 	//define static Analyzer text highlight theme
 	analyzerTheme = 
 	[[DVTTextAnnotationTheme alloc] initWithHighlightColor: analyzerColor 
-											borderTopColor: [NSColor clearColor]
-										 borderBottomColor: [NSColor clearColor]
+											borderTopColor: analyzerColor
+										 borderBottomColor: analyzerColor
 										   overlayGradient: nil
 									 overlayTintedGradient: nil
-								  messageBubbleBorderColor: [NSColor clearColor] 
+								  messageBubbleBorderColor: [NSColor clearColor]
 									 messageBubbleGradient: gAnalyzer
 												caretColor: [NSColor blueColor]  
 							   highlightedRangeBorderColor: [NSColor clearColor] 
@@ -129,16 +130,16 @@ static void overridenewMessageAttributesForFont(id self, SEL _cmd, DVTTextAnnota
 	
 	//define gradient for debugger text highlight
 	NSColor * debuggerColor = [NSColor colorWithDeviceRed:0.0 green:1 blue:0.5 alpha: lineAlpha];
-	NSGradient * gDebugger = [[NSGradient alloc] initWithStartingColor: [debuggerColor colorWithAlphaComponent: topAlpha]
-														   endingColor: [debuggerColor colorWithAlphaComponent: bottomAlpha]];
+	NSGradient * gDebugger = [[NSGradient alloc] initWithStartingColor: [debuggerColor colorWithAlphaComponent: labelTopAlpha]
+														   endingColor: [debuggerColor colorWithAlphaComponent: labelBottomAlpha]];
 	//define static debugger text highlight theme
 	debuggerTheme = 
 	[[DVTTextAnnotationTheme alloc] initWithHighlightColor: debuggerColor 
-											borderTopColor: [NSColor clearColor]
-										 borderBottomColor: [NSColor clearColor]
+											borderTopColor: debuggerColor
+										 borderBottomColor: debuggerColor
 										   overlayGradient: nil
 									 overlayTintedGradient: nil
-								  messageBubbleBorderColor: [NSColor clearColor] 
+								  messageBubbleBorderColor: [NSColor clearColor]
 									 messageBubbleGradient: gDebugger
 												caretColor: [NSColor greenColor]  
 							   highlightedRangeBorderColor: [NSColor clearColor] 
@@ -147,16 +148,16 @@ static void overridenewMessageAttributesForFont(id self, SEL _cmd, DVTTextAnnota
 
 	//define gradient for Notice text highlight
 	NSColor * noticeColor = [NSColor colorWithDeviceRed:0.25 green:0.25 blue:0.25 alpha: lineAlpha];
-	NSGradient * gNotice = [[NSGradient alloc] initWithStartingColor: [noticeColor colorWithAlphaComponent: topAlpha]
-														 endingColor: [noticeColor colorWithAlphaComponent: bottomAlpha]];
+	NSGradient * gNotice = [[NSGradient alloc] initWithStartingColor: [noticeColor colorWithAlphaComponent: labelTopAlpha]
+														 endingColor: [noticeColor colorWithAlphaComponent: labelBottomAlpha]];
 	//define Notice text highlight theme
 	grayTheme = 
 	[[DVTTextAnnotationTheme alloc] initWithHighlightColor: noticeColor 
-											borderTopColor: [NSColor clearColor]
-										 borderBottomColor: [NSColor clearColor]
+											borderTopColor: noticeColor
+										 borderBottomColor: noticeColor
 										   overlayGradient: nil
 									 overlayTintedGradient: nil
-								  messageBubbleBorderColor: [NSColor clearColor] 
+								  messageBubbleBorderColor: [NSColor clearColor]
 									 messageBubbleGradient: gNotice
 												caretColor: [NSColor grayColor]  
 							   highlightedRangeBorderColor: [NSColor clearColor] 
