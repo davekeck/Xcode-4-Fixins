@@ -1,7 +1,7 @@
-__This is the WIP Xcode 5.1 branch. These plugins are known to be
-compatible with Xcode 5.1, and may work with Xcode 5.01.__
+__These plugins are known to be compatible with Xcode 5.1, and may
+work with Xcode 5.01.__
 
-__For Xcode 4.6.2 and Xcode 5.01, see the master branch.__
+__For Xcode 4.6.2 and Xcode 5.01, see the xcode_462 branch.__
 
 __===== DESCRIPTION =====__
 
