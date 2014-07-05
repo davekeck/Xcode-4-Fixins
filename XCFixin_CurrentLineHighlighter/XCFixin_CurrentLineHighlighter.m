@@ -121,7 +121,7 @@
 - (void) highlightLineInView:(id)view containingRange:(NSRange)range {
 //-----------------------------------------------------------------------------------------------
   @try {                                                                                                                                                    
-    [[view layoutManager] addTemporaryAttributes: highlightColorAttributes 
+    [[view layoutManager] addTemporaryAttributes: highlightColorAttributes
                                forCharacterRange: [[view string] lineRangeForRange:range] ];
   }
   @catch ( NSException* exception ) {
